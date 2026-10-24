@@ -99,7 +99,7 @@ window.CDH_TARIFS = {
       nom: "Autonomie",
       mensuel: 7.9,
       accroche: "Vous modifiez vous-même, quand vous voulez.",
-      inclus: ["Tout l'Hébergement", "Accès à la console d'édition", "Message du moment (travaux, événement…)", "Statistiques de consultation"]
+      inclus: ["Tout l'Hébergement", "Espace client : vous modifiez votre livret vous-même", "Message du moment (travaux, événement…)", "Retour à une version précédente en un clic", "Statistiques de consultation sur 30 jours"]
     },
     serenite: {
       nom: "Sérénité",

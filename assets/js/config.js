@@ -22,6 +22,11 @@ window.CDH_CONFIG = {
   // Vide : sur Netlify, Netlify Forms est utilisé ; ailleurs, le visiteur copie
   // le récapitulatif et vous l'envoie par e-mail.
   formulaireDevis: "",
+  // Espace client (forfait Autonomie) : base Supabase où vivent les livrets des clients.
+  // Supabase → Project Settings → API Keys : « Project URL » et clé « Publishable »
+  // (sb_publishable_…, faite pour être publique). Vides : la console reste une démonstration.
+  supabaseUrl: "",
+  supabaseCle: "",
   // Mentions du devis
   siret: "SIRET en cours d'immatriculation",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",

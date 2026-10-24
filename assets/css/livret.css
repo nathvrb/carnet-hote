@@ -585,3 +585,7 @@ button.lg { cursor: pointer; }
 .rub summary:hover, .check:hover { background: var(--tint-2); }
 .rub-ico, .place-ico, .svc-ico { background: var(--tint); }
 .foot { border-top-color: color-mix(in oklab, #5A4632 10%, transparent); }
+.notfound.is-loading { color: var(--ink-soft, #5d6461); justify-items: center; }
+.ld-dot { width: 26px; height: 26px; border-radius: 50%; border: 3px solid color-mix(in oklab, var(--accent, #1D5C7A) 22%, transparent); border-top-color: var(--accent, #1D5C7A); animation: ld 0.8s linear infinite; }
+@keyframes ld { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ld-dot { animation-duration: 2.4s; } }

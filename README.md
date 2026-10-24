@@ -8,11 +8,14 @@ Site statique (HTML, CSS, JavaScript sans framework) : il s'ouvre en double-cliq
 |---|---|
 | `index.html` | Vitrine : présentation, 3 exemples, offres, devis automatique, console, FAQ, contact |
 | `livret.html` | Le livret lu par les voyageurs (`livret.html#identifiant`), en français et en anglais, toujours en thème clair |
-| `console.html` | Console d'édition : bouton FR / EN, avant l'arrivée, rubriques, services en plus, adresses (GPS), activités, avis, QR code et affiche A6 |
+| `console.html` | Console d'édition : bouton FR / EN, avant l'arrivée, rubriques, services en plus, adresses (GPS), activités, avis, QR code et affiche A6. `console.html?compte` = la même console branchée sur la base (espace client) |
+| `espace.html` | Espace client : connexion des hôtes, leurs livrets, ouvertures sur 30 jours, mot de passe |
+| `supabase/installation.sql` | Script à coller une fois dans Supabase : tables, règles de sécurité, photos |
 | `sw.js` | Lecture hors connexion du livret (à garder à la racine du site) |
 | `404.html` | Sur GitHub Pages : renvoie les adresses courtes `/l/identifiant` (et `/l/identifiant/arrivee`) vers le livret |
 | `_redirects` | La même chose sur Netlify |
 | `.nojekyll` | Indique à GitHub Pages de publier les fichiers tels quels |
+| `.github/workflows/reveil-supabase.yml` | Appelle la base chaque matin pour qu'elle ne se mette pas en pause |
 
 ## Ce que vous modifierez le plus souvent
 
@@ -20,7 +23,9 @@ Site statique (HTML, CSS, JavaScript sans framework) : il s'ouvre en double-cliq
 - **Prix, formules, forfaits, options, supports** → `assets/js/tarifs.js` (la page Offres et le devis se mettent à jour tout seuls)
 - **Livrets publiés** → `data/livrets.js`
 
-## Ajouter le livret d'un client
+## Ajouter le livret d'un client (sans espace client)
+
+Avec l'espace client activé, suivez plutôt « Mettre en ligne le livret d'un client » plus bas : le livret ne passe plus par ce fichier.
 
 1. Ouvrez `console.html`, menu du haut : « + Créer un nouveau livret ».
 2. Remplissez les onglets ; l'aperçu à droite se met à jour en direct.
@@ -62,10 +67,52 @@ Important : une fois des QR codes imprimés, ne changez plus ni le domaine ni l'
 
 ## Ce qui est en mode démonstration
 
-- **La console enregistre dans le navigateur** (localStorage). C'est parfait pour vous (vous créez et exportez les livrets), mais un client qui modifie son livret depuis chez lui ne publie rien pour les autres. Pour vendre le forfait Autonomie, il faudra brancher la console sur une base de données avec connexion par client (par exemple Supabase ou Firebase) : seules les fonctions de `assets/js/store.js` sont à remplacer.
+- **La console publique (`console.html`) reste une démonstration** : elle enregistre dans le navigateur du visiteur. Les vrais livrets des clients passent par l'espace client (section suivante).
 - **Les statistiques** : créez un compte gratuit sur Umami Cloud (cloud.umami.is), ajoutez votre site, puis collez son « Website ID » dans `umamiId` de `config.js`. Chaque livret apparaît sous son adresse (`/livret.html?id=…`). Pas de cookies, donc pas de bandeau à afficher.
 - **Langues** : le livret gère le français et l'anglais. L'allemand de la formule Premium n'est pas encore géré par le livret (à ajouter avant de vendre Premium).
 - **Anciennes modifications** : le stockage local est passé en version 2 ; les essais faits avant dans la console sont ignorés (les nouveaux exemples s'affichent).
+
+## Espace client (forfait Autonomie)
+
+Les hôtes se connectent sur `espace.html`, modifient leur livret dans la console et cliquent sur « Publier » : les voyageurs voient la nouvelle version aussitôt, le QR code ne change pas. Les livrets des clients sont dans une base **Supabase** (gratuite jusqu'à 500 Mo de données et 1 Go de photos), **pas dans le dépôt GitHub** : leurs codes Wi-Fi et de boîte à clés ne sont donc pas publics, même avec un dépôt public.
+
+### Ce que ça fait
+
+- **Hôte** : connexion par e-mail + mot de passe ; il ne voit et ne modifie que ses livrets. Brouillon gardé sur son appareil tant qu'il n'a pas publié. Photos envoyées dans la base (réduites à 1600 px). 30 dernières versions gardées, « Reprendre » en un clic. Ouvertures du livret sur 30 jours (comptage anonyme, sans cookie). Changement de mot de passe dans « Mon compte ».
+- **Vous (administrateur)** : tous les livrets ; mise en ligne d'un livret (exemple, import ou nouveau) avec choix de son adresse définitive ; accès des hôtes ; message d'invitation prêt à copier ; interrupteur « Livret en ligne » (fin d'abonnement : le QR affiche « Livret introuvable », rien n'est supprimé).
+- **Voyageurs** : le livret est lu dans la base. Une copie reste sur leur téléphone : il s'ouvre encore sans réseau. Si deux personnes publient en même temps, la seconde est prévenue au lieu d'écraser la première.
+- Les 3 exemples de la vitrine restent dans `data/livrets.js` et ne dépendent pas de la base.
+
+### Mise en route (une seule fois, 15 minutes)
+
+1. Créez un compte sur [supabase.com](https://supabase.com), puis **New project** : nom `carnet-hote`, région **Europe (Paris)**, un mot de passe de base (gardez-le). Laissez « Data API » activé.
+2. **SQL Editor** → **New query** → collez tout le fichier `supabase/installation.sql` → **Run**. Message attendu : « Success. No rows returned ».
+3. **Authentication → Sign In / Providers** (ou « Providers ») → **Email** : laissez la connexion par e-mail active et **désactivez « Allow new users to sign up »**. Seuls les comptes que vous créez pourront se connecter.
+4. **Authentication → URL Configuration** : *Site URL* = l'adresse du site (`https://nathvrb.github.io/carnet-hote/`, plus tard votre domaine) ; dans *Redirect URLs*, ajoutez `https://nathvrb.github.io/carnet-hote/espace.html`.
+5. Votre compte administrateur : **Authentication → Users → Add user → Create new user**, votre e-mail + un mot de passe, cochez **Auto Confirm User**. Puis dans le **SQL Editor** : `select cdh.ajouter_admin('votre@email.fr');`
+6. **Project Settings → API Keys** : copiez la clé **Publishable** (`sb_publishable_…`). L'adresse du projet (`https://xxxx.supabase.co`) est sur la page d'accueil du projet (bouton **Connect**). Collez-les dans `assets/js/config.js` : `supabaseUrl` et `supabaseCle`. Cette clé est faite pour être publique ; ne mettez **jamais** la clé *secret* dans le site.
+7. Allez sur `espace.html`, connectez-vous : vous voyez le badge « Administrateur ».
+
+### Mettre en ligne le livret d'un client
+
+1. `espace.html` → **Ouvrir la console**. Menu du haut : « + Créer un nouveau livret », ou un livret de la liste « Pas encore en ligne » (exemple, import).
+2. **Publier** → choisissez l'adresse définitive (`gite-des-fagnes`). Elle est dans le QR code : ne la changez plus après impression.
+3. Créez le compte de l'hôte dans Supabase (**Authentication → Users → Add user**, *Auto Confirm User* coché, un mot de passe provisoire).
+4. Console → onglet **Accès et versions** → e-mail de l'hôte → **Donner l'accès**. Copiez le message d'invitation et envoyez-le, avec le mot de passe à part (SMS par exemple). L'hôte pourra le changer dans « Mon compte ».
+
+### Mot de passe oublié
+
+Le bouton « Mot de passe oublié » d'`espace.html` envoie un lien par e-mail, mais l'envoi intégré à Supabase ne part que vers les membres de votre équipe Supabase (2 e-mails par heure). Deux solutions :
+
+- **Tout de suite** : donnez-lui un mot de passe provisoire depuis le **SQL Editor** : `select cdh.nouveau_mot_de_passe('hote@email.fr', 'Provisoire2026!');` puis transmettez-le ; il le changera dans « Mon compte ».
+- **Pour que le bouton marche pour tous** : **Authentication → Emails → SMTP Settings** avec un service gratuit (Brevo : 300 e-mails par jour), puis traduisez le modèle **Reset Password** en français.
+
+### Bon à savoir
+
+- **Pause du forfait gratuit** : Supabase met en pause un projet gratuit resté 7 jours sans activité. Les ouvertures des livrets suffisent, et le script `.github/workflows/reveil-supabase.yml` appelle la base chaque matin par sécurité (onglet **Actions** du dépôt, rien à configurer). GitHub coupe les tâches planifiées d'un dépôt sans aucune modification pendant 60 jours : un envoi de temps en temps suffit. En cas de pause : tableau de bord Supabase → **Resume project** ; les livrets déjà ouverts restent lisibles sur les téléphones pendant ce temps.
+- **Sauvegarde** : le forfait gratuit ne garde pas de sauvegardes automatiques téléchargeables. Une fois par mois, dans la console, onglet **Accès et versions → Exporter** pour chaque livret, ou passez au forfait Pro (25 $/mois) quand vous aurez plusieurs clients.
+- **Sécurité** : toutes les règles sont dans `supabase/installation.sql` (tables privées, fonctions qui vérifient le compte connecté à chaque appel). Un voyageur ne peut lire qu'un livret dont il connaît l'adresse, jamais la liste.
+- Après une mise à jour du site qui touche `supabase/installation.sql`, relancez-le dans le SQL Editor : il ne supprime rien.
 
 ## Avant de lancer l'activité
 

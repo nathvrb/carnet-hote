@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espace client · Carnet d'Hôte</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Connectez-vous pour modifier votre livret d'accueil.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/console.css">
+<link rel="stylesheet" href="assets/css/espace.css">
+</head>
+<body class="espace">
+
+<header class="cbar" id="cbar">
+  <a class="logo" href="index.html" title="Retour au site">
+    <svg viewBox="0 0 22 34" aria-hidden="true"><circle cx="11" cy="5.5" r="4.2" fill="none" stroke="var(--brass)" stroke-width="2"/><path d="M11 9.5c3.6 0 9 5.6 9 13.6C20 29 16 33 11 33S2 29 2 23.1C2 15.1 7.4 9.5 11 9.5Z" fill="var(--fob)"/><circle cx="11" cy="13" r="1.6" fill="var(--surface)"/></svg>
+    <span data-brand>Carnet d'Hôte</span><span class="tag">Espace client</span>
+  </a>
+  <div class="cbar-actions" id="who" hidden>
+    <span class="who-mail" id="who-mail"></span>
+    <button class="btn" type="button" id="logout">Se déconnecter</button>
+  </div>
+</header>
+
+<main class="es-main" id="main" aria-live="polite">
+
+  <!-- Chargement -->
+  <section class="es-view" data-view="chargement">
+    <p class="es-wait"><span class="spin" aria-hidden="true"></span>Chargement…</p>
+  </section>
+
+  <!-- Espace client non activé (Supabase non configuré) -->
+  <section class="es-view es-card es-narrow" data-view="inactif" hidden>
+    <h1>Espace client</h1>
+    <p>L'espace client n'est pas encore ouvert. Pour modifier votre livret, écrivez-nous&nbsp;: nous faisons le changement pour vous.</p>
+    <p><a class="btn primary" data-mail href="#">Nous écrire</a></p>
+    <p class="hint">Pour l'administrateur du site : renseignez <code>supabaseUrl</code> et <code>supabaseCle</code> dans <code>assets/js/config.js</code> (voir le README).</p>
+  </section>
+
+  <!-- Connexion -->
+  <section class="es-view es-card es-narrow" data-view="connexion" hidden>
+    <h1>Espace client</h1>
+    <p class="lead">Modifiez votre livret d'accueil quand vous voulez&nbsp;: Wi-Fi, message du moment, adresses, photos. Vos voyageurs voient la nouvelle version dès que vous publiez.</p>
+    <form id="f-login" class="stack" novalidate>
+      <label class="fld" for="l-mail"><span>E-mail</span><input id="l-mail" type="email" autocomplete="username" inputmode="email" required></label>
+      <label class="fld" for="l-pass"><span>Mot de passe</span>
+        <span class="pw"><input id="l-pass" type="password" autocomplete="current-password" required><button type="button" class="pw-eye" data-eye="l-pass" aria-label="Afficher le mot de passe" aria-pressed="false"></button></span>
+      </label>
+      <p class="msg err" id="l-msg" role="alert" hidden></p>
+      <button class="btn primary big" type="submit" id="l-go">Se connecter</button>
+      <button class="linkbtn" type="button" data-go="oubli">Mot de passe oublié&nbsp;?</button>
+    </form>
+    <p class="hint es-foot">Pas encore de compte&nbsp;? Il est créé pour vous avec le forfait Autonomie. <a data-mail href="#">Écrivez-nous</a>.</p>
+  </section>
+
+  <!-- Mot de passe oublié -->
+  <section class="es-view es-card es-narrow" data-view="oubli" hidden>
+    <h1>Mot de passe oublié</h1>
+    <p class="lead">Indiquez l'e-mail de votre compte&nbsp;: vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+    <form id="f-oubli" class="stack" novalidate>
+      <label class="fld" for="o-mail"><span>E-mail</span><input id="o-mail" type="email" autocomplete="username" inputmode="email" required></label>
+      <p class="msg" id="o-msg" role="status" hidden></p>
+      <button class="btn primary big" type="submit" id="o-go">Recevoir le lien</button>
+      <button class="linkbtn" type="button" data-go="connexion">Retour à la connexion</button>
+    </form>
+  </section>
+
+  <!-- Nouveau mot de passe (après le lien reçu par e-mail) -->
+  <section class="es-view es-card es-narrow" data-view="nouveau" hidden>
+    <h1>Nouveau mot de passe</h1>
+    <p class="lead" id="n-lead">Choisissez votre nouveau mot de passe (8 caractères minimum).</p>
+    <form id="f-nouveau" class="stack" novalidate>
+      <label class="fld" for="n-pass"><span>Nouveau mot de passe</span>
+        <span class="pw"><input id="n-pass" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="pw-eye" data-eye="n-pass" aria-label="Afficher le mot de passe" aria-pressed="false"></button></span>
+      </label>
+      <label class="fld" for="n-pass2"><span>Confirmez</span><input id="n-pass2" type="password" autocomplete="new-password" minlength="8" required></label>
+      <p class="msg err" id="n-msg" role="alert" hidden></p>
+      <button class="btn primary big" type="submit" id="n-go">Enregistrer et continuer</button>
+    </form>
+  </section>
+
+  <!-- Tableau de bord -->
+  <section class="es-view" data-view="tableau" hidden>
+    <div class="es-head">
+      <div>
+        <h1 id="t-titre">Vos livrets</h1>
+        <p class="lead" id="t-lead">Choisissez un livret pour le modifier. Rien ne change pour vos voyageurs tant que vous n'avez pas cliqué sur « Publier ».</p>
+      </div>
+      <div class="row" id="t-admin" hidden>
+        <span class="badge">Administrateur</span>
+        <a class="btn" href="console.html?compte">Ouvrir la console</a>
+      </div>
+    </div>
+    <p class="msg err" id="t-msg" role="alert" hidden></p>
+    <div class="cards" id="cards"></div>
+
+    <details class="grp es-account" id="account">
+      <summary><h2>Mon compte</h2><span class="hint" id="acc-mail"></span></summary>
+      <form id="f-mdp" class="stack" novalidate>
+        <h3>Changer de mot de passe</h3>
+        <div class="grid2">
+          <label class="fld" for="m-pass"><span>Nouveau mot de passe</span><input id="m-pass" type="password" autocomplete="new-password" minlength="8" required></label>
+          <label class="fld" for="m-pass2"><span>Confirmez</span><input id="m-pass2" type="password" autocomplete="new-password" minlength="8" required></label>
+        </div>
+        <p class="msg" id="m-msg" role="status" hidden></p>
+        <div class="row"><button class="btn primary" type="submit" id="m-go">Enregistrer</button></div>
+      </form>
+      <p class="hint">Une question, un changement que vous préférez nous confier&nbsp;? <a data-mail href="#">Écrivez-nous</a>.</p>
+    </details>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/cloud.js"></script>
+<script src="assets/js/espace.js"></script>
+</body>
+</html>

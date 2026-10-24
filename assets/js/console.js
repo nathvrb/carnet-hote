@@ -4,10 +4,17 @@
    - La structure (ajout, ordre, suppression, photos) se modifie en FR ;
      les traductions suivent automatiquement. */
 (function () {
-  var C = window.CDH_CONFIG, S = window.CDH_STORE, I = window.cdhIcon, esc = window.cdhEsc;
-  var DRAFT = "cdh:brouillon2:";
+  var C = window.CDH_CONFIG, S = window.CDH_STORE, I = window.cdhIcon, esc = window.cdhEsc, K = window.CDH_CLOUD;
+  /* Mode connecté (espace client) : console.html?compte#identifiant
+     Les livrets viennent de la base Supabase, « Publier » les met en ligne pour tous.
+     Sans « ?compte » : démonstration, tout reste dans ce navigateur. */
+  var COMPTE = /[?&]compte(?:[=&]|$)/.test(location.search);
+  var DRAFT = COMPTE ? "cdh:compte:brouillon:" : "cdh:brouillon2:";
   var LISTS = ["rubriques", "blocs", "services", "adresses", "activites"];
   var doc = null, tab = "general", edLang = "fr", openItem = {};
+  var acct = null;                          /* { email, admin, livrets } */
+  var remote = { existe: false };           /* état du livret dans la base */
+  var baseEdit = null;                      /* version en ligne sur laquelle portent les modifications */
   var frame = document.getElementById("frame"), frameReady = false;
   var framed = false;
   try { framed = window.self !== window.top; } catch (e) { framed = true; }
@@ -22,14 +29,19 @@
     var t = ks.reduce(function (a, k) { if (a[k] == null || typeof a[k] !== "object") a[k] = {}; return a[k]; }, o);
     if (v === undefined) delete t[last]; else t[last] = v;
   }
-  function toast(msg) {
+  function toast(msg, ms) {
+    document.querySelectorAll(".toast").forEach(function (x) { x.remove(); });
     var t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
-    document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600);
+    document.body.appendChild(t); setTimeout(function () { t.remove(); }, ms || 2600);
+    return t;
   }
-  function readDraft(id) { try { var r = localStorage.getItem(DRAFT + id); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+  /* Brouillon : en mode connecté, on garde aussi la version en ligne de départ (base) */
+  function readRaw(id) { try { var r = localStorage.getItem(DRAFT + id); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+  function readDraft(id) { var r = readRaw(id); return r && COMPTE ? r.doc || null : r; }
+  function readDraftBase(id) { var r = readRaw(id); return r && COMPTE ? r.base || null : null; }
   var warnedFull = false;
   function writeDraft() {
-    try { localStorage.setItem(DRAFT + doc.id, JSON.stringify(doc)); return true; }
+    try { localStorage.setItem(DRAFT + doc.id, JSON.stringify(COMPTE ? { doc: doc, base: baseEdit } : doc)); return true; }
     catch (e) {
       if (!warnedFull) { warnedFull = true; toast("Mémoire du navigateur pleine : trop de photos importées. Utilisez plutôt des adresses de photos (dossier photos/)."); }
       return false;
@@ -153,6 +165,7 @@
     b.innerHTML = I(t[0], "ico") + "<span>" + esc(t[1]) + '</span><span class="count" data-count="' + b.dataset.tab + '"></span>';
     b.addEventListener("click", function () { showTab(b.dataset.tab); });
   });
+  function setTabLabel(k, label) { var s = document.querySelector("#tab-" + k + " span"); if (s) s.textContent = label; }
   tabsEl.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     var keys = Object.keys(TABS), i = keys.indexOf(tab);
@@ -165,7 +178,7 @@
     document.querySelectorAll("[data-panel]").forEach(function (p) { p.hidden = p.dataset.panel !== t; });
     if (t === "qr") renderQr();
     if (t === "arrivee") renderArrLink();
-    if (t === "sauvegarde") renderExport();
+    if (t === "sauvegarde") { renderExport(); renderCompteTab(); }
     sendPreview();
     if (window.innerWidth <= 760) window.scrollTo({ top: 0 });
   }
@@ -523,15 +536,18 @@
       if (src) { if (t.getAttribute("src") !== src) t.src = src; } else t.removeAttribute("src");
     });
   }
-  function readPhoto(file, cb) {
+  /* Réduit la photo à 1600 px. Démo : image intégrée (data:). Connecté : fichier JPG envoyé dans la base. */
+  function readPhoto(file, cb, asBlob) {
     var r = new FileReader();
     r.onload = function () {
       var img = new Image();
       img.onload = function () {
         var max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
         var c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-        cb(c.toDataURL("image/jpeg", 0.8));
+        var g = c.getContext("2d"); g.fillStyle = "#ffffff"; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(img, 0, 0, c.width, c.height);
+        if (asBlob) c.toBlob(function (b) { cb(b); }, "image/jpeg", 0.82);
+        else cb(c.toDataURL("image/jpeg", 0.8));
       };
       img.onerror = function () { cb(null); };
       img.src = r.result;
@@ -539,11 +555,25 @@
     r.onerror = function () { cb(null); };
     r.readAsDataURL(file);
   }
+  function importPhoto(file, cb) {
+    if (!COMPTE) { readPhoto(file, cb); return; }
+    readPhoto(file, function (blob) {
+      if (!blob) { cb(null); return; }
+      var t = toast("Envoi de la photo…", 60000);
+      var id0 = doc.id;
+      K.envoyerPhoto(id0, blob, file.name).then(function (url) {
+        t.remove();
+        if (!doc || doc.id !== id0) { toast("Photo envoyée, mais vous avez changé de livret entre-temps : ajoutez-la à nouveau."); cb(false); return; }
+        cb(url);
+      }, function (er) { t.remove(); cloudError(er); cb(false); });
+    }, true);
+  }
   document.getElementById("panel").addEventListener("change", function (e) {
     var f = e.target;
     if (f.type !== "file" || !f.files || !f.files[0]) return;
-    readPhoto(f.files[0], function (url) {
+    importPhoto(f.files[0], function (url) {
       f.value = "";
+      if (url === false) return;
       if (!url) { toast("Ce fichier n'est pas une image lisible. Essayez un JPG ou un PNG."); return; }
       if (f.dataset.tpath) {
         setPath(doc, f.dataset.tpath, url);
@@ -582,17 +612,22 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pv.classList.contains("show")) pv.classList.remove("show"); });
 
   /* ---------- état / publication ---------- */
-  var statusEl = document.getElementById("status");
+  var statusEl = document.getElementById("status"), dirty = false;
   function setStatus(draft) {
-    statusEl.className = "status " + (draft ? "draft" : "ok");
-    statusEl.textContent = draft ? "Modifications non publiées" : "À jour";
+    dirty = !!draft;
+    var off = COMPTE && remote.existe && remote.actif === false;
+    var txt = draft ? "Modifications non publiées" : !COMPTE ? "À jour" : !remote.existe ? "Pas encore en ligne" : off ? "Hors ligne" : "En ligne";
+    statusEl.className = "status " + (draft || (COMPTE && !remote.existe) ? "draft" : off ? "off" : "ok");
+    statusEl.textContent = txt;
   }
   function changed() {
     writeDraft(); setStatus(true); sendPreview();
     if (tab === "qr") renderQr();
     if (tab === "arrivee") renderArrLink();
   }
-  document.getElementById("publish").addEventListener("click", function () {
+  var pubBtn = document.getElementById("publish");
+  pubBtn.addEventListener("click", function () {
+    if (COMPTE) { publierCompte(false); return; }
     var saved = S.save(cleaned());
     if (!saved) { toast("Publication impossible : le stockage de ce navigateur est bloqué."); return; }
     doc.majLe = saved.majLe;
@@ -600,23 +635,161 @@
     toast("Publié. Le livret affiche cette version sur cet appareil.");
   });
 
+  /* ---------- mode connecté : publication dans la base ---------- */
+  /* « 2026-10-24T20:56:01.123456+00:00 » : on garde 3 décimales (Safari n'aime pas les microsecondes) */
+  function toDate(iso) { return new Date(String(iso || "").replace(/(\.\d{3})\d+/, "$1")); }
+  function quand(iso) {
+    var d = toDate(iso); if (isNaN(d)) return "";
+    return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) + " à " +
+      d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }).replace(":", " h ");
+  }
+  function sameTime(a, b) { return a === b || Math.abs(toDate(a) - toDate(b)) < 1; }
+  function setHash() { try { history.replaceState(null, "", location.pathname + location.search + "#" + doc.id); } catch (e) {} }
+  function toLogin() {
+    location.replace("espace.html?retour=" + encodeURIComponent("console.html?compte" + (doc ? "#" + doc.id : location.hash || "")));
+  }
+  function cloudError(er) {
+    if (er && er.code === "session") { toast(er.message + " Vos modifications restent gardées sur cet appareil.", 4000); setTimeout(toLogin, 1800); return; }
+    toast((er && er.message) || "Une erreur est survenue. Réessayez.", 5000);
+  }
+  function updateAcct(id, patch) {
+    if (!acct) return;
+    var l = acct.livrets.filter(function (x) { return x.id === id; })[0];
+    if (l) Object.keys(patch).forEach(function (k) { l[k] = patch[k]; });
+  }
+  function busyPub(on) { pubBtn.disabled = on; pubBtn.textContent = on ? "Publication…" : "Publier"; }
+  var conflictEl = document.getElementById("conflict");
+  function showConflict(when) {
+    document.getElementById("conflict-when").textContent = when ? " le " + quand(when) : "";
+    conflictEl.hidden = false; barH();
+  }
+  function hideConflict() { if (!conflictEl.hidden) { conflictEl.hidden = true; barH(); } }
+  document.getElementById("conflict-force").addEventListener("click", function () { hideConflict(); publierCompte(true); });
+  document.getElementById("conflict-load").addEventListener("click", function () { hideConflict(); dropDraft(doc.id); loadCompte(doc.id); toast("Version en ligne chargée"); });
+
+  /* Photos importées en mode démo (intégrées au livret) : envoyées dans la base avant publication */
+  function photoSlots(d) {
+    var out = [], isData = function (s) { return /^data:image\//.test(s || ""); };
+    if (d.theme && isData(d.theme.couverture)) out.push([d.theme, "couverture"]);
+    (d.rubriques || []).forEach(function (r) { (r.photos || []).forEach(function (p) { if (isData(p.src)) out.push([p, "src"]); }); });
+    ((d.arrivee || {}).blocs || []).forEach(function (b) { if (isData(b.photo)) out.push([b, "photo"]); });
+    (d.activites || []).forEach(function (a) { if (isData(a.photo)) out.push([a, "photo"]); });
+    return out;
+  }
+  function uploadInlinePhotos(id) {
+    var slots = photoSlots(doc);
+    if (!slots.length) return Promise.resolve();
+    var t = toast("Envoi de " + slots.length + " photo" + (slots.length > 1 ? "s" : "") + "…", 120000);
+    return slots.reduce(function (p, s) {
+      return p.then(function () {
+        return fetch(s[0][s[1]]).then(function (r) { return r.blob(); })
+          .then(function (b) { return K.envoyerPhoto(id, b, s[1]); })
+          .then(function (url) { s[0][s[1]] = url; writeDraft(); });
+      });
+    }, Promise.resolve()).then(function () { t.remove(); }, function (e) { t.remove(); throw e; });
+  }
+  function publierCompte(force) {
+    if (!doc || pubBtn.disabled) return;
+    if (!remote.existe) { if (acct && acct.admin) openCreate(); return; }
+    var id = doc.id;
+    busyPub(true);
+    uploadInlinePhotos(id).then(function () {
+      return K.publier(id, cleaned(), force ? null : baseEdit);
+    }).then(function (r) {
+      busyPub(false);
+      if (!doc || doc.id !== id) return;
+      remote.base = baseEdit = r.publieLe;
+      dropDraft(id); setStatus(false); hideConflict();
+      updateAcct(id, { nom: doc.nom, ville: doc.ville, publieLe: r.publieLe });
+      refreshPick();
+      if (tab === "sauvegarde") renderCompteTab();
+      toast("Publié : vos voyageurs voient cette version.", 3200);
+    }, function (er) {
+      busyPub(false);
+      if (er.code === "conflit") { showConflict(er.raw && er.raw.details); return; }
+      cloudError(er);
+    });
+  }
+
+  /* Administrateur : première mise en ligne (choix de l'adresse définitive) */
+  var dlg = document.getElementById("dlg-creer"), cId = document.getElementById("c-id"), cMsg = document.getElementById("c-msg");
+  function idFrom(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+/, "").slice(0, 60); }
+  function openCreate() {
+    cId.value = /^nouveau-livret-/.test(doc.id) ? slug(doc.nom) : doc.id;
+    var u = window.cdhLivretUrl("zzidzz"), pre = u.slice(0, u.indexOf("zzidzz")).replace(/^https?:\/\//, "");
+    document.getElementById("c-prefix").textContent = pre.length > 28 ? "…" + pre.slice(pre.lastIndexOf("/", pre.length - 2)) : pre;
+    document.getElementById("c-prefix").title = u.replace("zzidzz", "…");
+    cMsg.hidden = true;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    cId.focus(); cId.select();
+  }
+  cId.addEventListener("input", function () { var v = idFrom(cId.value); if (v !== cId.value) cId.value = v; });
+  document.getElementById("c-cancel").addEventListener("click", function () { dlg.close(); });
+  document.getElementById("f-creer").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var id = idFrom(cId.value).replace(/-+$/, ""), go = document.getElementById("c-go");
+    cId.value = id;
+    if (!/^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$/.test(id)) { cMsg.hidden = false; cMsg.textContent = K.messages.identifiant_invalide; cId.focus(); return; }
+    go.disabled = true; go.textContent = "Mise en ligne…";
+    var oldId = doc.id;
+    uploadInlinePhotos(oldId).then(function () {
+      var c = cleaned(); c.id = id;
+      return K.creer(id, c);
+    }).then(function (r) {
+      go.disabled = false; go.textContent = "Mettre en ligne";
+      dropDraft(oldId);
+      doc.id = id;
+      remote = { existe: true, base: r.publieLe, actif: true, acces: [] }; baseEdit = r.publieLe;
+      acct.livrets.push({ id: id, nom: doc.nom, ville: doc.ville, actif: true, publieLe: r.publieLe, vues30: 0 });
+      acct.livrets.sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+      dlg.close();
+      afterLoad(false); setHash();
+      try { localStorage.setItem("cdh:console:dernier", id); } catch (e2) {}
+      toast("« " + doc.nom + " » est en ligne. Donnez l'accès à l'hôte dans l'onglet « Accès et versions ».", 5000);
+    }, function (er) {
+      go.disabled = false; go.textContent = "Mettre en ligne";
+      if (er.code === "session") { dlg.close(); cloudError(er); return; }
+      cMsg.hidden = false; cMsg.textContent = er.message;
+    });
+  });
+
   /* ---------- choix du livret ---------- */
   var pick = document.getElementById("pick");
+  function opt(v, label, sel) { return '<option value="' + esc(v) + '"' + (sel ? " selected" : "") + ">" + esc(label || v) + "</option>"; }
   function refreshPick() {
-    var seen = {}, opts = [];
-    S.list().forEach(function (l) { seen[l.id] = 1; opts.push([l.id, l.nom]); });
-    draftIds().forEach(function (id) { if (!seen[id]) { var d = readDraft(id); opts.push([id, (d && d.nom) || id]); } });
+    if (COMPTE) {
+      var inDb = {}, h = "", cur = doc ? doc.id : "";
+      (acct ? acct.livrets : []).forEach(function (l) { inDb[l.id] = 1; h += opt(l.id, remote.existe && cur === l.id ? doc.nom : l.nom, remote.existe && cur === l.id); });
+      if (acct && acct.admin) {
+        var loc = "", seen = {}, local = !remote.existe;
+        S.list().forEach(function (l) { if (inDb[l.id]) return; seen[l.id] = 1; loc += opt("local:" + l.id, local && cur === l.id ? doc.nom : l.nom, local && cur === l.id); });
+        draftIds().forEach(function (id) { if (inDb[id] || seen[id]) return; seen[id] = 1; var d = readDraft(id); loc += opt("local:" + id, local && cur === id ? doc.nom : (d && d.nom) || id, local && cur === id); });
+        if (doc && local && !seen[cur]) loc += opt("local:" + cur, doc.nom, true);
+        if (loc) h += '<optgroup label="Pas encore en ligne">' + loc + "</optgroup>";
+        h += '<option value="__new">+ Créer un nouveau livret</option>';
+      }
+      pick.innerHTML = h;
+      return;
+    }
+    var seen2 = {}, opts = [];
+    S.list().forEach(function (l) { seen2[l.id] = 1; opts.push([l.id, l.nom]); });
+    draftIds().forEach(function (id) { if (!seen2[id]) { var d = readDraft(id); opts.push([id, (d && d.nom) || id]); } });
     opts.forEach(function (o) { if (doc && o[0] === doc.id) o[1] = doc.nom; });
-    pick.innerHTML = opts.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (doc && o[0] === doc.id ? " selected" : "") + ">" + esc(o[1] || o[0]) + "</option>"; }).join("") +
+    pick.innerHTML = opts.map(function (o) { return opt(o[0], o[1] || o[0], doc && o[0] === doc.id); }).join("") +
       '<option value="__new">+ Créer un nouveau livret</option>';
   }
   pick.addEventListener("change", function () {
     if (pick.value === "__new") {
+      if (COMPTE) { remote = { existe: false }; baseEdit = null; hideConflict(); }
       doc = blank(); writeDraft();
       openItem = {};
       if (edLang === "en") { edLang = "fr"; applyLang(); }
       afterLoad(true); showTab("general"); document.getElementById("g-nom").focus(); document.getElementById("g-nom").select();
       toast("Nouveau livret créé. Donnez-lui un nom.");
+      return;
+    }
+    if (COMPTE) {
+      if (pick.value.indexOf("local:") === 0) loadLocal(pick.value.slice(6)); else loadCompte(pick.value);
       return;
     }
     load(pick.value);
@@ -628,16 +801,52 @@
     afterLoad(!!draft);
     try { localStorage.setItem("cdh:console:dernier", doc.id); } catch (e) {}
   }
+  /* Administrateur : livret de cet appareil (exemple, essai) pas encore dans la base */
+  function loadLocal(id) {
+    remote = { existe: false }; baseEdit = null; hideConflict();
+    var dr = readDraft(id);
+    doc = normalize(dr || S.get(id) || blank());
+    openItem = {};
+    afterLoad(!!dr); setHash();
+  }
+  var loadSeq = 0;
+  function loadCompte(id) {
+    var seq = ++loadSeq;
+    document.body.classList.add("loading");
+    return K.lire(id).then(function (r) {
+      if (seq !== loadSeq) return;
+      document.body.classList.remove("loading");
+      remote = { existe: true, base: r.publieLe, actif: r.actif, acces: r.acces || [] };
+      var dr = readDraft(id), db = readDraftBase(id);
+      baseEdit = dr && db ? db : r.publieLe;
+      doc = normalize(dr || r.contenu);
+      doc.id = id;
+      openItem = {}; hideConflict();
+      afterLoad(!!dr); setHash();
+      if (dr && db && !sameTime(db, r.publieLe)) showConflict(r.publieLe);
+      try { localStorage.setItem("cdh:console:dernier", id); } catch (e) {}
+    }, function (er) {
+      if (seq !== loadSeq) return;
+      document.body.classList.remove("loading");
+      if (doc) refreshPick();
+      cloudError(er);
+    });
+  }
   function afterLoad(isDraft) {
     normalize(doc);
     fillForm(); renderLists(); refreshPick(); setStatus(isDraft);
     document.getElementById("open-livret").href = "livret.html#" + doc.id;
     if (tab === "qr") renderQr();
     if (tab === "arrivee") renderArrLink();
-    if (tab === "sauvegarde") renderExport();
-    var pub = S.published(doc.id);
-    document.getElementById("reset").textContent = pub ? "Restaurer la version d'origine" : "Supprimer ce livret";
-    document.getElementById("reset-hint").textContent = pub ? "Supprime vos modifications sur cet appareil et recharge la version d'origine." : "Ce livret n'existe que sur cet appareil. Exportez-le avant de le supprimer si vous voulez le garder.";
+    if (tab === "sauvegarde") { renderExport(); renderCompteTab(); }
+    if (COMPTE) {
+      document.getElementById("reset").textContent = remote.existe ? "Abandonner mes modifications" : "Supprimer ce brouillon";
+      document.getElementById("reset-hint").textContent = remote.existe ? "Efface les modifications non publiées de cet appareil et recharge la version en ligne." : "Ce livret n'est pas encore en ligne : il n'existe que sur cet appareil.";
+    } else {
+      var pub = S.published(doc.id);
+      document.getElementById("reset").textContent = pub ? "Restaurer la version d'origine" : "Supprimer ce livret";
+      document.getElementById("reset-hint").textContent = pub ? "Supprime vos modifications sur cet appareil et recharge la version d'origine." : "Ce livret n'existe que sur cet appareil. Exportez-le avant de le supprimer si vous voulez le garder.";
+    }
     if (!frame.getAttribute("src")) frame.src = "livret.html#" + doc.id;
     sendPreview();
   }
@@ -767,35 +976,188 @@
       if (!d.nom) throw new Error("nom");
       if (!d.id) d.id = slug(d.nom);
       d.id = slug(d.id);
+      if (COMPTE && !(remote.existe && doc && doc.id === d.id)) { remote = { existe: false }; baseEdit = null; hideConflict(); }
       doc = normalize(d); writeDraft(); openItem = {}; afterLoad(true);
       msg.className = "msg ok"; msg.textContent = "« " + d.nom + " » importé. Vérifiez puis publiez.";
     } catch (e) {
       msg.className = "msg err"; msg.textContent = "Ce texte n'est pas un livret exporté. Copiez tout le contenu de la zone Exporter, accolades comprises.";
     }
   });
+  function arm(btn, label, ms) {
+    if (btn.classList.contains("armed")) { btn.classList.remove("armed"); if (btn.dataset.old) btn.textContent = btn.dataset.old; return true; }
+    btn.classList.add("armed"); btn.dataset.old = btn.textContent; btn.textContent = label || "Cliquez encore pour confirmer";
+    setTimeout(function () { if (btn.isConnected && btn.classList.contains("armed")) { btn.classList.remove("armed"); btn.textContent = btn.dataset.old; } }, ms || 3500);
+    return false;
+  }
   var resetBtn = document.getElementById("reset");
   resetBtn.addEventListener("click", function () {
-    if (!resetBtn.classList.contains("armed")) {
-      resetBtn.classList.add("armed"); var old = resetBtn.textContent; resetBtn.textContent = "Cliquez encore pour confirmer";
-      setTimeout(function () { if (resetBtn.classList.contains("armed")) { resetBtn.classList.remove("armed"); resetBtn.textContent = old; } }, 3500);
+    if (!arm(resetBtn)) return;
+    var id = doc.id;
+    if (COMPTE) {
+      dropDraft(id);
+      if (remote.existe) { loadCompte(id); toast("Modifications abandonnées"); return; }
+      var first = acct && acct.livrets[0];
+      if (first) loadCompte(first.id); else loadLocal((S.list()[0] || {}).id || "nid-des-tanneurs");
+      toast("Brouillon supprimé");
       return;
     }
-    resetBtn.classList.remove("armed");
-    var id = doc.id, pub = S.published(id);
+    var pub = S.published(id);
     dropDraft(id); S.remove(id);
     if (pub) { load(id); toast("Version d'origine restaurée"); }
-    else { var first = S.list()[0]; load(first ? first.id : "nid-des-tanneurs"); toast("Livret supprimé de cet appareil"); }
+    else { var f = S.list()[0]; load(f ? f.id : "nid-des-tanneurs"); toast("Livret supprimé de cet appareil"); }
     if (tab === "sauvegarde") renderExport();
   });
 
-  /* ---------- démarrage ---------- */
-  var startId = decodeURIComponent((location.hash || "").replace("#", ""));
-  if (!startId) { try { startId = localStorage.getItem("cdh:console:dernier") || ""; } catch (e) {} }
-  if (!startId || (!S.get(startId) && !readDraft(startId))) startId = "nid-des-tanneurs";
-  applyLang();
-  load(startId);
+  /* ---------- mode connecté : versions, accès, mise hors ligne ---------- */
+  function renderCompteTab() {
+    if (!COMPTE || !doc) return;
+    var admin = !!(acct && acct.admin);
+    document.getElementById("versions-grp").hidden = !remote.existe;
+    document.getElementById("acces-grp").hidden = !(admin && remote.existe);
+    document.getElementById("local-hint").hidden = remote.existe;
+    if (remote.existe) loadVersions();
+    if (admin && remote.existe) renderAcces();
+  }
+  function loadVersions() {
+    var box = document.getElementById("versions"), id = doc.id;
+    box.innerHTML = '<p class="hint">Chargement des versions…</p>';
+    K.versions(id).then(function (vs) {
+      if (!doc || doc.id !== id) return;
+      vs = Array.isArray(vs) ? vs : [];
+      box.innerHTML = vs.length ? '<ul class="vlist">' + vs.map(function (v) {
+        return '<li><div><b>' + esc(quand(v.publieLe)) + "</b><small>" + esc([v.nom, v.par ? "par " + v.par : ""].filter(Boolean).join(" · ")) + "</small></div>" +
+          '<button type="button" class="btn tiny" data-version="' + (+v.id) + '" data-when="' + esc(v.publieLe) + '">Reprendre</button></li>';
+      }).join("") + "</ul>" : '<p class="hint">Aucune version précédente pour l\'instant : elles apparaîtront ici après chaque publication.</p>';
+    }, function (er) {
+      if (er.code === "session") { cloudError(er); return; }
+      box.innerHTML = '<p class="msg err">' + esc(er.message) + "</p>";
+    });
+  }
+  document.getElementById("versions").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-version]"); if (!b) return;
+    if (dirty && !arm(b, "Remplacer mes modifications ?")) return;
+    var id = doc.id, when = b.dataset.when;
+    b.disabled = true;
+    K.version(+b.dataset.version).then(function (c) {
+      if (!doc || doc.id !== id) return;
+      doc = normalize(c); doc.id = id;
+      writeDraft(); openItem = {}; afterLoad(true);
+      toast("Version du " + quand(when) + " chargée. Vérifiez-la, puis « Publier » pour la remettre en ligne.", 5000);
+    }, function (er) { b.disabled = false; cloudError(er); });
+  });
 
+  function espaceUrl() {
+    var dom = (C.domaine || "").replace(/\/$/, "");
+    return dom ? dom + "/espace.html" : new URL("espace.html", location.href).href.split("?")[0].split("#")[0];
+  }
+  function renderAcces() {
+    var a = remote.acces || [];
+    document.getElementById("acces-list").innerHTML = a.length ? a.map(function (m) {
+      return '<li><span>' + esc(m) + '</span><button type="button" class="btn tiny danger" data-retirer="' + esc(m) + '">Retirer</button></li>';
+    }).join("") : '<li class="hint">Aucun hôte n\'a encore accès à ce livret.</li>';
+    document.getElementById("actif").checked = remote.actif !== false;
+    var mail = a[0] || "e-mail du compte";
+    document.getElementById("invite").value = "Bonjour,\n\nVotre espace pour modifier votre livret d'accueil « " + (doc.nom || "") + " » est prêt :\n" + espaceUrl() +
+      "\n\nIdentifiant : " + mail + "\nMot de passe : celui que je vous transmets à part (vous pourrez le changer dans « Mon compte »).\n\nÀ chaque modification, cliquez sur « Publier » : vos voyageurs voient aussitôt la nouvelle version, le QR code ne change pas.\n\n" + (C.marque || "");
+  }
+  bindCopy("copy-invite", "invite", "Message copié");
+  document.getElementById("acces-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var inp = document.getElementById("acces-mail"), out = document.getElementById("acces-msg"), email = inp.value.trim(), id = doc.id;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { out.hidden = false; out.className = "msg err"; out.textContent = "Indiquez l'e-mail du compte de l'hôte."; return; }
+    K.accesAjouter(id, email).then(function (list) {
+      if (doc.id !== id) return;
+      remote.acces = list; inp.value = ""; renderAcces();
+      out.hidden = false; out.className = "msg ok"; out.textContent = "Accès donné. Envoyez-lui le message ci-dessous, avec son mot de passe à part.";
+    }, function (er) {
+      if (er.code === "session") { cloudError(er); return; }
+      out.hidden = false; out.className = "msg err"; out.textContent = er.message;
+    });
+  });
+  document.getElementById("acces-list").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-retirer]"); if (!b || !arm(b, "Confirmer")) return;
+    var id = doc.id;
+    K.accesRetirer(id, b.dataset.retirer).then(function (list) { if (doc.id !== id) return; remote.acces = list; renderAcces(); toast("Accès retiré"); }, cloudError);
+  });
+  document.getElementById("actif").addEventListener("change", function (e) {
+    var on = e.target.checked, id = doc.id;
+    K.activer(id, on).then(function (r) {
+      remote.actif = r.actif; updateAcct(id, { actif: r.actif }); setStatus(dirty);
+      toast(r.actif ? "Livret en ligne" : "Livret hors ligne : les voyageurs voient « Livret introuvable ».", 4000);
+    }, function (er) { e.target.checked = !on; cloudError(er); });
+  });
+
+  /* ---------- démarrage ---------- */
   // hauteur de la barre (onglets collants sur mobile)
   function barH() { document.documentElement.style.setProperty("--bar-h", document.getElementById("cbar").offsetHeight + "px"); }
+
+  function compteMessage(html, retry) {
+    document.body.classList.remove("loading");
+    var box = document.getElementById("compte-msg");
+    box.querySelector("p").innerHTML = html;
+    box.querySelector("[data-retry]").hidden = !retry;
+    box.hidden = false;
+    document.querySelector(".shell").hidden = true;
+    document.getElementById("show-preview").hidden = true;
+  }
+  document.querySelector("#compte-msg [data-retry]").addEventListener("click", function () { location.reload(); });
+
+  function bootCompte() {
+    document.body.classList.add("compte", "loading");
+    applyLang();
+    if (!K || !K.actif) { location.replace("espace.html"); return; }
+    var want = decodeURIComponent((location.hash || "").replace("#", ""));
+    K.session().then(function (s) {
+      if (!s) { toLogin(); return; }
+      return K.moi().then(function (m) {
+        acct = m; acct.livrets = acct.livrets || [];
+        document.body.classList.toggle("is-admin", !!m.admin);
+        setTabLabel("sauvegarde", m.admin ? "Accès et versions" : "Versions");
+        var note = document.getElementById("demo-note");
+        note.innerHTML = "Connecté : <b>" + esc(m.email || K.email()) + "</b> · Rien ne change pour vos voyageurs avant « Publier ». " +
+          '<a href="espace.html">Mes livrets</a> · <button type="button" class="linkish" id="logout">Se déconnecter</button>';
+        document.getElementById("logout").addEventListener("click", function () { K.deconnexion().then(function () { location.replace("espace.html"); }); });
+        barH();
+        var ids = acct.livrets.map(function (l) { return l.id; }), last = "";
+        try { last = localStorage.getItem("cdh:console:dernier") || ""; } catch (e) {}
+        var id = ids.indexOf(want) > -1 ? want : ids.indexOf(last) > -1 ? last : ids[0];
+        if (want && ids.indexOf(want) < 0 && !m.admin) toast("Ce compte n'a pas accès à ce livret.", 4000);
+        if (id) return loadCompte(id);
+        if (m.admin) {
+          document.body.classList.remove("loading");
+          var w = want && (S.get(want) || readDraft(want)) ? want : ((S.list()[0] || {}).id || "nid-des-tanneurs");
+          loadLocal(w);
+          return;
+        }
+        compteMessage("<b>Aucun livret n'est encore relié à votre compte.</b> Écrivez-nous : nous l'associons à votre compte. <a href=\"espace.html\">Retour à l'espace client</a>", false);
+      });
+    }).catch(function (er) {
+      if (er && er.code === "session") { toLogin(); return; }
+      compteMessage(esc((er && er.message) || "Une erreur est survenue.") + ' <a href="espace.html">Retour à l\'espace client</a>', true);
+    });
+  }
+
+  if (COMPTE) bootCompte();
+  else {
+    var startId = decodeURIComponent((location.hash || "").replace("#", ""));
+    if (!startId) { try { startId = localStorage.getItem("cdh:console:dernier") || ""; } catch (e) {} }
+    if (!startId || (!S.get(startId) && !readDraft(startId))) startId = "nid-des-tanneurs";
+    applyLang();
+    load(startId);
+    if (K && K.actif) document.getElementById("demo-note").insertAdjacentHTML("beforeend", ' Vous êtes client&nbsp;? <a href="espace.html">Espace client</a>');
+  }
   barH(); window.addEventListener("resize", barH);
+
+  /* Adresse modifiée à la main (console.html?compte#autre-livret) */
+  window.addEventListener("hashchange", function () {
+    var id = decodeURIComponent((location.hash || "").replace("#", ""));
+    if (!id || (doc && id === doc.id)) return;
+    if (!COMPTE) { if (S.get(id) || readDraft(id)) load(id); return; }
+    if (!acct) return;
+    var ids = acct.livrets.map(function (l) { return l.id; });
+    if (ids.indexOf(id) > -1) { loadCompte(id); return; }
+    if (acct.admin && (S.get(id) || readDraft(id))) { loadLocal(id); return; }
+    toast("Ce compte n'a pas accès à ce livret.", 4000);
+    if (doc) setHash();
+  });
 })();

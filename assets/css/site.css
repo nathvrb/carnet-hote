@@ -445,6 +445,8 @@ h1, h2, h3 { text-wrap: balance; }
 .mock-btn.p { background: var(--fob); color: var(--on-fob); border-color: var(--fob); }
 .band.dark .btn.primary { background: var(--brass); border-color: var(--brass); color: #1B1406; }
 .band.dark .btn.primary:hover { background: var(--on-fob); border-color: var(--on-fob); color: #12302A; }
+.band.dark .btn.on-dark { border-color: color-mix(in oklab, var(--on-fob) 55%, transparent); color: var(--on-fob); }
+.band.dark .btn.on-dark:hover { background: var(--on-fob); border-color: var(--on-fob); color: #12302A; }
 .band.dark .note { font-size: 14px; color: color-mix(in oklab, var(--on-fob) 70%, transparent); margin: 0; }
 @media (max-width: 900px) { .console-sec .wrap { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .mock-body { grid-template-columns: 1fr; } .mock-side { display: none; } }

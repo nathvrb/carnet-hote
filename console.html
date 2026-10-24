@@ -27,8 +27,13 @@
     <button class="btn primary" type="button" id="publish">Publier</button>
   </div>
 </header>
-<p class="demo-note">Démonstration : vos modifications sont enregistrées dans ce navigateur uniquement. Les livrets d'exemple restent intacts pour les autres visiteurs.</p>
+<p class="demo-note" id="demo-note">Démonstration : vos modifications sont enregistrées dans ce navigateur uniquement. Les livrets d'exemple restent intacts pour les autres visiteurs.</p>
 <p class="en-note" id="en-note" hidden>Vous modifiez la version anglaise. Un champ vide reprend le texte français (affiché en gris). Les champs grisés sont communs aux deux langues.</p>
+<div class="conflict" id="conflict" role="alert" hidden>
+  <p><b>Ce livret a été publié depuis un autre appareil<span id="conflict-when"></span>.</b> Vos modifications en cours partent d'une version plus ancienne.</p>
+  <div class="row"><button class="btn tiny primary" type="button" id="conflict-force">Publier quand même</button><button class="btn tiny" type="button" id="conflict-load">Charger la version en ligne</button></div>
+</div>
+<div class="compte-msg" id="compte-msg" hidden><p></p><button class="btn" type="button" data-retry hidden>Réessayer</button></div>
 
 <div class="shell">
   <nav class="tabs" role="tablist" aria-label="Sections du livret" id="tabs">
@@ -229,16 +234,38 @@
       </div>
     </section>
 
-    <!-- SAUVEGARDE -->
+    <!-- SAUVEGARDE (démo) / VERSIONS ET ACCÈS (connecté) -->
     <section role="tabpanel" id="p-sauvegarde" aria-labelledby="tab-sauvegarde" data-panel="sauvegarde" hidden>
-      <div class="panel-head"><div><h2>Sauvegarde</h2><p>Exportez le livret pour le mettre en ligne, ou importez une sauvegarde.</p></div></div>
-      <div class="grp">
+      <div class="panel-head"><div><h2 class="demo-only">Sauvegarde</h2><h2 class="compte-only">Versions et accès</h2><p class="demo-only">Exportez le livret pour le mettre en ligne, ou importez une sauvegarde.</p><p class="compte-only">Chaque publication garde la version précédente : vous pouvez revenir en arrière à tout moment.</p></div></div>
+      <p class="msg compte-only" id="local-hint" hidden>Ce livret n'est pas encore en ligne. « Publier » le met dans la base : vous choisirez alors son adresse définitive (celle du QR code).</p>
+      <div class="grp compte-only" id="versions-grp" hidden>
+        <h3>Versions précédentes</h3>
+        <p class="hint">« Reprendre » charge l'ancienne version dans la console, sans rien changer en ligne. Vérifiez-la, puis cliquez sur « Publier ».</p>
+        <div id="versions"></div>
+      </div>
+      <div class="grp compte-only admin-only" id="acces-grp" hidden>
+        <h3>Accès de l'hôte</h3>
+        <p class="hint">Créez d'abord le compte de l'hôte dans Supabase (Authentication → Users → Add user, « Auto Confirm User » coché), puis donnez-lui l'accès ici.</p>
+        <ul class="alist" id="acces-list"></ul>
+        <form class="row" id="acces-form" novalidate>
+          <label class="fld grow" for="acces-mail"><span class="sr">E-mail du compte de l'hôte</span><input id="acces-mail" type="email" placeholder="E-mail du compte de l'hôte" autocomplete="off"></label>
+          <button class="btn" type="submit">Donner l'accès</button>
+        </form>
+        <p class="msg" id="acces-msg" role="status" hidden></p>
+        <label class="fld" for="invite"><span>Message à lui envoyer</span><textarea id="invite" class="tall" readonly></textarea></label>
+        <div class="row"><button class="btn" type="button" id="copy-invite">Copier le message</button></div>
+        <h3>Mise en ligne</h3>
+        <label class="switch" for="actif"><input type="checkbox" id="actif"><span class="sw"></span>Livret en ligne</label>
+        <p class="hint">Désactivé, le QR code affiche « Livret introuvable » (fin d'abonnement par exemple). Rien n'est supprimé : réactivez quand vous voulez.</p>
+      </div>
+      <div class="grp admin-only">
         <h3>Exporter</h3>
-        <p class="hint">À coller dans le fichier data/livrets.js du site pour publier le livret pour tous. La version anglaise est incluse.</p>
+        <p class="hint demo-only">À coller dans le fichier data/livrets.js du site pour publier le livret pour tous. La version anglaise est incluse.</p>
+        <p class="hint compte-only">Copie de sauvegarde du livret tel qu'il est dans la console (texte à garder de côté ou à réimporter).</p>
         <textarea class="code" id="export" readonly aria-label="Livret exporté"></textarea>
         <div class="row"><button class="btn" type="button" id="copy-export">Copier</button></div>
       </div>
-      <div class="grp">
+      <div class="grp admin-only">
         <h3>Importer</h3>
         <textarea class="code" id="import" aria-label="Livret à importer" placeholder="Collez ici un livret exporté"></textarea>
         <div class="row"><button class="btn" type="button" id="do-import">Importer dans la console</button></div>
@@ -258,12 +285,26 @@
   </aside>
 </div>
 
+
+<dialog class="dlg" id="dlg-creer" aria-labelledby="c-title">
+  <form id="f-creer" class="stack" novalidate>
+    <h2 id="c-title">Mettre ce livret en ligne</h2>
+    <p class="hint">Choisissez son adresse définitive. Elle est dans le QR code : ne la changez plus une fois les supports imprimés.</p>
+    <label class="fld" for="c-id"><span>Adresse du livret</span>
+      <span class="idfield"><code id="c-prefix"></code><input id="c-id" maxlength="60" autocomplete="off" spellcheck="false" inputmode="url"></span>
+    </label>
+    <p class="msg err" id="c-msg" role="alert" hidden></p>
+    <div class="row"><button class="btn primary" type="submit" id="c-go">Mettre en ligne</button><button class="btn" type="button" id="c-cancel">Annuler</button></div>
+  </form>
+</dialog>
+
 <button class="fab" type="button" id="show-preview"><svg class="ico-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Aperçu</button>
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/icons.js"></script>
 <script src="data/livrets.js"></script>
 <script src="assets/js/store.js"></script>
+<script src="assets/js/cloud.js"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
 <script src="assets/js/qr.js"></script>
 <script src="assets/js/console.js"></script>

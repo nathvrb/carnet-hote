@@ -67,6 +67,7 @@
       horsLigne: "Hors connexion : vous consultez la version enregistrée du livret.",
       meteo: "Météo", meteoSource: "Données : MET Norway",
       introuvable: "Livret introuvable", introuvableTxt: "Le lien est peut-être incomplet. Scannez à nouveau le QR code ou contactez votre hôte.", retour: "Retour à l'accueil",
+      chargement: "Ouverture du livret…", horsLigne: "Pas de connexion", horsLigneTxt: "Ce livret s'affichera dès que le téléphone sera connecté à internet (Wi-Fi ou données mobiles).", reessayer: "Réessayer",
       locale: "fr-FR"
     },
     en: {
@@ -101,6 +102,7 @@
       horsLigne: "Offline: you are viewing the saved version of this welcome book.",
       meteo: "Weather", meteoSource: "Data: MET Norway",
       introuvable: "Welcome book not found", introuvableTxt: "The link may be incomplete. Scan the QR code again or contact your host.", retour: "Back to home page",
+      chargement: "Opening the welcome book…", horsLigne: "No connection", horsLigneTxt: "This welcome book will open as soon as your phone is online (Wi-Fi or mobile data).", reessayer: "Try again",
       locale: "en-GB"
     }
   };
@@ -202,7 +204,7 @@
   /* Bloc photo : l'illustration reste dessous tant que la photo n'est pas chargée */
   function photo(src, alt, icon, cls) {
     return '<div class="ph' + (cls ? " " + cls : "") + '"><span class="ph-fb" aria-hidden="true">' + I(icon, "ph-mark") + '<span class="ph-badge">' + I(icon) + "</span></span>" +
-      (src ? '<img data-ph src="' + esc(src) + '" alt="' + esc(alt || "") + '" loading="lazy" decoding="async">' : "") + "</div>";
+      (safeImg(src) ? '<img data-ph src="' + esc(safeImg(src)) + '" alt="' + esc(alt || "") + '" loading="lazy" decoding="async">' : "") + "</div>";
   }
   function paras(txt) { return txt ? String(txt).split(/\n\s*\n/).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") : ""; }
   function lines(arr, tag) {
@@ -222,13 +224,28 @@
   function contactLink(d, text) {
     var h = d.hote || {}, canal = h.canal || (h.whatsapp ? "whatsapp" : h.tel ? "sms" : "email");
     var tel = h.tel ? window.cdhTel(h.tel) : "";
-    if (canal === "whatsapp" && h.whatsapp) return "https://wa.me/" + h.whatsapp + "?text=" + encodeURIComponent(text);
+    if (canal === "whatsapp" && h.whatsapp) return "https://wa.me/" + digits(h.whatsapp) + "?text=" + encodeURIComponent(text);
     if (canal === "sms" && tel) return "sms:" + tel + "?&body=" + encodeURIComponent(text);
     if (h.email) return "mailto:" + h.email + "?subject=" + encodeURIComponent(d.nom || "") + "&body=" + encodeURIComponent(text);
-    if (h.whatsapp) return "https://wa.me/" + h.whatsapp + "?text=" + encodeURIComponent(text);
+    if (h.whatsapp) return "https://wa.me/" + digits(h.whatsapp) + "?text=" + encodeURIComponent(text);
     return tel ? "sms:" + tel + "?&body=" + encodeURIComponent(text) : "";
   }
   function external(href) { return /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : ""; }
+  /* Les livrets peuvent être rédigés par les hôtes : seuls les liens web, e-mail, téléphone
+     et les chemins du site sont acceptés (jamais « javascript: » ni « data: »). */
+  function safeUrl(u) {
+    var raw = String(u == null ? "" : u).trim(), s = raw.replace(/[\u0000-\u0020]+/g, "");
+    if (!s) return "";
+    if (/^(https?:|mailto:|tel:|sms:)/i.test(s)) return raw;
+    return /^[a-z][a-z0-9+.\-]*:/i.test(s) ? "" : raw;
+  }
+  function safeImg(u) {
+    var raw = String(u == null ? "" : u).trim();
+    if (/^data:image\/(jpeg|png|webp|gif);/i.test(raw)) return raw;
+    var v = safeUrl(raw);
+    return /^(mailto|tel|sms):/i.test(v) ? "" : v;
+  }
+  function digits(x) { return String(x == null ? "" : x).replace(/\D/g, ""); }
 
   /* ---------- rendu ---------- */
   /* Menu des langues : petit bouton « FR ▾ » qui ouvre la liste */
@@ -252,7 +269,7 @@
     var root = document.documentElement;
     var theme = d.theme || {};
     root.lang = lang;
-    root.style.setProperty("--accent", theme.accent || "#1D5C7A");
+    root.style.setProperty("--accent", /^#[0-9a-f]{3,8}$/i.test(theme.accent || "") ? theme.accent : "#1D5C7A");
     root.style.setProperty("--display", FONTS[theme.police] || FONTS.Gloock);
     document.title = (d.nom || "Livret d'accueil") + (lang === "en" ? " · Welcome book" : " · Livret d'accueil");
 
@@ -271,7 +288,7 @@
 
     /* Couverture + choix de la langue */
     h.push('<header class="cover' + (hasEn(d0) ? " has-lang" : "") + '">' +
-      (theme.couverture ? '<img class="cover-img" data-ph data-cover src="' + esc(theme.couverture) + '" alt="">' : "") +
+      (safeImg(theme.couverture) ? '<img class="cover-img" data-ph data-cover src="' + esc(safeImg(theme.couverture)) + '" alt="">' : "") +
       '<div class="cover-art">' + motif(theme.motif, coverW()) + "</div>" +
       (hasEn(d0) ? langMenu(lang) : "") +
       '<div class="cover-text"><span class="cover-kicker">' + I("pin", "ico-s") + esc(d.ville || "") + "</span>" +
@@ -289,7 +306,7 @@
     var titreAcc = d.titreAccueil || (d.type === "hotel" ? t.bienvenue.hotel : t.bienvenue.defaut);
     h.push('<section class="postcard" aria-label="' + esc(titreAcc) + '">' +
       '<div class="pc-stamp" aria-hidden="true"><div class="pc-stamp-in">' + motif(theme.motif) +
-      (theme.couverture ? '<img data-ph src="' + esc(theme.couverture) + '" alt="">' : "") + "</div></div>" +
+      (safeImg(theme.couverture) ? '<img data-ph src="' + esc(safeImg(theme.couverture)) + '" alt="">' : "") + "</div></div>" +
       '<svg class="pc-mark" viewBox="0 0 180 76" aria-hidden="true">' +
       '<defs><path id="' + arcId + '" d="M38 66 a28 28 0 1 1 0.01 0"/></defs>' +
       '<circle cx="38" cy="38" r="35" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
@@ -358,7 +375,7 @@
       h.push('<details class="rub" data-q="' + esc(norm(txt)) + '" id="r-' + esc(r.id || i) + '"><summary><span class="rub-ico">' + I(r.icone) + '</span><span class="rub-t"><b>' + esc(r.titre) + "</b>" + (r.resume ? "<small>" + esc(r.resume) + "</small>" : "") + "</span>" +
         (photos.length ? '<span class="rub-cam">' + I("photo", "ico-s") + "</span>" : "<span></span>") + I("bas", "ico-s chev") + '</summary><div class="rub-body">' +
         (photos.length ? '<div class="gallery' + (photos.length === 1 ? " one" : "") + '">' + photos.map(function (p) {
-          return '<figure class="gph"><div class="ph"><img data-ph data-gal src="' + esc(p.src) + '" alt="' + esc(p.legende || r.titre) + '" decoding="async"></div>' + (p.legende ? "<figcaption>" + esc(p.legende) + "</figcaption>" : "") + "</figure>";
+          return '<figure class="gph"><div class="ph"><img data-ph data-gal src="' + esc(safeImg(p.src)) + '" alt="' + esc(p.legende || r.titre) + '" decoding="async"></div>' + (p.legende ? "<figcaption>" + esc(p.legende) + "</figcaption>" : "") + "</figure>";
         }).join("") + "</div>" : "") +
         paras(r.texte) + lines(r.etapes, "ol") + lines(r.liste, "ul") +
         (r.astuce ? '<div class="astuce">' + I("etoile", "ico-s") + "<span>" + esc(r.astuce) + "</span></div>" : "") +
@@ -424,7 +441,8 @@
     }
 
     /* Départ */
-    var avisBtn = d.avisLien ? '<a class="btn primary avis-btn" href="' + esc(d.avisLien === "demo" ? "#avis" : d.avisLien) + '"' + (d.avisLien === "demo" ? ' data-avis-demo="1"' : external(d.avisLien)) + ">" + I("etoile", "ico-s") + esc(t.avis) + "</a>" : "";
+    var avisLien = d.avisLien === "demo" ? "demo" : safeUrl(d.avisLien);
+    var avisBtn = avisLien ? '<a class="btn primary avis-btn" href="' + esc(avisLien === "demo" ? "#avis" : avisLien) + '"' + (avisLien === "demo" ? ' data-avis-demo="1"' : external(avisLien)) + ">" + I("etoile", "ico-s") + esc(t.avis) + "</a>" : "";
     if (d.depart.length) {
       h.push('<section class="section" id="s-depart" data-sec><div class="section-head"><h2>' + esc(t.departTitre) + "</h2><p>" + esc(t.departSub(hor.depart)) + "</p></div>" +
         '<ul class="checklist">' + d.depart.map(function (x, i) {
@@ -471,7 +489,7 @@
         (hote.reponse ? '<span class="contact-num">' + esc(hote.reponse) + "</span>" : "") +
         '<div class="contact-row">' +
         (tel ? '<a class="btn primary" href="tel:' + esc(tel) + '">' + I("telephone", "ico-s") + esc(t.appeler) + "</a>" : "") +
-        (hote.whatsapp ? '<a class="btn" href="https://wa.me/' + esc(hote.whatsapp) + '" target="_blank" rel="noopener">' + I("message", "ico-s") + "WhatsApp</a>" : "") +
+        (hote.whatsapp ? '<a class="btn" href="https://wa.me/' + esc(digits(hote.whatsapp)) + '" target="_blank" rel="noopener">' + I("message", "ico-s") + "WhatsApp</a>" : "") +
         (hote.email ? '<a class="btn" href="mailto:' + esc(hote.email) + '">' + I("mail", "ico-s") + esc(t.email) + "</a>" : "") +
         "</div>" +
         '<span class="contact-num">' + [hote.tel, hote.email].filter(Boolean).map(esc).join(" · ") + "</span></div>");
@@ -750,13 +768,15 @@
     if (APERCU || VITRINE || !("serviceWorker" in navigator)) return;
     if (!/^https:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
     var urls = [];
-    function add(src) { if (!src) return; try { var u = new URL(src, location.href); if (u.origin === location.origin) urls.push(u.href); } catch (e) {} }
+    var api = window.CDH_CLOUD && window.CDH_CLOUD.actif ? window.CDH_CLOUD.base : "";
+    var apiOrigin = ""; try { apiOrigin = api ? new URL(api).origin : ""; } catch (e) {}
+    function add(src) { if (!src) return; try { var u = new URL(src, location.href); if (u.origin === location.origin || (apiOrigin && u.origin === apiOrigin)) urls.push(u.href); } catch (e) {} }
     add((d.theme || {}).couverture);
     (d.rubriques || []).forEach(function (r) { (r.photos || []).forEach(function (p) { add(p.src); }); });
     (d.activites || []).forEach(function (a) { add(a.photo); });
     ((d.arrivee || {}).blocs || []).forEach(function (b) { add(b.photo); });
     try {
-      navigator.serviceWorker.register("sw.js").then(function () { return navigator.serviceWorker.ready; }).then(function (reg) {
+      navigator.serviceWorker.register("sw.js" + (apiOrigin ? "?api=" + encodeURIComponent(apiOrigin) : "")).then(function () { return navigator.serviceWorker.ready; }).then(function (reg) {
         if (reg.active) reg.active.postMessage({ type: "cdh:cache", urls: urls });
         var ok = document.getElementById("sw-ok"); if (ok) ok.hidden = false;
       }).catch(function () {});
@@ -910,9 +930,19 @@
   }
 
   /* ---------- démarrage ---------- */
-  function notFound() {
-    var t = TXT[/^fr/i.test(navigator.language || "fr") ? "fr" : "en"];
+  function uiLang() { return /^fr/i.test(navigator.language || "fr") ? "fr" : "en"; }
+  function notFound(offlineMsg) {
+    var t = TXT[uiLang()];
+    current = null;
+    if (offlineMsg) {
+      app.innerHTML = '<main class="notfound"><h1>' + esc(t.horsLigne) + "</h1><p>" + esc(t.horsLigneTxt) + '</p><p><button type="button" class="btn primary" id="retry">' + esc(t.reessayer) + "</button></p></main>";
+      document.getElementById("retry").addEventListener("click", function () { boot(route()); });
+      return;
+    }
     app.innerHTML = '<main class="notfound"><h1>' + esc(t.introuvable) + "</h1><p>" + esc(t.introuvableTxt) + '</p><p><a href="index.html">' + esc(t.retour) + "</a></p></main>";
+  }
+  function loading() {
+    app.innerHTML = '<main class="notfound is-loading" aria-busy="true"><span class="ld-dot" aria-hidden="true"></span><p>' + esc(TXT[uiLang()].chargement) + "</p></main>";
   }
 
   if (APERCU) {
@@ -928,15 +958,54 @@
     try { window.parent.postMessage({ type: "cdh:ready" }, "*"); } catch (e) {}
   }
 
-  var r0 = route();
-  var data = window.CDH_STORE.get(r0.id);
-  if (data) {
-    render(data, { view: r0.view });
-    if (r0.view && !APERCU) {
-      var target = document.getElementById("s-" + r0.view);
+  /* Livrets des clients : lus dans la base (Supabase). Une copie reste sur le téléphone
+     pour l'ouvrir sans réseau ; les exemples du site restent dans data/livrets.js. */
+  var K = window.CDH_CLOUD, CLOUD = !!(K && K.actif) && !APERCU && !VITRINE;
+  var CACHE = "cdh:pub:";
+  function readCache(id) { try { var r = localStorage.getItem(CACHE + id); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+  function writeCache(d) { try { localStorage.setItem(CACHE + d.id, JSON.stringify(d)); } catch (e) {} }
+  function dropCache(id) { try { localStorage.removeItem(CACHE + id); } catch (e) {} }
+  function countOpen(id) {
+    try { if (sessionStorage.getItem("cdh:vu:" + id)) return; sessionStorage.setItem("cdh:vu:" + id, "1"); } catch (e) {}
+    K.compter(id);
+  }
+  function show(d, view, scroll) {
+    render(d, { view: view });
+    if (scroll && view && !APERCU) {
+      var target = document.getElementById("s-" + view);
       if (target) setTimeout(function () { target.scrollIntoView({ block: "start" }); }, 60);
     }
-  } else if (!APERCU) notFound();
+  }
+  var bootSeq = 0;
+  function boot(r) {
+    var seq = ++bootSeq;
+    var local = window.CDH_STORE.get(r.id);
+    if (!CLOUD) { if (local) show(local, r.view, true); else if (!APERCU) notFound(); return; }
+    var cached = readCache(r.id), first = cached || local;
+    if (first) show(first, r.view, true); else loading();
+    K.livret(r.id).then(function (d) {
+      if (seq !== bootSeq) return;
+      if (d && typeof d === "object" && !Array.isArray(d)) {
+        d.id = r.id;
+        writeCache(d); countOpen(r.id);
+        if (!current || JSON.stringify(current) !== JSON.stringify(d)) {
+          var y = window.scrollY;
+          show(d, r.view, !first);
+          if (first) window.scrollTo(0, y);
+        }
+        return;
+      }
+      /* Pas (ou plus) dans la base : livret d'exemple du site, ou livret désactivé */
+      if (cached) { dropCache(r.id); if (local) show(local, r.view, false); else notFound(); }
+      else if (!first) notFound();
+    }, function () {
+      if (seq !== bootSeq) return;
+      if (!first) notFound(true);
+    });
+  }
+  window.addEventListener("online", function () { if (!current && CLOUD) boot(route()); });
+
+  boot(route());
 
   var lastW = coverW();
   window.addEventListener("resize", function () {
@@ -948,7 +1017,7 @@
   });
 
   window.addEventListener("hashchange", function () {
-    var r = route(), d2 = window.CDH_STORE.get(r.id);
-    if (d2 && (!current || d2.id !== current.id)) { render(d2, { view: r.view }); window.scrollTo(0, 0); }
+    var r = route();
+    if (!current || r.id !== current.id) { boot(r); window.scrollTo(0, 0); }
   });
 })();
