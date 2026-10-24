@@ -1,0 +1,2 @@
+/l/:id/:vue   /livret.html?id=:id&s=:vue   301
+/l/:id        /livret.html?id=:id          301

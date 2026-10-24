@@ -1,0 +1,11 @@
+PHOTOS
+======
+
+Les photos des 3 livrets d'exemple sont rangées ici, un dossier par livret.
+Elles viennent d'Unsplash (photos libres, usage commercial gratuit).
+
+Pour vos vrais clients, créez un dossier au nom du livret (par exemple photos/gite-du-moulin/)
+et indiquez le chemin de chaque photo dans la console (ex. photos/gite-du-moulin/lave-linge.jpg).
+Taille conseillée : 1600 px maximum, en JPG.
+
+Une photo introuvable est remplacée par une illustration aux couleurs du livret : rien ne casse.

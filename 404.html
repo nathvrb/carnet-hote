@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carnet d'Hôte</title>
+<meta name="robots" content="noindex">
+<script>
+  /* GitHub Pages n'a pas de redirections : les adresses courtes /l/identifiant
+     (celles des QR codes) arrivent ici et sont renvoyées vers le livret. */
+  (function () {
+    var m = location.pathname.match(/^(.*?)\/l\/([\w-]+)(?:\/([\w-]+))?\/?$/);
+    if (m) location.replace(m[1] + "/livret.html?id=" + encodeURIComponent(m[2]) + (m[3] ? "&s=" + encodeURIComponent(m[3]) : "") + location.hash);
+  })();
+</script>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #FFFBF4; color: #24292A;
+    font: 16px/1.5 "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 24px; box-sizing: border-box; text-align: center; }
+  h1 { font: 400 2rem/1.1 Georgia, serif; margin: 0 0 10px; }
+  p { margin: 0 0 18px; color: #626A66; }
+  a { display: inline-block; padding: 12px 20px; border-radius: 999px; background: #1F5B4C; color: #fff; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Page introuvable</h1>
+  <p>Cette adresse n'existe pas ou a changé. · This page doesn't exist.</p>
+  <a id="home" href="/">Retour à l'accueil</a>
+</main>
+<script>
+  /* Lien d'accueil correct aussi quand le site est dans un sous-dossier (github.io/nom-du-depot/) */
+  (function () {
+    var seg = location.pathname.split("/").filter(Boolean)[0];
+    if (/\.github\.io$/.test(location.hostname) && seg) document.getElementById("home").href = "/" + seg + "/";
+  })();
+</script>
+</body>
+</html>

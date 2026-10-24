@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Console · Carnet d'Hôte</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Gloock&family=Marcellus&family=Young+Serif&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/console.css">
+</head>
+<body>
+
+<header class="cbar" id="cbar">
+  <a class="logo" href="index.html" title="Retour au site">
+    <svg viewBox="0 0 22 34" aria-hidden="true"><circle cx="11" cy="5.5" r="4.2" fill="none" stroke="var(--brass)" stroke-width="2"/><path d="M11 9.5c3.6 0 9 5.6 9 13.6C20 29 16 33 11 33S2 29 2 23.1C2 15.1 7.4 9.5 11 9.5Z" fill="var(--fob)"/><circle cx="11" cy="13" r="1.6" fill="var(--surface)"/></svg>
+    <span data-brand>Carnet d'Hôte</span><span class="tag">Console</span>
+  </a>
+  <label class="pick" for="pick"><span class="sr">Livret à modifier</span><select id="pick"></select></label>
+  <div class="langsw" role="group" aria-label="Langue en cours de modification">
+    <button type="button" data-ed="fr" aria-pressed="true">FR</button><button type="button" data-ed="en" aria-pressed="false">EN</button>
+  </div>
+  <span class="status ok" id="status" role="status">À jour</span>
+  <div class="cbar-actions">
+    <a class="btn" id="open-livret" href="livret.html" target="_blank" rel="noopener">Voir le livret</a>
+    <button class="btn primary" type="button" id="publish">Publier</button>
+  </div>
+</header>
+<p class="demo-note">Démonstration : vos modifications sont enregistrées dans ce navigateur uniquement. Les livrets d'exemple restent intacts pour les autres visiteurs.</p>
+<p class="en-note" id="en-note" hidden>Vous modifiez la version anglaise. Un champ vide reprend le texte français (affiché en gris). Les champs grisés sont communs aux deux langues.</p>
+
+<div class="shell">
+  <nav class="tabs" role="tablist" aria-label="Sections du livret" id="tabs">
+    <button type="button" role="tab" id="tab-general" aria-controls="p-general" aria-selected="true" data-tab="general"></button>
+    <button type="button" role="tab" id="tab-annonce" aria-controls="p-annonce" aria-selected="false" data-tab="annonce"></button>
+    <button type="button" role="tab" id="tab-arrivee" aria-controls="p-arrivee" aria-selected="false" data-tab="arrivee"></button>
+    <button type="button" role="tab" id="tab-rubriques" aria-controls="p-rubriques" aria-selected="false" data-tab="rubriques"></button>
+    <button type="button" role="tab" id="tab-services" aria-controls="p-services" aria-selected="false" data-tab="services"></button>
+    <button type="button" role="tab" id="tab-adresses" aria-controls="p-adresses" aria-selected="false" data-tab="adresses"></button>
+    <button type="button" role="tab" id="tab-activites" aria-controls="p-activites" aria-selected="false" data-tab="activites"></button>
+    <button type="button" role="tab" id="tab-depart" aria-controls="p-depart" aria-selected="false" data-tab="depart"></button>
+    <button type="button" role="tab" id="tab-qr" aria-controls="p-qr" aria-selected="false" data-tab="qr"></button>
+    <button type="button" role="tab" id="tab-sauvegarde" aria-controls="p-sauvegarde" aria-selected="false" data-tab="sauvegarde"></button>
+  </nav>
+
+  <main class="panel" id="panel">
+
+    <!-- GÉNÉRAL -->
+    <section role="tabpanel" id="p-general" aria-labelledby="tab-general" data-panel="general">
+      <div class="panel-head"><div><h2>Général</h2><p>L'identité du livret, le mot d'accueil et l'essentiel.</p></div></div>
+      <div class="grp">
+        <h3>Logement</h3>
+        <div class="grid2">
+          <label class="fld" for="g-nom"><span>Nom</span><input id="g-nom" data-path="nom" maxlength="60"></label>
+          <label class="fld" for="g-ville"><span>Ville ou quartier</span><input id="g-ville" data-path="ville" maxlength="60"></label>
+          <label class="fld full" for="g-sous"><span>Sous-titre</span><input id="g-sous" data-path="sousTitre" data-tr="1" maxlength="90"></label>
+          <label class="fld" for="g-type"><span>Type d'établissement</span><select id="g-type" data-path="type"><option value="location">Location courte durée</option><option value="maison">Maison / chambres d'hôtes</option><option value="hotel">Hôtel</option></select></label>
+          <label class="fld" for="g-carte"><span>Repère pour les cartes <small>(ville)</small></span><input id="g-carte" data-path="carte" placeholder="Ex. : Petite France, Strasbourg"></label>
+        </div>
+      </div>
+      <div class="grp">
+        <h3>Apparence</h3>
+        <div class="fld"><span>Couleur</span><div class="swatches" id="swatches"></div></div>
+        <div class="grid2">
+          <label class="fld" for="g-police"><span>Police des titres</span><select id="g-police" data-path="theme.police"><option>Gloock</option><option>Marcellus</option><option>Young Serif</option><option>Schibsted Grotesk</option></select></label>
+          <label class="fld" for="g-motif"><span>Illustration <small>(si pas de photo)</small></span><select id="g-motif" data-path="theme.motif"><option value="colombages">Maisons à colombages</option><option value="lac">Lac et montagnes</option><option value="collines">Collines et cyprès</option></select></label>
+        </div>
+        <div class="fld"><span>Photo de couverture</span>
+          <div class="photo-row"><img class="thumb" data-thumb-for="g-cover" alt=""><input id="g-cover" data-path="theme.couverture" data-photo="1" placeholder="photos/mon-livret/couverture.jpg"><label class="btn tiny" for="g-cover-file">Importer</label><input type="file" accept="image/*" class="sr" id="g-cover-file" data-tpath="theme.couverture"></div>
+        </div>
+      </div>
+      <div class="grp">
+        <h3>Mot d'accueil</h3>
+        <div class="grid2">
+          <label class="fld full" for="g-titre-acc"><span>Titre de la carte d'accueil</span><input id="g-titre-acc" data-path="titreAccueil" data-tr="1" placeholder="Bienvenue chez nous !"></label>
+          <label class="fld" for="h-nom"><span>Nom de l'hôte</span><input id="h-nom" data-path="hote.nom" placeholder="Ex. : Claire & Julien"></label>
+          <label class="fld" for="h-sign"><span>Signature manuscrite <small>(si différente)</small></span><input id="h-sign" data-path="hote.signature" data-tr="1" placeholder="Ex. : L'équipe des Ondines"></label>
+          <label class="fld" for="h-role"><span>Sous la signature</span><input id="h-role" data-path="hote.role" data-tr="1" placeholder="Ex. : Vos hôtes"></label>
+          <label class="fld full" for="g-bienvenue"><span>Message</span><textarea id="g-bienvenue" data-path="bienvenue" data-tr="1" maxlength="400"></textarea></label>
+        </div>
+      </div>
+      <div class="grp">
+        <h3>Contact</h3>
+        <div class="grid2">
+          <label class="fld" for="h-tel"><span>Téléphone</span><input id="h-tel" data-path="hote.tel" type="tel" inputmode="tel"></label>
+          <label class="fld" for="h-wa"><span>WhatsApp <small>(format 33612345678)</small></span><input id="h-wa" data-path="hote.whatsapp" inputmode="numeric"></label>
+          <label class="fld" for="h-mail"><span>E-mail</span><input id="h-mail" data-path="hote.email" type="email"></label>
+          <label class="fld" for="h-rep"><span>Disponibilité</span><input id="h-rep" data-path="hote.reponse" data-tr="1" placeholder="Ex. : Réponse en moins d'une heure"></label>
+        </div>
+      </div>
+      <div class="grp">
+        <h3>Wi-Fi et horaires</h3>
+        <div class="grid2">
+          <label class="fld" for="w-ssid"><span>Nom du réseau Wi-Fi</span><input id="w-ssid" data-path="wifi.reseau" autocomplete="off" spellcheck="false"></label>
+          <label class="fld" for="w-pass"><span>Mot de passe</span><input id="w-pass" data-path="wifi.motDePasse" autocomplete="off" spellcheck="false"></label>
+          <label class="fld" for="t-arr"><span>Arrivée</span><input id="t-arr" data-path="horaires.arrivee" data-tr="1" placeholder="Ex. : À partir de 16 h"></label>
+          <label class="fld" for="t-dep"><span>Départ</span><input id="t-dep" data-path="horaires.depart" data-tr="1" placeholder="Ex. : Avant 11 h"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- MESSAGE DU MOMENT -->
+    <section role="tabpanel" id="p-annonce" aria-labelledby="tab-annonce" data-panel="annonce" hidden>
+      <div class="panel-head"><div><h2>Message du moment</h2><p>Un bandeau en haut du livret pour une information temporaire.</p></div></div>
+      <div class="grp">
+        <label class="switch" for="a-actif"><input type="checkbox" id="a-actif" data-path="annonce.actif"><span class="sw"></span>Afficher le message</label>
+        <fieldset class="seg"><legend class="sr">Style du message</legend>
+          <label><input type="radio" name="a-style" id="a-style-info" value="info" data-path="annonce.style">À savoir</label>
+          <label><input type="radio" name="a-style" id="a-style-alerte" value="alerte" data-path="annonce.style">Important</label>
+          <label><input type="radio" name="a-style" id="a-style-bonplan" value="bonplan" data-path="annonce.style">Bon plan</label>
+        </fieldset>
+        <label class="fld" for="a-texte"><span>Texte</span><textarea id="a-texte" data-path="annonce.texte" data-tr="1" maxlength="220"></textarea><small class="count" id="a-count"></small></label>
+        <div class="fld fr-only"><span>Idées</span><div class="chips" id="a-ideas">
+          <button type="button" data-style="alerte" data-text="Travaux dans la rue jeudi : l'accès voiture est fermé de 8 h à 17 h.">Travaux</button>
+          <button type="button" data-style="info" data-text="Coupure d'eau prévue mardi matin de 9 h à 11 h. Des bouteilles d'eau sont dans le placard de la cuisine.">Coupure d'eau</button>
+          <button type="button" data-style="bonplan" data-text="Ce week-end, fête du quartier sur la place : concerts gratuits et marché d'artisans.">Événement</button>
+          <button type="button" data-style="info" data-text="Notre boulangerie habituelle est fermée pour congés jusqu'au 15. Les autres adresses sont dans « Adresses utiles ».">Commerce fermé</button>
+        </div></div>
+        <label class="fld" for="a-fin"><span>Masquer automatiquement après le <small>(facultatif)</small></span><input type="date" id="a-fin" data-path="annonce.fin"></label>
+      </div>
+    </section>
+
+    <!-- AVANT VOTRE ARRIVÉE -->
+    <section role="tabpanel" id="p-arrivee" aria-labelledby="tab-arrivee" data-panel="arrivee" hidden>
+      <div class="panel-head"><div><h2>Avant votre arrivée</h2><p>Comment venir et entrer. Ce lien s'envoie la veille dans la conversation avec le voyageur.</p></div></div>
+      <div class="grp">
+        <h3>Lien à envoyer la veille</h3>
+        <code class="url" id="arr-url"></code>
+        <p class="hint">Le voyageur arrive directement sur cette partie du livret, avec un message « Votre séjour approche ».</p>
+        <label class="fld" for="arr-msg"><span>Message prêt à envoyer <small>(dans la langue sélectionnée en haut)</small></span><textarea id="arr-msg" readonly></textarea></label>
+        <div class="row"><button class="btn primary" type="button" id="copy-arr-msg">Copier le message</button><button class="btn" type="button" id="copy-arr">Copier le lien seul</button></div>
+      </div>
+      <div class="grp">
+        <h3>Adresse et position</h3>
+        <div class="grid2">
+          <label class="fld full" for="g-adresse"><span>Adresse affichée</span><input id="g-adresse" data-path="adresse" data-tr="1" placeholder="Ex. : 12 rue des Tanneurs, 67000 Strasbourg"></label>
+          <label class="fld full" for="g-geo"><span>Coordonnées GPS du logement <small>(pour la carte et la météo)</small></span><input id="g-geo" data-path="geo" data-geo="1" placeholder="Ex. : 48.5806, 7.7420" inputmode="decimal"></label>
+        </div>
+        <p class="hint">Dans Google Maps, faites un clic droit sur le logement : les coordonnées s'affichent en premier, il suffit de cliquer dessus pour les copier.</p>
+        <label class="fld" for="arr-texte"><span>Phrase d'introduction</span><textarea id="arr-texte" data-path="arrivee.texte" data-tr="1" placeholder="Tout ce qu'il faut pour arriver sans stress."></textarea></label>
+      </div>
+      <div class="items" id="list-blocs"></div>
+      <button class="add" type="button" data-add="blocs"><span aria-hidden="true">+</span> Ajouter un bloc (en train, en voiture, clés…)</button>
+    </section>
+
+    <!-- RUBRIQUES -->
+    <section role="tabpanel" id="p-rubriques" aria-labelledby="tab-rubriques" data-panel="rubriques" hidden>
+      <div class="panel-head"><div><h2>Rubriques</h2><p>Équipements, règles, accès : une rubrique par sujet. Les flèches changent l'ordre.</p></div></div>
+      <div class="items" id="list-rubriques"></div>
+      <button class="add" type="button" data-add="rubriques"><span aria-hidden="true">+</span> Ajouter une rubrique</button>
+    </section>
+
+    <!-- SERVICES EN PLUS -->
+    <section role="tabpanel" id="p-services" aria-labelledby="tab-services" data-panel="services" hidden>
+      <div class="panel-head"><div><h2>Services en plus</h2><p>Départ tardif, ménage, panier repas… Le bouton « Demander » ouvre un message déjà rédigé vers l'hôte.</p></div></div>
+      <div class="grp">
+        <label class="fld" for="h-canal"><span>Les demandes arrivent par</span><select id="h-canal" data-path="hote.canal"><option value="">Automatique (WhatsApp, sinon SMS, sinon e-mail)</option><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option><option value="email">E-mail</option></select></label>
+      </div>
+      <div class="items" id="list-services"></div>
+      <button class="add" type="button" data-add="services"><span aria-hidden="true">+</span> Ajouter un service</button>
+    </section>
+
+    <!-- ADRESSES -->
+    <section role="tabpanel" id="p-adresses" aria-labelledby="tab-adresses" data-panel="adresses" hidden>
+      <div class="panel-head"><div><h2>Adresses utiles</h2><p>Commerces, santé, restaurants. Avec des coordonnées GPS, l'adresse apparaît aussi sur la carte.</p></div></div>
+      <div class="items" id="list-adresses"></div>
+      <button class="add" type="button" data-add="adresses"><span aria-hidden="true">+</span> Ajouter une adresse</button>
+    </section>
+
+    <!-- ACTIVITÉS -->
+    <section role="tabpanel" id="p-activites" aria-labelledby="tab-activites" data-panel="activites" hidden>
+      <div class="panel-head"><div><h2>À faire autour</h2><p>Vos idées de sorties, avec une photo, la distance et la durée.</p></div></div>
+      <div class="items" id="list-activites"></div>
+      <button class="add" type="button" data-add="activites"><span aria-hidden="true">+</span> Ajouter une activité</button>
+    </section>
+
+    <!-- DÉPART, AVIS & URGENCES -->
+    <section role="tabpanel" id="p-depart" aria-labelledby="tab-depart" data-panel="depart" hidden>
+      <div class="panel-head"><div><h2>Départ, avis et urgences</h2><p>La check-list du dernier jour, la demande d'avis et les contacts santé.</p></div></div>
+      <div class="grp">
+        <h3>Check-list de départ</h3>
+        <label class="fld" for="d-list"><span>Une tâche par ligne</span><textarea id="d-list" class="tall" data-path="depart" data-lines="1" data-tr="1"></textarea></label>
+      </div>
+      <div class="grp">
+        <h3>Avis</h3>
+        <label class="fld" for="d-avis-lien"><span>Lien vers la page d'avis <small>(Google, Airbnb, Booking…)</small></span><input id="d-avis-lien" data-path="avisLien" type="url" placeholder="https://g.page/r/…/review"></label>
+        <p class="hint">Le bouton « Laisser un avis » apparaît en bas du livret et quand le voyageur a coché toute sa check-list de départ.</p>
+        <label class="fld" for="d-avis"><span>Mot de la fin</span><textarea id="d-avis" data-path="avis" data-tr="1" maxlength="300"></textarea></label>
+      </div>
+      <div class="grp">
+        <h3>Urgences</h3>
+        <p class="hint">Les numéros nationaux (112, 15, 17, 18, 114, 3237) sont ajoutés automatiquement.</p>
+        <div class="grid2">
+          <label class="fld" for="u-hop"><span>Hôpital le plus proche</span><input id="u-hop" data-path="urgences.hopital.nom"></label>
+          <label class="fld" for="u-hop-d"><span>Précision</span><input id="u-hop-d" data-path="urgences.hopital.detail" data-tr="1" placeholder="Ex. : Urgences 24 h/24 · 15 min en voiture"></label>
+          <label class="fld" for="u-hop-q"><span>Recherche carte <small>(facultatif)</small></span><input id="u-hop-q" data-path="urgences.hopital.requete"></label>
+          <label class="fld" for="u-hop-geo"><span>Coordonnées GPS <small>(facultatif)</small></span><input id="u-hop-geo" data-path="urgences.hopital.geo" data-geo="1" placeholder="Ex. : 48.5766, 7.7471"></label>
+          <label class="fld" for="u-ap"><span>Centre antipoison</span><input id="u-ap" data-path="urgences.antipoison" type="tel"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- QR CODE -->
+    <section role="tabpanel" id="p-qr" aria-labelledby="tab-qr" data-panel="qr" hidden>
+      <div class="panel-head"><div><h2>QR code et affiche</h2><p>Le QR code ne change jamais, même quand vous modifiez le livret.</p></div></div>
+      <div class="grp">
+        <h3>QR code du livret</h3>
+        <div class="qr-row">
+          <div class="qr-big" id="qr-big"></div>
+          <div class="stack">
+            <div class="fld"><span>Adresse ouverte par le QR code</span><code class="url" id="qr-url"></code></div>
+            <div class="row"><button class="btn" type="button" id="copy-url">Copier l'adresse</button><button class="btn" type="button" id="dl-qr" data-download>Télécharger le QR (PNG)</button></div>
+            <div class="fld"><span>Lien « Avant votre arrivée » <small>(à envoyer la veille)</small></span><code class="url" id="qr-arr-url"></code></div>
+            <div class="row"><button class="btn" type="button" id="copy-qr-arr">Copier ce lien</button></div>
+            <fieldset class="seg"><legend class="sr">Couleur du QR code</legend>
+              <label><input type="radio" name="qr-color" id="qr-c-accent" value="accent" checked>Couleur du livret</label>
+              <label><input type="radio" name="qr-color" id="qr-c-noir" value="noir">Noir</label>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="grp">
+        <h3>Affiche à imprimer (A6)</h3>
+        <label class="switch" for="poster-wifi"><input type="checkbox" id="poster-wifi" checked><span class="sw"></span>Ajouter le Wi-Fi et son QR code de connexion</label>
+        <img class="poster" id="poster-img" alt="Aperçu de l'affiche à imprimer">
+        <div class="row"><button class="btn primary" type="button" id="dl-poster" data-download>Télécharger l'affiche (PNG)</button></div>
+        <p class="hint" id="dl-hint" hidden>Pour enregistrer l'image : clic droit ou appui long sur l'affiche, puis « Enregistrer l'image ».</p>
+      </div>
+    </section>
+
+    <!-- SAUVEGARDE -->
+    <section role="tabpanel" id="p-sauvegarde" aria-labelledby="tab-sauvegarde" data-panel="sauvegarde" hidden>
+      <div class="panel-head"><div><h2>Sauvegarde</h2><p>Exportez le livret pour le mettre en ligne, ou importez une sauvegarde.</p></div></div>
+      <div class="grp">
+        <h3>Exporter</h3>
+        <p class="hint">À coller dans le fichier data/livrets.js du site pour publier le livret pour tous. La version anglaise est incluse.</p>
+        <textarea class="code" id="export" readonly aria-label="Livret exporté"></textarea>
+        <div class="row"><button class="btn" type="button" id="copy-export">Copier</button></div>
+      </div>
+      <div class="grp">
+        <h3>Importer</h3>
+        <textarea class="code" id="import" aria-label="Livret à importer" placeholder="Collez ici un livret exporté"></textarea>
+        <div class="row"><button class="btn" type="button" id="do-import">Importer dans la console</button></div>
+        <p class="msg" id="import-msg" hidden></p>
+      </div>
+      <div class="grp">
+        <h3>Revenir en arrière</h3>
+        <p class="hint" id="reset-hint">Supprime vos modifications sur cet appareil et recharge la version d'origine.</p>
+        <div class="row"><button class="btn danger" type="button" id="reset">Restaurer la version d'origine</button></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="preview" id="preview" aria-label="Aperçu du livret">
+    <div class="row" style="justify-content:space-between;width:min(330px,100%)"><span class="preview-label">Aperçu en direct</span><button class="btn tiny preview-close" type="button" id="close-preview">Fermer</button></div>
+    <div class="phone"><div class="screen"><iframe id="frame" name="cdh-apercu" title="Aperçu du livret en cours de modification"></iframe></div></div>
+  </aside>
+</div>
+
+<button class="fab" type="button" id="show-preview"><svg class="ico-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Aperçu</button>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="data/livrets.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/vendor/qrcode.js"></script>
+<script src="assets/js/qr.js"></script>
+<script src="assets/js/console.js"></script>
+</body>
+</html>
