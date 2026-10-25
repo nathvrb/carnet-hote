@@ -132,10 +132,11 @@ begin
     raise exception 'trop_lourd';
   end if;
   v := (v - 'majLe') || jsonb_build_object('id', p_id);
-  -- le bandeau « Exemple fictif » reste réservé à l'administrateur
+  -- le bandeau « Exemple fictif » et le retrait de la mention (Premium) restent réservés à l'administrateur
   if not cdh.est_admin() then
-    v := v - 'demo';
+    v := v - 'demo' - 'sansMention';
     if p_ancien ? 'demo' then v := v || jsonb_build_object('demo', p_ancien -> 'demo'); end if;
+    if p_ancien ? 'sansMention' then v := v || jsonb_build_object('sansMention', p_ancien -> 'sansMention'); end if;
   end if;
   -- lien d'avis : uniquement une adresse web
   if v ? 'avisLien' and coalesce(v ->> 'avisLien', '') !~* '^(https?://|demo$|$)' then

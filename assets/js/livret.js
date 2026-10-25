@@ -469,7 +469,7 @@
       (d.credits ? "<p>" + esc(lang === "en" ? d.credits.replace("Photos d'illustration", "Illustration photos") : d.credits) + "</p>" : "") +
       (maj && !isNaN(maj) ? "<p>" + esc(t.maj) + " " + maj.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" }) + "</p>" : "") +
       '<p class="sw-ok" id="sw-ok" hidden>' + I("check", "ico-s") + esc(t.horsLigneOk) + "</p>" +
-      '<p class="made">' + esc(t.fait_avec) + ' <a href="index.html">' + esc(marque) + "</a></p></footer>");
+      (d.sansMention ? "" : '<p class="made">' + esc(t.fait_avec) + ' <a href="index.html">' + esc(marque) + "</a></p>") + "</footer>");
 
     h.push('</div><aside class="aside" aria-label="' + esc(lang === "en" ? "Essentials" : "L'essentiel") + '">');
 
