@@ -32,9 +32,14 @@
     try { fobQr.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(id), { fg: "#12302A", margin: 1, size: 88 }); } catch (e) {}
   }
   setFob("nid-des-tanneurs");
+  /* tableau des clés (nouvelle vitrine) : un QR code sur chaque porte-clés */
+  each("[data-fob-qr]", function (g) {
+    try { g.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(g.dataset.fobQr), { fg: "#12302A", margin: 1, size: +(g.dataset.size || 88) }); } catch (e) {}
+  });
   each(".switch button", function (b) {
     b.addEventListener("click", function () {
       each(".switch button", function (o) { o.setAttribute("aria-selected", String(o === b)); });
+      b.classList.remove("swing"); void b.offsetWidth; b.classList.add("swing");
       var id = b.dataset.demo, d = window.CDH_LIVRETS[id];
       frame.src = "livret.html#" + id;
       frame.title = "Aperçu d'un livret d'accueil : " + (d ? d.nom : "");
