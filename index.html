@@ -107,7 +107,7 @@
     <div class="wrap">
       <h2 class="h2 etroit" id="t-steps">Vous répondez à quelques questions, on s'occupe du reste</h2>
       <ol class="parcours">
-        <li><span class="quand">Jour 1</span><h3>Vous remplissez le questionnaire</h3><p>15 minutes en ligne, ou une visite sur place autour de Strasbourg. Envoyez-nous des photos de vos équipements.</p></li>
+        <li><span class="quand">Jour 1</span><h3>Vous remplissez le questionnaire</h3><p><a href="questionnaire.html">15 minutes en ligne</a>, ou une visite sur place autour de Strasbourg. Envoyez-nous des photos de vos équipements.</p></li>
         <li><span class="quand">Jours 2 à 4</span><h3>On rédige votre livret</h3><p>Textes clairs, modes d'emploi pas à pas, traductions et une sélection d'adresses vérifiées autour de chez vous.</p></li>
         <li><span class="quand">Avant la livraison</span><h3>Vous relisez sur votre téléphone</h3><p>Vous recevez le lien de l'aperçu. On corrige jusqu'à ce que tout soit juste.</p></li>
         <li><span class="quand">5 à 13 jours ouvrés</span><h3>Le QR code est en place</h3><p>Livret en ligne et affiche prête à imprimer. En Confort et Premium, porte-clés ou chevalets livrés chez vous. Le délai dépend de la formule.</p></li>
@@ -343,10 +343,11 @@
           <p>Le détail de votre devis est joint automatiquement. On vous répond sous 24 h avec le questionnaire pour démarrer.</p>
           <p>Vous préférez écrire ? <b data-email>contact@carnetdhote.fr</b></p>
         </div>
-        <form class="form" id="request-form" name="demande-devis" method="POST" data-netlify="true" netlify-honeypot="site-web" novalidate>
+        <form class="form" id="request-form" name="demande-devis" method="POST" data-netlify="true" netlify-honeypot="_gotcha" novalidate>
           <input type="hidden" name="form-name" value="demande-devis">
+          <input type="hidden" name="_subject" value="Nouvelle demande de devis">
           <input type="hidden" name="devis" id="devis-texte">
-          <p class="sr"><label>Ne pas remplir <input name="site-web" tabindex="-1" autocomplete="off"></label></p>
+          <p class="sr"><label>Ne pas remplir <input name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
           <label for="r-nom"><span>Nom et prénom</span><input id="r-nom" name="nom" autocomplete="name" required></label>
           <label for="r-email"><span>E-mail</span><input id="r-email" name="email" type="email" autocomplete="email" required></label>
           <label for="r-tel"><span>Téléphone <small>(facultatif)</small></span><input id="r-tel" name="telephone" type="tel" autocomplete="tel"></label>

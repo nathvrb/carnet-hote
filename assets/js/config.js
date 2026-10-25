@@ -21,7 +21,11 @@ window.CDH_CONFIG = {
   // son adresse (ex. "https://formspree.io/f/abcdwxyz"). Les demandes arrivent par e-mail.
   // Vide : sur Netlify, Netlify Forms est utilisé ; ailleurs, le visiteur copie
   // le récapitulatif et vous l'envoie par e-mail.
-  formulaireDevis: "",
+  formulaireDevis: "https://formspree.io/f/xdeearza",
+  // Questionnaire en ligne (questionnaire.html). Même principe : un formulaire Formspree.
+  // Vide : le questionnaire utilise formulaireDevis ; si celui-ci est vide aussi,
+  // le client copie ou télécharge ses réponses et vous les envoie par e-mail.
+  formulaireQuestionnaire: "https://formspree.io/f/xdeearza",
   // Espace client (forfait Autonomie) : base Supabase où vivent les livrets des clients.
   // Supabase → Project Settings → API Keys : « Project URL » et clé « Publishable »
   // (sb_publishable_…, faite pour être publique). Vides : la console reste une démonstration.
