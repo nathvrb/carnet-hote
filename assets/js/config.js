@@ -25,8 +25,8 @@ window.CDH_CONFIG = {
   // Espace client (forfait Autonomie) : base Supabase où vivent les livrets des clients.
   // Supabase → Project Settings → API Keys : « Project URL » et clé « Publishable »
   // (sb_publishable_…, faite pour être publique). Vides : la console reste une démonstration.
-  supabaseUrl: "",
-  supabaseCle: "",
+  supabaseUrl: "https://banisbeqqzdodnrxnast.supabase.co",
+  supabaseCle: "sb_publishable_rxgiSoqSFq1DajBuY0aMvA_Q5TCQ8Z3",
   // Mentions du devis
   siret: "SIRET en cours d'immatriculation",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",
