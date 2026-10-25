@@ -629,7 +629,12 @@ button.lg { cursor: pointer; }
 }
 
 /* affiché dans un téléphone dessiné (vitrine, console) : laisser la place à l'encoche */
-.in-phone { --notch: 44px; }
+.in-phone { --notch: 62px; scrollbar-width: none; -ms-overflow-style: none; }
+.in-phone::-webkit-scrollbar, .in-phone body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+/* la zone de l'encoche reste transparente : la photo de couverture passe derrière,
+   puis un fond se met en place dès qu'on fait défiler */
+.in-phone body::before { background: transparent; transition: background .2s; }
+.in-phone.defile body::before { background: linear-gradient(var(--bg) 78%, color-mix(in srgb, var(--bg) 0%, transparent)); }
 .section, .rub { scroll-margin-top: calc(var(--notch, 0px) + 8px); }
 
 @media (prefers-reduced-motion: reduce) {

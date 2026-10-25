@@ -11,7 +11,12 @@
   var APERCU = window.name === "cdh-apercu";
   var VITRINE = window.name === "cdh-vitrine";
   var current = null, currentLang = "fr", forcedLang = null;
-  if (VITRINE || APERCU) document.documentElement.classList.add("in-phone");
+  if (VITRINE || APERCU) {
+    document.documentElement.classList.add("in-phone");
+    window.addEventListener("scroll", function () {
+      document.documentElement.classList.toggle("defile", (window.scrollY || document.documentElement.scrollTop) > 24);
+    }, { passive: true });
+  }
 
   /* Statistiques (Umami, sans cookies) : uniquement sur le vrai livret en ligne,
      jamais dans la vitrine ni dans l'aperçu de la console. Chaque livret est
