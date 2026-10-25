@@ -629,7 +629,18 @@ button.lg { cursor: pointer; }
 }
 
 /* affiché dans un téléphone dessiné (vitrine, console) : laisser la place à l'encoche */
-.in-phone { --notch: 62px; scrollbar-width: none; -ms-overflow-style: none; }
+.in-phone { --notch: 54px; scrollbar-width: none; -ms-overflow-style: none; } /* 54 = barre d'état d'un iPhone récent */
+.sbar {
+  position: fixed; inset: 0 0 auto; z-index: 31; height: var(--notch); pointer-events: none;
+  display: grid; grid-template-columns: 1fr 126px 1fr; align-items: center; padding-top: 5px;
+  color: #fff; font: 600 16.5px/1 -apple-system, "SF Pro Text", "Nunito Sans", system-ui, sans-serif; letter-spacing: -.01em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .25); transition: color .2s;
+}
+.sb-heure { justify-self: center; padding-left: 8px; font-variant-numeric: tabular-nums; }
+.sb-icones { justify-self: center; display: flex; align-items: center; gap: 6px; padding-right: 6px; }
+.sb-icones svg { fill: currentColor; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .2)); }
+.defile .sbar { color: var(--ink); text-shadow: none; }
+.defile .sb-icones svg { filter: none; }
 .in-phone::-webkit-scrollbar, .in-phone body::-webkit-scrollbar { display: none; width: 0; height: 0; }
 /* la zone de l'encoche reste transparente : la photo de couverture passe derrière,
    puis un fond se met en place dès qu'on fait défiler */

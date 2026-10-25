@@ -16,6 +16,16 @@
     window.addEventListener("scroll", function () {
       document.documentElement.classList.toggle("defile", (window.scrollY || document.documentElement.scrollTop) > 24);
     }, { passive: true });
+    /* barre d'état du téléphone dessiné (heure, réseau, batterie) : remplit la zone de l'encoche */
+    var sb = document.createElement("div");
+    sb.className = "sbar"; sb.setAttribute("aria-hidden", "true");
+    sb.innerHTML = '<span class="sb-heure"></span><span></span><span class="sb-icones">' +
+      '<svg viewBox="0 0 18 12" width="18" height="12"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg>' +
+      '<svg viewBox="0 0 16 12" width="16" height="12"><path d="M8 11.6 5.6 9.1a3.4 3.4 0 0 1 4.8 0Z"/><path d="M3.4 6.9a6.6 6.6 0 0 1 9.2 0l-1.1 1.1a5 5 0 0 0-7 0Z"/><path d="M1.2 4.7a9.7 9.7 0 0 1 13.6 0l-1.1 1.1a8.1 8.1 0 0 0-11.4 0Z"/></svg>' +
+      '<svg viewBox="0 0 27 13" width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="9" rx="2.2"/><path d="M25 4.4v4.2c.8-.3 1.4-1.1 1.4-2.1s-.6-1.8-1.4-2.1Z" fill-opacity=".45"/></svg></span>';
+    var heure = function () { var d = new Date(); sb.firstChild.textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0"); };
+    heure(); setInterval(heure, 30000);
+    (document.body ? Promise.resolve() : new Promise(function (r) { document.addEventListener("DOMContentLoaded", r); })).then(function () { document.body.appendChild(sb); });
   }
 
   /* Statistiques (Umami, sans cookies) : uniquement sur le vrai livret en ligne,

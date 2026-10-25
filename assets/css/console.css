@@ -243,7 +243,7 @@ h1, h2, h3 { text-wrap: balance; }
   width: var(--w); height: var(--h); border-radius: 46px; background: var(--bezel); padding: var(--bz); position: relative;
   box-shadow: 0 0 0 1.5px var(--bezel-edge), 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 44px 70px -34px rgba(40, 28, 10, .55), 0 14px 26px -14px rgba(40, 28, 10, .35);
 }
-.phone::before { content: ""; position: absolute; top: calc(var(--bz) + 9px); left: 50%; transform: translateX(-50%); width: 30%; height: 22px; border-radius: 999px; background: var(--bezel); z-index: 3; }
+.phone::before { content: ""; position: absolute; top: calc(var(--bz) + 11px * var(--s)); left: 50%; width: calc(126px * var(--s)); height: calc(37px * var(--s)); transform: translateX(-50%); background: var(--bezel); border-radius: 999px; z-index: 3; } /* îlot : 126 × 37 pt à 11 pt du haut, comme un iPhone */
 .phone::after { content: ""; position: absolute; right: -4.5px; top: 24%; width: 3px; height: 13%; background: color-mix(in srgb, var(--bezel-edge) 60%, #2A261F); border-radius: 0 3px 3px 0; }
 .screen { width: 100%; height: 100%; border-radius: 37px; overflow: hidden; overflow: clip; background: #fff; position: relative; isolation: isolate; }
 .screen::after { content: ""; position: absolute; z-index: 3; left: 50%; bottom: 7px; width: 34%; height: 4px; transform: translateX(-50%); border-radius: 4px; background: rgba(20, 18, 14, .55); box-shadow: 0 0 0 1px rgba(255, 255, 255, .45); pointer-events: none; }
