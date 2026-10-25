@@ -14,6 +14,7 @@
   each("[data-zone]", function (el) { el.textContent = C.zone; });
   each("[data-siret]", function (el) { el.textContent = C.siret; });
   each("[data-tva]", function (el) { el.textContent = "Prix nets. " + C.mentionTVA + "."; });
+  each("[data-tva-court]", function (el) { el.textContent = C.mentionTVA; });
   each("[data-modif]", function (el) { el.textContent = eur(T.modificationPonctuelle); });
   each("[data-mois-offerts]", function (el) { el.textContent = T.moisOffertsAnnuel; });
   var minPrix = Math.min.apply(null, Object.keys(T.formules).map(function (k) { return T.formules[k].prix; }));
@@ -62,7 +63,7 @@
     });
   });
 
-  /* ---------- exemples ---------- */
+  /* ---------- exemples : le salon (onglets + vrai livret dans le téléphone) ---------- */
   var demos = document.getElementById("demo-cards");
   var TYPE = { location: "Location courte durée", hotel: "Hôtel ★★★", maison: "Maison d'hôtes" };
   var PITCH = {
@@ -72,34 +73,85 @@
   };
   var FONT = { "Gloock": "Gloock, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif" };
   if (demos) {
-    demos.innerHTML = Object.keys(window.CDH_LIVRETS).filter(function (k) { return window.CDH_LIVRETS[k].demo; }).map(function (k) {
+    var ids = Object.keys(window.CDH_LIVRETS).filter(function (k) { return window.CDH_LIVRETS[k].demo; });
+    var cover = function (d) { return d.theme && d.theme.couverture ? new URL(d.theme.couverture, location.href).href : ""; };
+    demos.innerHTML =
+      '<div class="salon-choix" role="tablist" aria-label="Choisir un livret d\'exemple">' + ids.map(function (k, i) {
+        var d = window.CDH_LIVRETS[k], c = cover(d);
+        return '<button type="button" role="tab" id="tab-' + esc(k) + '" aria-controls="salon-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-salon="' + esc(k) + '">' +
+          '<span class="vign" style="--c:' + esc(d.theme.accent) + ';' + (c ? "background-image:url('" + esc(c) + "')" : "") + '" aria-hidden="true"></span>' +
+          '<span><span class="t">' + esc(TYPE[d.type] || "") + '</span><span class="nom" style="font-family:' + esc(FONT[d.theme.police] || FONT.Gloock) + '">' + esc(d.nom) + '</span><span class="ville">' + esc(d.ville) + "</span></span></button>";
+      }).join("") + "</div>" +
+      '<div class="salon-detail" id="salon-panel" role="tabpanel" aria-labelledby="tab-' + esc(ids[0]) + '"><p id="salon-pitch"></p>' +
+      '<div class="salon-qr"><div class="qr" id="salon-qr"></div><div><small>Scannez avec l\'appareil photo de votre téléphone, ou ouvrez-le ici.</small>' +
+      '<a class="btn ivoire small" id="salon-open" href="#" target="_blank" rel="noopener">Ouvrir le livret</a></div></div></div>' +
+      '<div class="salon-scene" id="salon-scene"><div class="salon-photo" data-reveal><img id="salon-img" alt="" loading="lazy"></div>' +
+      '<div class="phone salon-phone" data-reveal style="--d:.1s"><div class="screen"><iframe id="demo-frame" name="cdh-vitrine" loading="lazy" title="Livret d\'exemple"></iframe></div></div></div>';
+
+    var dframe = document.getElementById("demo-frame"), scene = document.getElementById("salon-scene");
+    var tabs = demos.querySelectorAll("[data-salon]");
+    var current = null;
+    var selectDemo = function (k, first) {
+      if (k === current) return;
+      current = k;
       var d = window.CDH_LIVRETS[k];
-      var url = window.cdhLivretUrl(k);
-      var covUrl = d.theme.couverture ? new URL(d.theme.couverture, location.href).href : "";
-      var cov = covUrl ? "--img:url('" + esc(covUrl) + "');" : "";
-      return '<article class="demo" style="--c:' + esc(d.theme.accent) + ';' + cov + '"><div class="demo-head' + (cov ? " has-img" : "") + '"><span class="t">' + esc(TYPE[d.type] || "") + '</span><h3 style="font-family:' + esc(FONT[d.theme.police] || FONT.Gloock) + '">' + esc(d.nom) + '</h3><span class="city">' + esc(d.ville) + "</span></div>" +
-        '<div class="demo-body"><p>' + esc(PITCH[k] || d.sousTitre) + '</p><div class="demo-foot"><div class="demo-qr">' + window.cdhQrSvg(url, { fg: "#12302A", margin: 1, label: "QR code du livret " + d.nom }) + "</div>" +
-        '<div><small>Scannez avec l\'appareil photo de votre téléphone</small><a class="btn small" href="livret.html#' + esc(k) + '" target="_blank" rel="noopener">Ouvrir le livret ' + I("fleche", "ico-s") + "</a></div></div></div></article>";
-    }).join("");
+      tabs.forEach(function (t) { var on = t.dataset.salon === k; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
+      document.getElementById("salon-panel").setAttribute("aria-labelledby", "tab-" + k);
+      document.getElementById("salon-pitch").textContent = PITCH[k] || d.sousTitre || "";
+      document.getElementById("salon-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(k), { fg: "#12302A", margin: 1, label: "QR code du livret " + d.nom });
+      document.getElementById("salon-open").href = "livret.html#" + k;
+      document.getElementById("salon-open").setAttribute("aria-label", "Ouvrir le livret " + d.nom + " dans un nouvel onglet");
+      var img = document.getElementById("salon-img");
+      var swap = function () {
+        img.src = cover(d); img.alt = "Photo de couverture du livret " + d.nom;
+        dframe.src = "livret.html#" + k; dframe.title = "Livret d'exemple : " + d.nom;
+        setTimeout(function () { scene.classList.remove("change"); }, 120);
+        setTimeout(function () { /* filet de sécurité si le livret n'a pas suivi */
+          try { if (dframe.contentWindow.document.title.indexOf(d.nom) < 0) dframe.src = "livret.html?v=" + Date.now() + "#" + k; } catch (e) {}
+        }, 1200);
+      };
+      if (first) { swap(); return; }
+      scene.classList.add("change");
+      setTimeout(swap, 260);
+    };
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { selectDemo(t.dataset.salon); });
+      t.addEventListener("keydown", function (e) {
+        var n = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
+        if (e.key === "Home") n = -i; if (e.key === "End") n = tabs.length - 1 - i;
+        if (!n) return;
+        e.preventDefault();
+        var nx = tabs[(i + n + tabs.length) % tabs.length]; nx.focus(); selectDemo(nx.dataset.salon);
+      });
+    });
+    selectDemo(ids[0], true);
   }
 
-  /* ---------- contenu d'un livret ---------- */
-  var FEATS = [
-    ["wifi", "Le Wi-Fi en un geste", "Nom du réseau et mot de passe en tête du livret, avec un bouton pour copier."],
-    ["cle", "Avant votre arrivée", "Un lien à envoyer la veille : adresse, itinéraire, accès et boîte à clés. Le voyageur arrive sans vous appeler."],
-    ["lavelinge", "Modes d'emploi en photos", "Lave-linge, plaques, chauffage, coffre-fort : chaque équipement expliqué en étapes numérotées, photos à l'appui."],
-    ["carte", "Carte interactive", "Le logement, vos adresses et vos idées de sorties sur une seule carte, avec l'itinéraire en un clic."],
-    ["montagne", "Idées de sorties", "Les visites et balades que vous recommandez vraiment, en images, avec la durée et la distance."],
-    ["cadeau", "Services en plus", "Départ tardif, panier petit-déjeuner, ménage : le voyageur demande en un clic, par WhatsApp, SMS ou e-mail."],
-    ["globe", "Français et anglais", "Le livret s'ouvre dans la langue du téléphone, avec un bouton FR / EN en haut de page."],
-    ["soleilnuage", "Météo et hors connexion", "La météo sur 4 jours, et un livret qui reste lisible sans réseau une fois ouvert."],
-    ["check", "Départ et avis", "Le voyageur coche sa check-list de départ, puis un bouton l'emmène sur votre page d'avis."],
-    ["recherche", "Recherche intégrée", "Le voyageur tape « poubelles » ou « parking » et tombe directement sur la bonne réponse."],
-    ["hopital", "Adresses et urgences", "Boulangerie, pharmacie, hôpital, 112 et centre antipoison : distance, horaires et appel en un clic."],
-    ["alerte", "Message du moment", "Travaux dans la rue, marché de Noël, offre du spa : un bandeau en haut du livret, quand vous voulez."]
+  /* ---------- contenu d'un livret, rangé par moment du séjour ---------- */
+  var MOMENTS = [
+    ["En arrivant", [
+      ["Avant votre arrivée", "Un lien à envoyer la veille : adresse, itinéraire, accès et boîte à clés. Le voyageur arrive sans vous appeler."],
+      ["Le Wi-Fi en un geste", "Nom du réseau et mot de passe en tête du livret, avec un bouton pour copier."],
+      ["Français et anglais", "Le livret s'ouvre dans la langue du téléphone, avec un bouton FR / EN en haut de page."],
+      ["Recherche intégrée", "Le voyageur tape « poubelles » ou « parking » et tombe directement sur la bonne réponse."]
+    ]],
+    ["Dans le logement", [
+      ["Modes d'emploi en photos", "Lave-linge, plaques, chauffage, coffre-fort : chaque équipement expliqué en étapes numérotées, photos à l'appui."],
+      ["Services en plus", "Départ tardif, panier petit-déjeuner, ménage : le voyageur demande en un clic, par WhatsApp, SMS ou e-mail."],
+      ["Message du moment", "Travaux dans la rue, marché de Noël, offre du spa : un bandeau en haut du livret, quand vous voulez."],
+      ["Météo et hors connexion", "La météo sur 4 jours, et un livret qui reste lisible sans réseau une fois ouvert."]
+    ]],
+    ["Dehors, puis au départ", [
+      ["Carte interactive", "Le logement, vos adresses et vos idées de sorties sur une seule carte, avec l'itinéraire en un clic."],
+      ["Idées de sorties", "Les visites et balades que vous recommandez vraiment, en images, avec la durée et la distance."],
+      ["Adresses et urgences", "Boulangerie, pharmacie, hôpital, 112 et centre antipoison : distance, horaires et appel en un clic."],
+      ["Départ et avis", "Le voyageur coche sa check-list de départ, puis un bouton l'emmène sur votre page d'avis."]
+    ]]
   ];
   var feats = document.getElementById("feats");
-  if (feats) feats.innerHTML = FEATS.map(function (f) { return '<div class="feat">' + I(f[0]) + "<h3>" + esc(f[1]) + "</h3><p>" + esc(f[2]) + "</p></div>"; }).join("");
+  if (feats) feats.innerHTML = MOMENTS.map(function (m) {
+    return '<div class="moment"><h3>' + esc(m[0]) + "</h3><dl>" + m[1].map(function (f) { return "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl></div>";
+  }).join("");
 
   /* ---------- offres ---------- */
   var plans = document.getElementById("plans");
@@ -107,15 +159,15 @@
     var f = T.formules[k];
     return '<article class="plan' + (f.populaire ? " feature" : "") + '">' + (f.populaire ? '<span class="badge">Le plus choisi</span>' : "") +
       "<h3>" + esc(f.nom) + '</h3><p class="acc">' + esc(f.accroche) + '</p><div class="price"><b>' + eur(f.prix) + "</b><span>par livret, payé une fois</span></div>" +
-      "<ul>" + f.inclus.map(function (x) { return "<li>" + I("check", "ico-s") + "<span>" + esc(x) + "</span></li>"; }).join("") + "</ul>" +
-      '<div style="display:grid;gap:12px"><span class="meta">' + I("horloge", "ico-s") + "Livré en " + esc(f.delai) + '</span><a class="btn' + (f.populaire ? "" : " ghost") + '" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
+      "<ul>" + f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
+      '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '</span><a class="btn' + (f.populaire ? "" : " trait") + '" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
   }).join("");
 
   var forf = document.getElementById("forfaits");
   if (forf) forf.innerHTML = Object.keys(T.forfaits).map(function (k) {
     var f = T.forfaits[k];
     return '<div class="forfait"><h4>' + esc(f.nom) + (f.populaire ? " <small>Recommandé</small>" : "") + '</h4><div class="pm">' + eur(f.mensuel) + " <span>/ mois / livret</span></div><p>" + esc(f.accroche) + "</p><ul>" +
-      f.inclus.map(function (x) { return "<li>" + I("check", "ico-s") + "<span>" + esc(x) + "</span></li>"; }).join("") + "</ul></div>";
+      f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
   }).join("");
 
   var extras = document.getElementById("extras");
@@ -226,4 +278,44 @@
       });
     });
   });
+  /* ---------- finitions : en-tête, apparitions, rail du devis, total ---------- */
+  var top = document.getElementById("top");
+  if (top) {
+    var onScroll = function () { top.classList.toggle("scrolled", window.scrollY > 8); };
+    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  }
+  var reveals = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window) {
+    var ro = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("vu"); ro.unobserve(x.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    reveals.forEach(function (el) { ro.observe(el); });
+  } else reveals.forEach(function (el) { el.classList.add("vu"); });
+
+  var railLinks = document.querySelectorAll(".rail a");
+  if (railLinks.length && "IntersectionObserver" in window) {
+    var visible = {};
+    var mark = function () {
+      var first = null;
+      railLinks.forEach(function (a) { if (!first && visible[a.getAttribute("href").slice(1)]) first = a; });
+      if (first) railLinks.forEach(function (a) { a.classList.toggle("actif", a === first); });
+    };
+    var so = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { visible[x.target.id] = x.isIntersecting; }); mark();
+    }, { rootMargin: "-30% 0px -50% 0px" });
+    railLinks.forEach(function (a) { var t = document.getElementById(a.getAttribute("href").slice(1)); if (t) so.observe(t); });
+  }
+
+  var folio = document.getElementById("folio");
+  if (folio && "MutationObserver" in window) {
+    var tot = function () { var t = folio.querySelector(".folio-tot .big .a"); return t ? t.textContent : ""; };
+    var lastTot = tot(), tm = null;
+    new MutationObserver(function () {
+      var v = tot();
+      if (v === lastTot) return;
+      lastTot = v;
+      folio.classList.remove("maj"); void folio.offsetWidth; folio.classList.add("maj");
+      clearTimeout(tm); tm = setTimeout(function () { folio.classList.remove("maj"); }, 700);
+    }).observe(folio, { childList: true });
+  }
 })();

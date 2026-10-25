@@ -22,6 +22,8 @@ Site statique (HTML, CSS, JavaScript sans framework) : il s'ouvre en double-cliq
 - **Nom de la marque, e-mail, téléphone, SIRET, mentions du devis** → `assets/js/config.js`
 - **Prix, formules, forfaits, options, supports** → `assets/js/tarifs.js` (la page Offres et le devis se mettent à jour tout seuls)
 - **Livrets publiés** → `data/livrets.js`
+- **Couleurs et polices de la vitrine** → `assets/css/site.css`, tout en haut (`--ivoire`, `--sapin`, `--pierre`, `--laiton`…). Polices : Newsreader (titres) et Hanken Grotesk (texte).
+- **Photos de la vitrine** → dans `index.html` : la chambre du héros (`photos/hotel-les-ondines/chambre.jpg`), la boîte à clés et la table d'hôtes. Remplacez-les par vos propres photos dès que possible (même cadre, recadrage automatique).
 
 ## Ajouter le livret d'un client (sans espace client)
 
