@@ -627,13 +627,14 @@
     if (tab === "arrivee") renderArrLink();
   }
   var pubBtn = document.getElementById("publish");
+  pubBtn.textContent = COMPTE ? "Publier" : "Enregistrer mon essai"; /* démonstration : rien n'est mis en ligne */
   pubBtn.addEventListener("click", function () {
     if (COMPTE) { publierCompte(false); return; }
     var saved = S.save(cleaned());
-    if (!saved) { toast("Publication impossible : le stockage de ce navigateur est bloqué."); return; }
+    if (!saved) { toast("Enregistrement impossible : le stockage de ce navigateur est bloqué."); return; }
     doc.majLe = saved.majLe;
     dropDraft(doc.id); setStatus(false); refreshPick();
-    toast("Publié. Le livret affiche cette version sur cet appareil.");
+    toast("Essai enregistré sur cet appareil. Pour mettre un vrai livret en ligne, il faut un compte client.", 4500);
   });
 
   /* ---------- mode connecté : publication dans la base ---------- */
