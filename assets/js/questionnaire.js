@@ -120,12 +120,16 @@
         { k: "autre", l: "Autre chose à nous dire ?", zone: 3 }
       ],
       note: "Formule Essentiel : rien à livrer. Vous recevez une affiche A5 en PDF, avec le QR code du livret et celui du Wi-Fi." },
-    { id: "photos", titre: "Photos à nous envoyer", intro: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Les photos ne passent pas par ce formulaire : envoyez-les par WhatsApp, par e-mail ou par un lien de partage (Google Drive, WeTransfer).",
+    { id: "photos", titre: "Photos à nous envoyer", depot: 1, introAlt: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Envoyez-les par WhatsApp, par e-mail ou par un lien de partage (Google Drive, WeTransfer).", intro: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Ajoutez-les ci-dessous : elles sont réduites automatiquement et envoyées en même temps que vos réponses.",
       liste: ["Une belle photo du logement ou de la vue, pour la couverture", "La façade ou l'entrée, pour que le voyageur la reconnaisse", "La boîte à clés ou la serrure à code", "Le parking ou l'emplacement de stationnement", "Chaque appareil de la partie 5 : en entier, puis ses boutons de face", "Le tableau électrique et l'arrivée d'eau", "Les poubelles et les bacs de tri", "Vos photos des environs, si vous voulez qu'on les utilise pour les sorties", "Votre logo (formule Premium)"],
       q: [
-        { k: "photos", l: "Comment nous envoyez-vous vos photos ?", h: "Collez un lien de partage, ou indiquez « je les envoie par WhatsApp / par e-mail ».", zone: 2 }
+        { k: "photos", l: "Autre moyen d'envoi (facultatif)", h: "Un lien de partage (Google Drive, WeTransfer), ou « je les envoie par WhatsApp / par e-mail ».", zone: 2 }
       ] }
   ];
+
+  var SUJETS = ["Couverture : logement ou vue", "Façade ou entrée", "Boîte à clés ou serrure", "Parking", "Appareil, en entier", "Appareil, boutons de face", "Tableau électrique, arrivée d'eau", "Poubelles et tri", "Environs, sorties", "Logo", "Autre"];
+  var MAXPHOTOS = 40, photos = [], dossier = "";
+  var DEPOT = !!(C.supabaseUrl && C.supabaseCle);
 
   var form = $("#q-form"), rail = $("#q-rail"), prog = $("#q-prog"), saveEl = $("#q-save");
   var etat = { n: 0 };
@@ -163,14 +167,21 @@
     return '<div class="q"' + meta + '><label class="q-lab" for="' + id + '">' + esc(lab) + (q.req ? ' <b class="q-req" title="obligatoire">*</b>' : "") + "</label>" + h + ctl + "</div>";
   }
 
+  function depotHtml() {
+    return '<div class="q-depot" id="q-depot"><p class="q-lab">Vos photos</p>' +
+      '<small class="q-h">Choisissez-les dans votre galerie, ou prenez-les à l\'instant. Pour chaque photo, indiquez ce qu\'elle montre : cela nous évite de deviner. Elles ne sont pas conservées si vous fermez la page avant d\'envoyer.</small>' +
+      '<label class="btn trait small q-add"><input type="file" id="q-files" accept="image/*" multiple hidden>Ajouter des photos</label>' +
+      '<p class="q-count" id="q-count" aria-live="polite"></p><ul class="q-photos" id="q-photos"></ul></div>';
+  }
   function build() {
     form.innerHTML = SECTIONS.map(function (s, si) {
       var n = si + 1;
       return '<section class="q-sec" id="partie-' + n + '" data-s="' + si + '"' + (s.min ? ' data-min="' + s.min + '"' : "") + ' aria-labelledby="t-' + n + '">' +
-        '<header class="q-head"><span class="q-num" aria-hidden="true">' + n + '</span><div><h2 id="t-' + n + '">' + esc(nb(s.titre)) + '</h2><p class="q-intro">' + esc(nb(s.intro)) + "</p></div></header>" +
+        '<header class="q-head"><span class="q-num" aria-hidden="true">' + n + '</span><div><h2 id="t-' + n + '">' + esc(nb(s.titre)) + '</h2><p class="q-intro">' + esc(nb(s.depot && !DEPOT ? s.introAlt : s.intro)) + "</p></div></header>" +
         (s.liste ? '<ul class="q-liste">' + s.liste.map(function (x) { return "<li>" + esc(nb(x)) + "</li>"; }).join("") + "</ul>" : "") +
         '<div class="q-body">' + s.q.map(function (q, i) { return champ(si, q, i); }).join("") + "</div>" +
         (s.note ? '<p class="q-note">' + esc(nb(s.note)) + "</p>" : "") +
+        (s.depot && DEPOT ? depotHtml() : "") +
         '<p class="q-skip" hidden></p></section>';
     }).join("");
     rail.innerHTML = SECTIONS.map(function (s, si) {
@@ -300,6 +311,72 @@
     $$(".q-sec", form).forEach(function (s) { io.observe(s); });
   }
 
+  /* ---------- photos : réduction sur l'appareil, envoi dans le dossier privé « depots » ---------- */
+  function reduire(file) {
+    return new Promise(function (ok, ko) {
+      var fin = function (src, w, h, rel) {
+        var k = Math.min(1, 1800 / Math.max(w, h)), c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+        c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+        if (rel) rel();
+        c.toBlob(function (b) {
+          if (!b) return ko();
+          if (b.size > 3000000) c.toBlob(function (b2) { b2 ? ok(b2) : ko(); }, "image/jpeg", .65); else ok(b);
+        }, "image/jpeg", .85);
+      };
+      var viaImg = function () {
+        var u = URL.createObjectURL(file), im = new Image();
+        im.onload = function () { fin(im, im.naturalWidth, im.naturalHeight, function () { URL.revokeObjectURL(u); }); };
+        im.onerror = function () { URL.revokeObjectURL(u); ko(); };
+        im.src = u;
+      };
+      if (window.createImageBitmap) createImageBitmap(file, { imageOrientation: "from-image" }).then(function (bm) { fin(bm, bm.width, bm.height, function () { if (bm.close) bm.close(); }); }, viaImg);
+      else viaImg();
+    });
+  }
+  function dessinerPhotos() {
+    var ul = $("#q-photos"); if (!ul) return;
+    ul.innerHTML = "";
+    photos.forEach(function (p, i) {
+      var li = document.createElement("li"); li.className = "q-photo" + (p.ok ? " ok" : "");
+      li.innerHTML = '<img alt="" src="' + p.url + '"><div><label class="q-col"><span>Ce que montre la photo</span><select>' + SUJETS.map(function (s) { return "<option" + (s === p.sujet ? " selected" : "") + ">" + esc(s) + "</option>"; }).join("") + '</select></label><button type="button" class="q-rm">Retirer</button></div>';
+      $("select", li).addEventListener("change", function (e) { p.sujet = e.target.value; });
+      $(".q-rm", li).addEventListener("click", function () { URL.revokeObjectURL(p.url); photos.splice(i, 1); dessinerPhotos(); });
+      ul.appendChild(li);
+    });
+    var n = photos.length; $("#q-count").textContent = n ? n + " photo" + (n > 1 ? "s" : "") + " prête" + (n > 1 ? "s" : "") + " à l'envoi (" + Math.round(photos.reduce(function (t, p) { return t + p.blob.size; }, 0) / 1024 / 1024 * 10) / 10 + " Mo)" : "";
+  }
+  function ajouterPhotos(files) {
+    var liste = Array.prototype.slice.call(files), refus = 0, c = $("#q-count");
+    c.textContent = "Préparation des photos…";
+    var suite = liste.reduce(function (pr, f) {
+      return pr.then(function () {
+        if (photos.length >= MAXPHOTOS) { refus++; return; }
+        return reduire(f).then(function (b) { photos.push({ blob: b, url: URL.createObjectURL(b), sujet: photos.length ? "Autre" : SUJETS[0], ok: false }); }, function () { refus++; });
+      });
+    }, Promise.resolve());
+    suite.then(function () {
+      dessinerPhotos();
+      if (refus) c.textContent += ". " + refus + " photo" + (refus > 1 ? "s" : "") + " non ajoutée" + (refus > 1 ? "s" : "") + " (format non pris en charge, ou maximum de " + MAXPHOTOS + " atteint).";
+    });
+  }
+  function slug(t) { return String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "photo"; }
+  function envoyerPhotos(btn, lab) {
+    var restantes = photos.filter(function (p) { return !p.ok; });
+    if (!photos.length) return Promise.resolve(0);
+    if (!dossier) dossier = new Date().toISOString().slice(0, 10) + "-" + slug(val("logement") || val("nom")) + "-" + Math.random().toString(36).slice(2, 8);
+    var n = 0;
+    return photos.reduce(function (pr, p, i) {
+      return pr.then(function () {
+        if (p.ok) return;
+        btn.textContent = "Photos " + (photos.filter(function (x) { return x.ok; }).length + 1) + " sur " + photos.length + "…";
+        var nom = (i < 9 ? "0" : "") + (i + 1) + "-" + slug(p.sujet) + ".jpg";
+        return fetch(C.supabaseUrl.replace(/\/$/, "") + "/storage/v1/object/depots/" + dossier + "/" + nom, { method: "POST", headers: { apikey: C.supabaseCle, Authorization: "Bearer " + C.supabaseCle, "Content-Type": "image/jpeg", "x-upsert": "false" }, body: p.blob })
+          .then(function (r) { if (!r.ok && r.status !== 409) throw new Error("photo " + r.status); p.ok = true; });
+      });
+    }, Promise.resolve()).then(function () { return photos.length; });
+  }
+
   /* ---------- envoi ---------- */
   var status = $("#q-status");
   function msg(html, kind) { status.className = "q-status " + (kind || ""); status.innerHTML = html; status.hidden = !html; }
@@ -327,11 +404,19 @@
     var text = recap(), btn = $("#q-send"), endpoint = C.formulaireQuestionnaire || C.formulaireDevis || "";
     if (!endpoint) { fallback(text); return; }
     btn.disabled = true; var lab = btn.textContent; btn.textContent = "Envoi…"; msg("");
+    var pr = envoyerPhotos(btn, lab).catch(function () {
+      btn.disabled = false; btn.textContent = lab; dessinerPhotos();
+      msg("<b>Toutes les photos n'ont pas pu être envoyées.</b><span>Vos réponses sont conservées. Réessayez dans un instant (les photos déjà parties ne seront pas renvoyées), ou retirez-les et envoyez-les plus tard par WhatsApp ou par e-mail.</span>", "err");
+      return null;
+    });
+    pr.then(function (nbPhotos) {
+    if (nbPhotos === null) return;
     var body = new URLSearchParams();
     body.set("_subject", "Questionnaire · " + (val("logement") || val("nom")));
     body.set("email", val("email")); body.set("nom", val("nom")); body.set("logement", val("logement")); body.set("formule", formule());
     lire().forEach(function (b) { body.set(b.titre, b.lignes.join("\n")); });
-    fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: body.toString() })
+    if (nbPhotos) body.set("Photos déposées", nbPhotos + " photo" + (nbPhotos > 1 ? "s" : "") + ", dossier « depots/" + dossier + " » (Supabase → Storage)");
+    return fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: body.toString() })
       .then(function (r) {
         if (!r.ok) throw new Error("http");
         try { localStorage.removeItem(KEY); } catch (e) {}
@@ -340,11 +425,13 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       })
       .catch(function () { btn.disabled = false; btn.textContent = lab; fallback(text); });
+    });
   });
+  form.addEventListener("change", function (e) { if (e.target.id === "q-files") { ajouterPhotos(e.target.files); e.target.value = ""; } });
   $("#q-vider").addEventListener("click", function () {
     if (!window.confirm("Effacer toutes vos réponses sur cet appareil ?")) return;
     try { localStorage.removeItem(KEY); } catch (e) {}
-    form.reset(); change(); saveEl.textContent = "Réponses effacées"; msg("");
+    form.reset(); photos.forEach(function (p) { URL.revokeObjectURL(p.url); }); photos = []; dessinerPhotos(); change(); saveEl.textContent = "Réponses effacées"; msg("");
   });
   $("#q-fichier").addEventListener("click", function () { telecharger(recap()); });
 

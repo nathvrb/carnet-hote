@@ -411,6 +411,41 @@ drop policy if exists "cdh photos suppression" on storage.objects;
 create policy "cdh photos suppression" on storage.objects for delete to authenticated
   using (bucket_id = 'photos' and cdh.peut_modifier((storage.foldername(name))[1]));
 
+-- ---------------------------------------------------------------------
+--  Photos des futurs clients (questionnaire en ligne) : dossier PRIVÉ
+--  « depots/<dossier-du-client>/NN-sujet.jpg ».
+--  Tout visiteur peut déposer des images (3 Mo maximum chacune, 40 par
+--  dossier, noms contrôlés) mais personne ne peut les relire ni les
+--  supprimer depuis le site : vous les consultez dans Supabase
+--  (Storage → depots) ou, connecté en administrateur, depuis la console.
+-- ---------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('depots', 'depots', false, 3145728, array['image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+create or replace function cdh.nb_depots(p_dossier text) returns integer
+language sql stable security definer set search_path = ''
+as $$ select count(*)::int from storage.objects where bucket_id = 'depots' and (storage.foldername(name))[1] = p_dossier $$;
+grant usage on schema cdh to anon;
+grant execute on function cdh.nb_depots(text) to anon, authenticated;
+
+drop policy if exists "cdh depots envoi" on storage.objects;
+create policy "cdh depots envoi" on storage.objects for insert to anon, authenticated
+  with check (bucket_id = 'depots'
+    and name ~ '^[a-z0-9-]{8,80}/[0-9]{2}-[a-z0-9-]{1,60}\.(jpg|png|webp)$'
+    and cdh.nb_depots((storage.foldername(name))[1]) < 40);
+
+drop policy if exists "cdh depots lecture admin" on storage.objects;
+create policy "cdh depots lecture admin" on storage.objects for select to authenticated
+  using (bucket_id = 'depots' and cdh.est_admin());
+
+drop policy if exists "cdh depots suppression admin" on storage.objects;
+create policy "cdh depots suppression admin" on storage.objects for delete to authenticated
+  using (bucket_id = 'depots' and cdh.est_admin());
+
 -- Fin. Étape suivante : créez votre compte (Authentication → Users →
 -- Add user → Create new user, « Auto Confirm User » coché), puis :
 --   select cdh.ajouter_admin('votre@email.fr');

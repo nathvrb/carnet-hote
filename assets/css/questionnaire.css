@@ -96,3 +96,15 @@
   .q-num { font-size: 40px; }
   .q-opt span { min-height: 46px; }
 }
+
+/* dépôt de photos */
+.q-depot { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--filet); }
+.q-add { cursor: pointer; margin: 4px 0 12px; }
+.q-add:focus-within { outline: 2px solid var(--laiton); outline-offset: 3px; }
+.q-count { margin: 0 0 12px; font-size: 14.5px; color: var(--gris); }
+.q-photos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.q-photo { display: grid; grid-template-columns: 84px 1fr; gap: 12px; padding: 10px; background: var(--papier); border: 1px solid var(--filet); align-items: start; }
+.q-photo.ok { border-left: 3px solid var(--ok); }
+.q-photo img { width: 84px; height: 84px; object-fit: cover; background: var(--pierre); }
+.q-photo select { width: 100%; min-height: 40px; padding: 6px 8px; background: var(--ivoire); border: 1px solid var(--filet); border-radius: 2px; font-size: 14.5px; }
+.q-rm { margin-top: 6px; padding: 0; background: none; border: 0; color: var(--danger); font-size: 13.5px; text-decoration: underline; cursor: pointer; min-height: 32px; }
