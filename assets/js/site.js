@@ -44,6 +44,21 @@
       frame.src = "livret.html#" + id;
       frame.title = "Aperçu d'un livret d'accueil : " + (d ? d.nom : "");
       setFob(id);
+      var open = document.getElementById("hero-open");
+      if (open) open.href = "livret.html#" + id;
+      /* filet de sécurité : si le téléphone n'a pas changé de livret, on le recharge */
+      setTimeout(function () {
+        try {
+          var doc = frame.contentWindow.document;
+          if (d && doc.title.indexOf(d.nom) < 0) frame.src = "livret.html?v=" + Date.now() + "#" + id;
+        } catch (e) {}
+      }, 900);
+      /* sur petit écran, le téléphone est sous les clés : on l'amène à l'écran */
+      var ph = frame.closest(".phone"), r = ph && ph.getBoundingClientRect();
+      if (r && (r.top < 0 || r.bottom > window.innerHeight)) {
+        var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        ph.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+      }
     });
   });
 
