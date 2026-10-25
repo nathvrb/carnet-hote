@@ -71,7 +71,7 @@
     "hotel-les-ondines": "Le classeur de chambre en version digitale : petit-déjeuner, spa, room service, parking et départ tardif.",
     "bastide-aux-amandiers": "Table d'hôtes, règles de la piscine, marchés provençaux et villages perchés du Luberon."
   };
-  var FONT = { "Gloock": "Gloock, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif" };
+  var FONT = { "Gloock": "Gloock, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif", "Newsreader": "Newsreader, Georgia, serif" };
   if (demos) {
     var ids = Object.keys(window.CDH_LIVRETS).filter(function (k) { return window.CDH_LIVRETS[k].demo; });
     var cover = function (d) { return d.theme && d.theme.couverture ? new URL(d.theme.couverture, location.href).href : ""; };

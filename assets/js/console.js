@@ -890,7 +890,7 @@
   document.getElementById("poster-wifi").addEventListener("change", drawPoster);
   bindCopy("copy-url", "qr-url", "Adresse copiée");
 
-  var FONT_CSS = { "Gloock": '"Gloock", Georgia, serif', "Marcellus": '"Marcellus", Georgia, serif', "Young Serif": '"Young Serif", Georgia, serif', "Schibsted Grotesk": '"Schibsted Grotesk", system-ui, sans-serif' };
+  var FONT_CSS = { "Gloock": '"Gloock", Georgia, serif', "Marcellus": '"Marcellus", Georgia, serif', "Young Serif": '"Young Serif", Georgia, serif', "Newsreader": '"Newsreader", Georgia, serif', "Schibsted Grotesk": '"Schibsted Grotesk", system-ui, sans-serif' };
   function wrap(ctx, text, maxW) {
     var words = String(text).split(/\s+/), out = [], cur = "";
     words.forEach(function (w) { var t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t; });

@@ -30,6 +30,7 @@
     "Gloock": '"Gloock", Georgia, serif',
     "Marcellus": '"Marcellus", Georgia, serif',
     "Young Serif": '"Young Serif", Georgia, serif',
+    "Newsreader": '"Newsreader", Georgia, serif',
     "Schibsted Grotesk": '"Schibsted Grotesk", system-ui, sans-serif'
   };
 
