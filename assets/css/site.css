@@ -234,9 +234,12 @@ p, li, dd, summary { text-wrap: pretty; }
   padding: 20px 0; border-bottom: 1px solid rgba(243, 238, 227, .2); position: relative;
   color: var(--sur-sapin-doux); transition: color .25s;
 }
-.salon-choix button::before { content: ""; position: absolute; left: -24px; top: 50%; width: 10px; height: 1px; background: var(--laiton); opacity: 0; transform: translateX(-6px); transition: opacity .3s, transform .3s var(--ease); }
+.salon-choix button::before { content: ""; position: absolute; left: -28px; top: 50%; width: 16px; height: 1px; background: var(--laiton); opacity: 0; transform: translateX(-6px); transition: opacity .3s, transform .3s var(--ease); }
 .salon-choix button[aria-selected="true"]::before { opacity: 1; transform: none; }
 .salon-choix button:hover, .salon-choix button[aria-selected="true"] { color: var(--sur-sapin); }
+.salon-choix button > span:last-child { transition: opacity .3s; }
+.salon-choix button[aria-selected="false"] > span:last-child { opacity: .5; }
+.salon-choix button[aria-selected="false"]:hover > span:last-child { opacity: .8; }
 .salon-choix button:focus-visible { outline: 2px solid var(--laiton); outline-offset: 4px; }
 .vign { width: 58px; aspect-ratio: 100 / 136; background: var(--c) center / cover no-repeat; -webkit-mask: var(--tag) center / 100% 100% no-repeat; mask: var(--tag) center / 100% 100% no-repeat; opacity: .6; transition: opacity .3s; }
 .salon-choix button[aria-selected="true"] .vign, .salon-choix button:hover .vign { opacity: 1; }
