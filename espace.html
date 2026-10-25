@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Espace client · Carnet d'Hôte</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F1E8">
 <meta name="description" content="Connectez-vous pour modifier votre livret d'accueil.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400&display=swap">
 <link rel="stylesheet" href="assets/css/console.css">
 <link rel="stylesheet" href="assets/css/espace.css">
 </head>
@@ -16,7 +17,7 @@
 
 <header class="cbar" id="cbar">
   <a class="logo" href="index.html" title="Retour au site">
-    <svg viewBox="0 0 22 34" aria-hidden="true"><circle cx="11" cy="5.5" r="4.2" fill="none" stroke="var(--brass)" stroke-width="2"/><path d="M11 9.5c3.6 0 9 5.6 9 13.6C20 29 16 33 11 33S2 29 2 23.1C2 15.1 7.4 9.5 11 9.5Z" fill="var(--fob)"/><circle cx="11" cy="13" r="1.6" fill="var(--surface)"/></svg>
+    <svg viewBox="0 0 22 34" aria-hidden="true"><circle cx="11" cy="5.5" r="4.2" fill="none" stroke="var(--brass)" stroke-width="1.7"/><path d="M11 9.5c3.6 0 9 5.6 9 13.6C20 29 16 33 11 33S2 29 2 23.1C2 15.1 7.4 9.5 11 9.5Z" fill="var(--fob)"/><circle cx="11" cy="13" r="1.5" fill="var(--paper)"/></svg>
     <span data-brand>Carnet d'Hôte</span><span class="tag">Espace client</span>
   </a>
   <div class="cbar-actions" id="who" hidden>
@@ -41,8 +42,14 @@
   </section>
 
   <!-- Connexion -->
-  <section class="es-view es-card es-narrow" data-view="connexion" hidden>
-    <h1>Espace client</h1>
+  <section class="es-view es-login" data-view="connexion" hidden>
+   <figure class="es-visuel" aria-hidden="true">
+     <div class="es-objet"><span class="es-anneau"></span><div class="es-tag"><img src="photos/nid-des-tanneurs/boite-a-cles.jpg" alt="" width="800" height="1200"></div></div>
+     <figcaption>Un nouveau code, une adresse en plus, un message pour le week-end&nbsp;: votre livret suit votre logement.</figcaption>
+   </figure>
+   <div class="es-card">
+    <p class="es-sur">Espace client</p>
+    <h1>Modifier mon livret</h1>
     <p class="lead">Modifiez votre livret d'accueil quand vous voulez&nbsp;: Wi-Fi, message du moment, adresses, photos. Vos voyageurs voient la nouvelle version dès que vous publiez.</p>
     <form id="f-login" class="stack" novalidate>
       <label class="fld" for="l-mail"><span>E-mail</span><input id="l-mail" type="email" autocomplete="username" inputmode="email" required></label>
@@ -54,10 +61,12 @@
       <button class="linkbtn" type="button" data-go="oubli">Mot de passe oublié&nbsp;?</button>
     </form>
     <p class="hint es-foot">Pas encore de compte&nbsp;? Il est créé pour vous avec le forfait Autonomie. <a data-mail href="#">Écrivez-nous</a>.</p>
+   </div>
   </section>
 
   <!-- Mot de passe oublié -->
   <section class="es-view es-card es-narrow" data-view="oubli" hidden>
+    <p class="es-sur">Espace client</p>
     <h1>Mot de passe oublié</h1>
     <p class="lead">Indiquez l'e-mail de votre compte&nbsp;: vous recevrez un lien pour choisir un nouveau mot de passe.</p>
     <form id="f-oubli" class="stack" novalidate>
@@ -70,6 +79,7 @@
 
   <!-- Nouveau mot de passe (après le lien reçu par e-mail) -->
   <section class="es-view es-card es-narrow" data-view="nouveau" hidden>
+    <p class="es-sur">Espace client</p>
     <h1>Nouveau mot de passe</h1>
     <p class="lead" id="n-lead">Choisissez votre nouveau mot de passe (8 caractères minimum).</p>
     <form id="f-nouveau" class="stack" novalidate>
@@ -86,6 +96,7 @@
   <section class="es-view" data-view="tableau" hidden>
     <div class="es-head">
       <div>
+        <p class="es-sur">Espace client</p>
         <h1 id="t-titre">Vos livrets</h1>
         <p class="lead" id="t-lead">Choisissez un livret pour le modifier. Rien ne change pour vos voyageurs tant que vous n'avez pas cliqué sur « Publier ».</p>
       </div>

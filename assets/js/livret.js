@@ -810,6 +810,18 @@
     setTimeout(function () { el.remove(); }, 2600);
   }
   function smooth() { return matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
+  /* Défilement limité à la page du livret : scrollIntoView ferait aussi défiler
+     la page qui l'affiche (téléphone de la vitrine, aperçu de la console). */
+  function goTo(el, block, behavior) {
+    var r = el.getBoundingClientRect(), y;
+    if (block === "center") y = r.top + window.scrollY - (window.innerHeight - r.height) / 2;
+    else {
+      var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      var mar = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+      y = r.top + window.scrollY - pad - mar; /* même calcul que scrollIntoView */
+    }
+    window.scrollTo({ top: Math.max(0, Math.round(y)), behavior: behavior || "auto" });
+  }
 
   function bind(d, t, lang) {
     var lbtn = document.getElementById("lang-btn"), llist = document.getElementById("lang-list");
@@ -914,7 +926,7 @@
     app.querySelectorAll(".toc a, [data-jump]").forEach(function (l) {
       l.addEventListener("click", function (ev) {
         var target = document.getElementById(l.getAttribute("href").slice(1));
-        if (target) { ev.preventDefault(); target.scrollIntoView({ behavior: smooth() }); }
+        if (target) { ev.preventDefault(); goTo(target, "start", smooth()); }
       });
     });
   }
@@ -970,8 +982,8 @@
       var y = window.scrollY;
       forcedLang = ev.data.lang || "fr";
       render(ev.data.livret);
-      if (ev.data.open) { var el = document.getElementById("r-" + ev.data.open); if (el) { el.open = true; el.scrollIntoView({ block: "center" }); return; } }
-      if (ev.data.section) { var s = document.getElementById("s-" + ev.data.section); if (s) { s.scrollIntoView({ block: "start" }); return; } }
+      if (ev.data.open) { var el = document.getElementById("r-" + ev.data.open); if (el) { el.open = true; goTo(el, "center"); return; } }
+      if (ev.data.section) { var s = document.getElementById("s-" + ev.data.section); if (s) { goTo(s, "start"); return; } }
       window.scrollTo(0, y);
     });
     try { window.parent.postMessage({ type: "cdh:ready" }, "*"); } catch (e) {}
@@ -992,7 +1004,7 @@
     render(d, { view: view });
     if (scroll && view && !APERCU) {
       var target = document.getElementById("s-" + view);
-      if (target) setTimeout(function () { target.scrollIntoView({ block: "start" }); }, 60);
+      if (target) setTimeout(function () { goTo(target, "start"); }, 60);
     }
   }
   var bootSeq = 0;
