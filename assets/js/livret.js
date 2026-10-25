@@ -912,12 +912,21 @@
     progress();
 
     var links = app.querySelectorAll(".toc a");
+    /* le sommaire défile tout seul pour que la partie en cours reste visible */
+    var tocBar = app.querySelector(".toc");
+    function showChip(id) {
+      if (!tocBar) return;
+      var chip = tocBar.querySelector('a[data-s="' + id + '"]'); if (!chip) return;
+      var left = chip.offsetLeft - (tocBar.clientWidth - chip.offsetWidth) / 2;
+      tocBar.scrollTo({ left: Math.max(0, left), behavior: smooth() });
+    }
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
             var id = e.target.id.replace("s-", "");
             links.forEach(function (l) { l.setAttribute("aria-current", String(l.dataset.s === id)); });
+            showChip(id);
           }
         });
       }, { rootMargin: "-30% 0px -60% 0px" });
