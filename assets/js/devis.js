@@ -321,13 +321,20 @@
     update();
     var btn = document.getElementById("r-submit");
     btn.disabled = true; btn.textContent = "Envoi…";
-    var body = new URLSearchParams(new FormData(rf)).toString();
+    /* Champs propres à Netlify : inutiles (et bruyants dans le mail) avec Formspree */
+    var fd0 = new FormData(rf);
+    if (C.formulaireDevis) { fd0.delete("form-name"); fd0.delete("_gotcha"); if (document.querySelector("#request-form [name=_gotcha]").value) { btn.disabled = false; btn.textContent = "Envoyer ma demande"; return; } }
+    var body = new URLSearchParams(fd0).toString();
     var done = function (sent) {
       btn.disabled = false; btn.textContent = "Envoyer ma demande";
       status.hidden = false;
       if (sent) {
         status.className = "form-status ok";
-        status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! On vous répond sous 24 h à " + esc(mv) + ".</span>";
+        status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! On vous répond sous 24 h à " + esc(mv) + ".</span>" +
+          '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 15 minutes et vos réponses se sauvegardent.</span>' +
+          '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>';
+        /* Les informations déjà données sont reprises dans le questionnaire (stockées sur l'appareil, pas dans l'adresse) */
+        try { var st = state(); localStorage.setItem("cdh:questionnaire:prefill", JSON.stringify({ nom: nom.value.trim(), email: mv, tel: document.getElementById("r-tel").value.trim(), logement: document.getElementById("r-lieu").value.trim(), formule: st.formule, type: st.type })); } catch (e) {}
       } else {
         status.className = "form-status info";
         var recap = "Nom : " + nom.value.trim() + "\nE-mail : " + mv + "\nTéléphone : " + document.getElementById("r-tel").value + "\nÉtablissement : " + document.getElementById("r-lieu").value + "\nMessage : " + document.getElementById("r-msg").value + "\n\n" + document.getElementById("devis-texte").value;

@@ -242,6 +242,17 @@
     return Object.keys(raw.d).length > 0;
   }
 
+  /* Informations laissées dans le formulaire de devis : reprises une seule fois, puis effacées */
+  function prefill() {
+    var p; try { p = JSON.parse(localStorage.getItem("cdh:questionnaire:prefill") || "null"); localStorage.removeItem("cdh:questionnaire:prefill"); } catch (e) { p = null; }
+    if (!p) return;
+    var set = function (k, v) { var e = form.elements[name(0, k)]; if (e && v && !e.value) e.value = v; };
+    set("nom", p.nom); set("email", p.email); set("tel", p.tel); set("logement", p.logement);
+    var F = { essentiel: "Essentiel", confort: "Confort", premium: "Premium" }[p.formule];
+    var r = F && $('input[name="' + name(0, "formule") + '"][value="' + F + '"]', form); if (r) r.checked = true;
+    $("#q-reprise").textContent = "Nous avons repris vos informations du devis. Vérifiez-les, puis continuez."; $("#q-reprise").hidden = false;
+  }
+
   /* ---------- affichage selon la formule, avancement ---------- */
   function majFormule() {
     var f = (formule() || "").toLowerCase().replace(/ .*/, ""), rang = ORDRE[f] || 3; /* « je ne sais pas » → tout afficher */
@@ -318,7 +329,8 @@
     btn.disabled = true; var lab = btn.textContent; btn.textContent = "Envoi…"; msg("");
     var body = new URLSearchParams();
     body.set("_subject", "Questionnaire · " + (val("logement") || val("nom")));
-    body.set("email", val("email")); body.set("nom", val("nom")); body.set("logement", val("logement")); body.set("formule", formule()); body.set("questionnaire", text);
+    body.set("email", val("email")); body.set("nom", val("nom")); body.set("logement", val("logement")); body.set("formule", formule());
+    lire().forEach(function (b) { body.set(b.titre, b.lignes.join("\n")); });
     fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: body.toString() })
       .then(function (r) {
         if (!r.ok) throw new Error("http");
@@ -341,5 +353,6 @@
   document.querySelectorAll("[data-mail]").forEach(function (a) { a.href = "mailto:" + (C.email || "") + "?subject=" + encodeURIComponent("Questionnaire"); a.textContent = C.email || a.textContent; });
   build();
   if (restaurer()) { $("#q-reprise").hidden = false; }
+  else prefill();
   majFormule(); majAvancement(); suivre();
 })();

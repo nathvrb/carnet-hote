@@ -635,3 +635,4 @@ p, li, dd, summary { text-wrap: pretty; }
   .folio-col { position: static; }
   .folio { box-shadow: none; border: 1px solid #999; max-width: 560px; margin: 0 auto; background: #fff; color: #000; }
 }
+.form-status .btn { justify-self: start; }
