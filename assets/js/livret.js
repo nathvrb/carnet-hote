@@ -939,7 +939,7 @@
       document.getElementById("retry").addEventListener("click", function () { boot(route()); });
       return;
     }
-    app.innerHTML = '<main class="notfound"><h1>' + esc(t.introuvable) + "</h1><p>" + esc(t.introuvableTxt) + '</p><p><a href="index.html">' + esc(t.retour) + "</a></p></main>";
+    app.innerHTML = '<main class="notfound"><h1>' + esc(t.introuvable) + "</h1><p>" + esc(t.introuvableTxt) + "</p></main>";
   }
   function loading() {
     app.innerHTML = '<main class="notfound is-loading" aria-busy="true"><span class="ld-dot" aria-hidden="true"></span><p>' + esc(TXT[uiLang()].chargement) + "</p></main>";
