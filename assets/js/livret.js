@@ -27,7 +27,8 @@
   })();
 
   var FONTS = {
-    "Gloock": '"Gloock", Georgia, serif',
+    "Lora": '"Lora", Georgia, serif',
+    "Gloock": '"Lora", Georgia, serif', /* ancien choix, remplacé par Lora (plus lisible) */
     "Marcellus": '"Marcellus", Georgia, serif',
     "Young Serif": '"Young Serif", Georgia, serif',
     "Newsreader": '"Newsreader", Georgia, serif',
@@ -47,6 +48,8 @@
       recherche: "Chercher : chauffage, poubelles, parking…", rechercheLabel: "Chercher dans le livret", effacer: "Effacer la recherche",
       resultats: function (n, q) { return n + " résultat" + (n > 1 ? "s" : "") + " pour « " + q + " »"; }, aucun: "Aucun résultat. Essayez un autre mot ou contactez votre hôte.",
       arriveeTitre: "Avant votre arrivée", arriveeSub: "Comment venir et entrer, sans stress.",
+      hubTitre: "Que cherchez-vous ?",
+      hub: { arrivee: "Adresse, accès, clés", logement: function (n) { return n + (n > 1 ? " rubriques" : " rubrique"); }, services: function (n) { return n + (n > 1 ? " services à demander" : " service à demander"); }, adresses: function (n) { return n + (n > 1 ? " adresses" : " adresse"); }, carte: "Tout sur une carte", activites: function (n) { return n + (n > 1 ? " idées de sorties" : " idée de sortie"); }, depart: "Check-list avant de partir", urgences: "112, 15, 17, 18" },
       bientot: "Votre séjour approche ! Voici tout ce qu'il faut savoir pour arriver.",
       adresse: "Adresse", itineraire: "Itinéraire", copierAdresse: "Copier l'adresse", adresseCopiee: "Adresse copiée",
       prevenir: "Prévenir de mon heure d'arrivée", msgArrivee: function (n) { return "Bonjour, nous arriverons à " + n + " vers … h. À bientôt !"; },
@@ -82,6 +85,8 @@
       recherche: "Search: heating, bins, parking…", rechercheLabel: "Search this welcome book", effacer: "Clear search",
       resultats: function (n, q) { return n + " result" + (n > 1 ? "s" : "") + " for “" + q + "”"; }, aucun: "No results. Try another word or contact your host.",
       arriveeTitre: "Before you arrive", arriveeSub: "How to get here and get in, stress-free.",
+      hubTitre: "What are you looking for?",
+      hub: { arrivee: "Address, access, keys", logement: function (n) { return n + (n > 1 ? " topics" : " topic"); }, services: function (n) { return n + (n > 1 ? " extras to request" : " extra to request"); }, adresses: function (n) { return n + (n > 1 ? " places" : " place"); }, carte: "Everything on one map", activites: function (n) { return n + (n > 1 ? " ideas" : " idea"); }, depart: "Checklist before you go", urgences: "112, 15, 17, 18" },
       bientot: "Your stay is coming up! Here is everything you need to arrive.",
       adresse: "Address", itineraire: "Directions", copierAdresse: "Copy address", adresseCopiee: "Address copied",
       prevenir: "Tell us when you'll arrive", msgArrivee: function (n) { return "Hello, we will arrive at " + n + " around … See you soon!"; },
@@ -203,6 +208,9 @@
   function coverW() { var w = window.innerWidth || 400; return w >= 1100 ? 1100 : w >= 760 ? 800 : 400; }
 
   /* Bloc photo : l'illustration reste dessous tant que la photo n'est pas chargée */
+  function head(icon, title, sub) {
+    return '<div class="section-head"><span class="sh-ico" aria-hidden="true">' + I(icon) + '</span><div class="sh-t"><h2>' + esc(title) + "</h2>" + (sub ? "<p>" + esc(sub) + "</p>" : "") + "</div></div>";
+  }
   function photo(src, alt, icon, cls) {
     return '<div class="ph' + (cls ? " " + cls : "") + '"><span class="ph-fb" aria-hidden="true">' + I(icon, "ph-mark") + '<span class="ph-badge">' + I(icon) + "</span></span>" +
       (safeImg(src) ? '<img data-ph src="' + esc(safeImg(src)) + '" alt="' + esc(alt || "") + '" loading="lazy" decoding="async">' : "") + "</div>";
@@ -271,7 +279,7 @@
     var theme = d.theme || {};
     root.lang = lang;
     root.style.setProperty("--accent", /^#[0-9a-f]{3,8}$/i.test(theme.accent || "") ? theme.accent : "#1D5C7A");
-    root.style.setProperty("--display", FONTS[theme.police] || FONTS.Gloock);
+    root.style.setProperty("--display", FONTS[theme.police] || FONTS.Lora);
     document.title = (d.nom || "Livret d'accueil") + (lang === "en" ? " · Welcome book" : " · Livret d'accueil");
 
     var h = [];
@@ -326,9 +334,6 @@
       h.push('<aside class="annonce ' + esc(st) + '">' + I(ic) + "<div><b>" + esc(t.annonce[st] || t.annonce.info) + "</b><p>" + esc(d.annonce.texte) + "</p></div></aside>");
     }
 
-    /* Recherche */
-    h.push('<div class="search-wrap"><div class="search">' + I("recherche") + '<input id="q" type="search" placeholder="' + esc(t.recherche) + '" aria-label="' + esc(t.rechercheLabel) + '" autocomplete="off"><button class="search-clear" type="button" id="q-clear" aria-label="' + esc(t.effacer) + '" hidden>' + I("croix", "ico-s") + '</button></div><p class="search-info" id="q-info" hidden></p></div>');
-
     /* Sommaire */
     var arr = d.arrivee || {};
     var hasArr = !!(arr.texte || (arr.blocs || []).length || d.adresse);
@@ -344,13 +349,21 @@
     if ((d.activites || []).length) secs.push(["activites", t.toc.activites]);
     if (d.depart.length) secs.push(["depart", t.toc.depart]);
     secs.push(["urgences", t.toc.urgences]);
+    var HUBI = { arrivee: "cle", logement: "maison", services: "cadeau", adresses: "pin", carte: "carte", activites: "montagne", depart: "valise", urgences: "hopital" };
+    var hubN = { logement: (d.rubriques || []).length, services: (d.services || []).length, adresses: (d.adresses || []).length, activites: (d.activites || []).length };
+    h.push('<section class="hub" aria-labelledby="hub-t"><h2 id="hub-t">' + esc(t.hubTitre) + "</h2>" +
+      '<div class="search-wrap"><div class="search">' + I("recherche") + '<input id="q" type="search" placeholder="' + esc(t.recherche) + '" aria-label="' + esc(t.rechercheLabel) + '" autocomplete="off"><button class="search-clear" type="button" id="q-clear" aria-label="' + esc(t.effacer) + '" hidden>' + I("croix", "ico-s") + '</button></div><p class="search-info" id="q-info" hidden></p></div>' +
+      '<ul class="hub-grid">' + secs.map(function (s) {
+        var hint = t.hub[s[0]]; if (typeof hint === "function") hint = hint(hubN[s[0]] || 0);
+        return '<li><a class="hub-tile' + (s[0] === "urgences" ? " ht-sos" : "") + '" href="#s-' + s[0] + '" data-jump="' + s[0] + '"><span class="ht-ico" aria-hidden="true">' + I(HUBI[s[0]] || "info") + '</span><span class="ht-t"><b>' + esc(s[1]) + "</b><small>" + esc(hint || "") + "</small></span></a></li>";
+      }).join("") + "</ul></section>");
     h.push('<nav class="toc" aria-label="Sommaire"><ul>' + secs.map(function (s) { return '<li><a href="#s-' + s[0] + '" data-s="' + s[0] + '">' + esc(s[1]) + "</a></li>"; }).join("") + "</ul></nav>");
 
     /* Avant votre arrivée */
     if (hasArr) {
       var addrQ = d.adresse || (d.geo ? d.geo.join(",") : d.carte || d.ville || "");
       var arrMsg = contactLink(d, t.msgArrivee(d.nom || ""));
-      h.push('<section class="section" id="s-arrivee" data-sec><div class="section-head"><h2>' + esc(t.arriveeTitre) + "</h2><p>" + esc(arr.texte || t.arriveeSub) + "</p></div>");
+      h.push('<section class="section" id="s-arrivee" data-sec>' + head("cle", t.arriveeTitre, arr.texte || t.arriveeSub));
       if (d.adresse) {
         h.push('<div class="arr-addr" data-q="' + esc(norm(d.adresse)) + '"><span class="arr-ico">' + I("pin") + '</span><div class="arr-addr-main"><small>' + esc(t.adresse) + '</small><b id="arr-addr">' + esc(d.adresse) + "</b>" +
           (hor.arrivee ? '<span class="arr-time">' + I("horloge", "ico-s") + esc(t.arrivee) + (lang === "en" ? ": " : " : ") + esc(hor.arrivee) + "</span>" : "") +
@@ -369,7 +382,7 @@
     }
 
     /* Rubriques */
-    h.push('<section class="section" id="s-logement" data-sec><div class="section-head"><h2>' + esc(t.lieu[d.type] || t.lieu.location) + "</h2><p>" + esc(t.ouvrir) + '</p></div><div class="rubriques">');
+    h.push('<section class="section" id="s-logement" data-sec>' + head("maison", t.lieu[d.type] || t.lieu.location, t.ouvrir) + '<div class="rubriques">');
     (d.rubriques || []).forEach(function (r, i) {
       var photos = (r.photos || []).filter(function (p) { return p && p.src; });
       var txt = [r.titre, r.resume, r.texte, (r.etapes || []).join(" "), (r.liste || []).join(" "), r.astuce].join(" ");
@@ -386,12 +399,12 @@
 
     /* Services en plus */
     if ((d.services || []).length) {
-      h.push('<section class="section" id="s-services" data-sec><div class="section-head"><h2>' + esc(t.servicesTitre) + "</h2><p>" + esc(t.servicesSub) + '</p></div><div class="svcs">');
+      h.push('<section class="section" id="s-services" data-sec>' + head("cadeau", t.servicesTitre, t.servicesSub) + '<div class="svcs">');
       d.services.forEach(function (sv) {
         var link = contactLink(d, t.msgService(sv.titre || "", sv.prix || ""));
         h.push('<article class="svc" data-q="' + esc(norm([sv.titre, sv.description].join(" "))) + '"><span class="svc-ico">' + I(sv.icone || "cadeau") + '</span><div class="svc-main"><div class="svc-top"><b>' + esc(sv.titre || "") + "</b>" + (sv.prix ? '<span class="svc-prix">' + esc(sv.prix) + "</span>" : "") + "</div>" +
           (sv.description ? "<p>" + esc(sv.description) + "</p>" : "") +
-          (link ? '<a class="btn small" href="' + esc(link) + '"' + external(link) + ">" + I("message", "ico-s") + esc(t.demander) + "</a>" : "") + "</div></article>");
+          (link ? '<a class="lien-act" href="' + esc(link) + '"' + external(link) + ">" + I("message", "ico-s") + esc(t.demander) + "</a>" : "") + "</div></article>");
       });
       h.push("</div></section>");
     }
@@ -401,7 +414,7 @@
     if ((d.adresses || []).length) {
       var cats = {};
       d.adresses.forEach(function (a) { cats[a.categorie] = 1; });
-      h.push('<section class="section" id="s-adresses" data-sec><div class="section-head"><h2>' + esc(t.adressesTitre) + "</h2><p>" + esc(t.adressesSub) + "</p></div>");
+      h.push('<section class="section" id="s-adresses" data-sec>' + head("pin", t.adressesTitre, t.adressesSub));
       h.push('<div class="chips" role="group" aria-label="' + esc(t.adressesTitre) + '"><button class="chip" type="button" data-cat="" aria-pressed="true">' + esc(t.tout) + "</button>" +
         Object.keys(cats).map(function (c) { var m = CA[c] || CA.services; return '<button class="chip" type="button" data-cat="' + esc(c) + '" aria-pressed="false">' + I(m.icone, "ico-s") + esc(catLabel(CA, c, lang) || c) + "</button>"; }).join("") + "</div>");
       h.push('<div class="places">');
@@ -411,14 +424,14 @@
         h.push('<article class="place" data-cat="' + esc(a.categorie) + '" data-q="' + esc(norm([a.nom, m.label, m.en, a.note, a.horaires].join(" "))) + '"><span class="place-ico">' + I(m.icone) + '</span><div class="place-main"><div class="place-top"><b>' + esc(a.nom) + '</b><span class="place-cat">' + esc(catLabel(CA, a.categorie, lang) || "") + '</span></div><div class="place-meta">' +
           (a.distance ? "<span>" + I("pin", "ico-s") + esc(a.distance) + "</span>" : "") + (a.horaires ? "<span>" + I("horloge", "ico-s") + esc(a.horaires) + "</span>" : "") + "</div>" +
           (a.note ? "<p>" + esc(a.note) + "</p>" : "") +
-          '<a class="btn small" href="' + esc(window.cdhMapsUrl(q)) + '" target="_blank" rel="noopener">' + I("itineraire", "ico-s") + esc(t.itineraire) + "</a></div></article>");
+          '<a class="lien-act" href="' + esc(window.cdhMapsUrl(q)) + '" target="_blank" rel="noopener">' + I("itineraire", "ico-s") + esc(t.itineraire) + "</a></div></article>");
       });
       h.push('</div><p class="empty-search" hidden>' + esc(t.aucuneAdresse) + "</p></section>");
     }
 
     /* Carte */
     if (hasMap) {
-      h.push('<section class="section" id="s-carte" data-sec data-nosearch><div class="section-head"><h2>' + esc(t.carteTitre) + "</h2><p>" + esc(t.carteSub) + "</p></div>" +
+      h.push('<section class="section" id="s-carte" data-sec data-nosearch>' + head("carte", t.carteTitre, t.carteSub) +
         '<div class="map-legend" role="group" aria-label="' + esc(t.carteTitre) + '">' +
         (d.geo ? '<span class="lg lg-home">' + I("maison", "ico-s") + esc(t.carteLogement) + "</span>" : "") +
         '<button type="button" class="lg lg-a" data-layer="a" aria-pressed="true">' + I("pin", "ico-s") + esc(t.carteAdresses) + "</button>" +
@@ -428,7 +441,7 @@
 
     /* Activités */
     if ((d.activites || []).length) {
-      h.push('<section class="section" id="s-activites" data-sec><div class="section-head"><h2>' + esc(t.activitesTitre) + "</h2><p>" + esc(t.activitesSub) + '</p></div><div class="acts">');
+      h.push('<section class="section" id="s-activites" data-sec>' + head("montagne", t.activitesTitre, t.activitesSub) + '<div class="acts">');
       d.activites.forEach(function (a) {
         var m = CT[a.categorie] || CT.culture;
         h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en].join(" "))) + '">' +
@@ -445,7 +458,7 @@
     var avisLien = d.avisLien === "demo" ? "demo" : safeUrl(d.avisLien);
     var avisBtn = avisLien ? '<a class="btn primary avis-btn" href="' + esc(avisLien === "demo" ? "#avis" : avisLien) + '"' + (avisLien === "demo" ? ' data-avis-demo="1"' : external(avisLien)) + ">" + I("etoile", "ico-s") + esc(t.avis) + "</a>" : "";
     if (d.depart.length) {
-      h.push('<section class="section" id="s-depart" data-sec><div class="section-head"><h2>' + esc(t.departTitre) + "</h2><p>" + esc(t.departSub(hor.depart)) + "</p></div>" +
+      h.push('<section class="section" id="s-depart" data-sec>' + head("valise", t.departTitre, t.departSub(hor.depart)) +
         '<ul class="checklist">' + d.depart.map(function (x, i) {
           return '<li><label class="check"><input type="checkbox" data-i="' + i + '"><span class="box">' + I("check", "ico-s") + "</span><span>" + esc(x) + "</span></label></li>";
         }).join("") + '</ul><div class="depart-end"><p class="progress" id="progress"></p>' + (avisBtn ? '<div id="avis-done" hidden>' + avisBtn + "</div>" : "") + "</div></section>");
@@ -453,7 +466,7 @@
 
     /* Urgences */
     var u = d.urgences || {};
-    h.push('<section class="section" id="s-urgences" data-sec><div class="section-head"><h2>' + esc(t.urgencesTitre) + "</h2><p>" + esc(t.urgencesSub) + '</p></div><div class="sos">' +
+    h.push('<section class="section sec-sos" id="s-urgences" data-sec>' + head("hopital", t.urgencesTitre, t.urgencesSub) + '<div class="sos">' +
       '<a class="first" href="tel:112"><span class="num">112</span><small>' + esc(t.u112) + "</small></a>" +
       '<a href="tel:15"><span class="num">15</span><small>' + esc(t.u15) + "</small></a>" +
       '<a href="tel:18"><span class="num">18</span><small>' + esc(t.u18) + "</small></a>" +

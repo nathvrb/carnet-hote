@@ -25,7 +25,7 @@ window.CDH_LIVRETS["nid-des-tanneurs"] = {
   carte: "Petite France, Strasbourg",
   adresse: "Quartier de la Petite France, 67000 Strasbourg",
   geo: [48.5806, 7.7420],
-  theme: { accent: "#A3402B", police: "Gloock", motif: "colombages", couverture: "photos/nid-des-tanneurs/couverture.jpg" },
+  theme: { accent: "#A3402B", police: "Lora", motif: "colombages", couverture: "photos/nid-des-tanneurs/couverture.jpg" },
   titreAccueil: "Bienvenue chez nous !",
   hote: {
     nom: "Claire & Julien",
@@ -323,7 +323,7 @@ window.CDH_LIVRETS["hotel-les-ondines"] = {
   carte: "Annecy lac",
   adresse: "Bord du lac, 74000 Annecy",
   geo: [45.9045, 6.1390],
-  theme: { accent: "#1D5C7A", police: "Marcellus", motif: "lac", couverture: "photos/hotel-les-ondines/couverture.jpg" },
+  theme: { accent: "#1D5C7A", police: "Newsreader", motif: "lac", couverture: "photos/hotel-les-ondines/couverture.jpg" },
   titreAccueil: "Bienvenue aux Ondines",
   hote: {
     nom: "La réception",

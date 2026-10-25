@@ -71,7 +71,7 @@
     "hotel-les-ondines": "Le classeur de chambre en version digitale : petit-déjeuner, spa, room service, parking et départ tardif.",
     "bastide-aux-amandiers": "Table d'hôtes, règles de la piscine, marchés provençaux et villages perchés du Luberon."
   };
-  var FONT = { "Gloock": "Gloock, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif", "Newsreader": "Newsreader, Georgia, serif" };
+  var FONT = { "Lora": "Lora, Georgia, serif", "Gloock": "Lora, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif", "Newsreader": "Newsreader, Georgia, serif" };
   if (demos) {
     var ids = Object.keys(window.CDH_LIVRETS).filter(function (k) { return window.CDH_LIVRETS[k].demo; });
     var cover = function (d) { return d.theme && d.theme.couverture ? new URL(d.theme.couverture, location.href).href : ""; };
@@ -80,7 +80,7 @@
         var d = window.CDH_LIVRETS[k], c = cover(d);
         return '<button type="button" role="tab" id="tab-' + esc(k) + '" aria-controls="salon-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-salon="' + esc(k) + '">' +
           '<span class="vign" style="--c:' + esc(d.theme.accent) + ';' + (c ? "background-image:url('" + esc(c) + "')" : "") + '" aria-hidden="true"></span>' +
-          '<span><span class="t">' + esc(TYPE[d.type] || "") + '</span><span class="nom" style="font-family:' + esc(FONT[d.theme.police] || FONT.Gloock) + '">' + esc(d.nom) + '</span><span class="ville">' + esc(d.ville) + "</span></span></button>";
+          '<span><span class="t">' + esc(TYPE[d.type] || "") + '</span><span class="nom" style="font-family:' + esc(FONT[d.theme.police] || FONT.Lora) + '">' + esc(d.nom) + '</span><span class="ville">' + esc(d.ville) + "</span></span></button>";
       }).join("") + "</div>" +
       '<div class="salon-detail" id="salon-panel" role="tabpanel" aria-labelledby="tab-' + esc(ids[0]) + '"><p id="salon-pitch"></p>' +
       '<div class="salon-qr"><div class="qr" id="salon-qr"></div><div><small>Scannez avec l\'appareil photo de votre téléphone, ou ouvrez-le ici.</small>' +
@@ -199,7 +199,7 @@
   function txt(x, y, str, o) {
     o = o || {};
     return '<text x="' + x + '" y="' + y + '" text-anchor="' + (o.anchor || "middle") + '" fill="' + (o.fill || "#12302A") + '"' + (o.op ? ' fill-opacity="' + o.op + '"' : "") +
-      ' font-family="' + (o.serif ? "Gloock, Georgia, serif" : "Schibsted Grotesk, system-ui, sans-serif") + '" font-size="' + (o.size || 8) + '"' + (o.weight ? ' font-weight="' + o.weight + '"' : "") + (o.ls ? ' letter-spacing="' + o.ls + '"' : "") + ">" + esc(str) + "</text>";
+      ' font-family="' + (o.serif ? "Newsreader, Georgia, serif" : "Schibsted Grotesk, system-ui, sans-serif") + '" font-size="' + (o.size || 8) + '"' + (o.weight ? ' font-weight="' + o.weight + '"' : "") + (o.ls ? ' letter-spacing="' + o.ls + '"' : "") + ">" + esc(str) + "</text>";
   }
   var ACC = (MD.theme && MD.theme.accent) || "#A3402B", NOM = MD.nom || "Le Nid des Tanneurs", VILLE = MD.ville || "", WIFI = (MD.wifi || {});
   var plexi = document.getElementById("plexi-card");

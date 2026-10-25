@@ -89,7 +89,7 @@
     return {
       id: id, type: "location", nom: "Nouveau logement", sousTitre: "Appartement · 2 personnes", ville: "Ma ville", carte: "",
       adresse: "",
-      theme: { accent: "#1F5B4C", police: "Gloock", motif: "collines" },
+      theme: { accent: "#1F5B4C", police: "Lora", motif: "collines" },
       titreAccueil: "Bienvenue !",
       hote: { nom: "Votre prénom", role: "Votre hôte", tel: "", whatsapp: "", email: "", reponse: "", canal: "" },
       bienvenue: "Bienvenue ! Vous trouverez ici tout ce qu'il faut pour un séjour agréable.",
@@ -210,6 +210,7 @@
 
   /* ---------- formulaire simple ---------- */
   function fillForm() {
+    if (doc.theme && (!doc.theme.police || doc.theme.police === "Gloock")) doc.theme.police = "Lora"; /* Gloock remplacée par Lora, plus lisible */
     var en = edLang === "en";
     document.querySelectorAll("[data-path]").forEach(function (el) {
       var p = el.dataset.path, tr = !!el.dataset.tr;
@@ -890,7 +891,7 @@
   document.getElementById("poster-wifi").addEventListener("change", drawPoster);
   bindCopy("copy-url", "qr-url", "Adresse copiée");
 
-  var FONT_CSS = { "Gloock": '"Gloock", Georgia, serif', "Marcellus": '"Marcellus", Georgia, serif', "Young Serif": '"Young Serif", Georgia, serif', "Newsreader": '"Newsreader", Georgia, serif', "Schibsted Grotesk": '"Schibsted Grotesk", system-ui, sans-serif' };
+  var FONT_CSS = { "Lora": '"Lora", Georgia, serif', "Gloock": '"Lora", Georgia, serif', "Marcellus": '"Marcellus", Georgia, serif', "Young Serif": '"Young Serif", Georgia, serif', "Newsreader": '"Newsreader", Georgia, serif', "Schibsted Grotesk": '"Schibsted Grotesk", system-ui, sans-serif' };
   function wrap(ctx, text, maxW) {
     var words = String(text).split(/\s+/), out = [], cur = "";
     words.forEach(function (w) { var t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t; });
