@@ -110,6 +110,7 @@
 .es-account[open] summary::after { transform: translateY(2px) rotate(-135deg); }
 .es-account h3 { margin: 0; font-family: var(--body); font-size: 1rem; font-weight: 600; letter-spacing: 0; }
 .es-account > form { margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--line); }
+.es-account form + .hint { margin-top: 20px; }
 
 @media (max-width: 520px) {
   .who-mail { display: none; }
