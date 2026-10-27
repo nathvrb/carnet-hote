@@ -8,7 +8,7 @@ window.CDH_CONFIG = {
   slogan: "Le livret d'accueil qui tient dans un QR code",
   email: "contact@carnetdhote.fr",          // ← à remplacer par votre adresse pro
   telephone: "06 39 98 00 00",              // ← à remplacer (numéro fictif)
-  zone: "Strasbourg & toute la France",
+  zone: "Partout en France, 100 % à distance",
   // Adresse publique du site une fois en ligne (sert aux QR codes des livrets).
   // Laissez vide : le site utilisera automatiquement l'adresse où il est ouvert.
   domaine: "",
