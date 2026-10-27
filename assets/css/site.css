@@ -470,6 +470,7 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .opt input { position: absolute; opacity: 0; pointer-events: none; }
 .opt b { font-weight: 600; line-height: 1.25; padding-right: 22px; }
 .opt small { color: var(--gris); font-size: 13.5px; line-height: 1.4; }
+.opt .p .barre { color: var(--gris); font-family: var(--sans, inherit); font-size: .8em; font-weight: 400; margin-right: 6px; text-decoration-thickness: 1px; }
 .opt .p { font-family: var(--display); font-size: 1.3rem; line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; color: var(--bleu); }
 .opt:not(.check)::after { content: ""; position: absolute; right: 16px; top: 20px; width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--taupe-texte); transition: border-color .2s, box-shadow .2s, background-color .2s; }
 .opt:hover { border-color: var(--taupe-texte); }

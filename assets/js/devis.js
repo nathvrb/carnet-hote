@@ -148,6 +148,14 @@
     document.getElementById("qty-hint").textContent = isLoc ? "Un livret par logement, remise dès le 2e" : (s.type === "hotel" ? "Un seul livret ; tarif selon la taille de l'hôtel" : "Un seul livret, un QR code par chambre");
     document.getElementById("one-each-u").textContent = unit;
     var F = T.formules[s.formule];
+    /* prix des forfaits : par mois, ou à l'année (12 mois barrés, puis le prix avec les mois offerts retirés) */
+    Object.keys(T.forfaits).forEach(function (k) {
+      var inp = document.getElementById("forfait-" + k), p = inp && inp.parentNode.querySelector(".p"); if (!p) return;
+      var m = T.forfaits[k].mensuel;
+      p.innerHTML = s.facturation === "annuel"
+        ? '<s class="barre" title="' + esc(eur(m, true) + " × 12") + '">' + eur(r2(m * 12)) + "</s> " + eur(r2(m * (12 - T.moisOffertsAnnuel))) + " / an"
+        : eur(m) + " / mois";
+    });
     document.getElementById("langues-hint").textContent = F.langues + " " + plural(F.langues, "incluse", "incluses") + " dans la formule " + F.nom;
     var parts = Object.keys(q.inclus).map(function (k) { var n = q.inclus[k], SI = T.supports[k]; return n + " " + plural(n, SI.court[0], SI.court[1]); });
     document.getElementById("supports-inclus").textContent = parts.length ? "Inclus dans votre formule : " + parts.join(" et ") + (q.livrets > 1 ? " par livret" : "") + "." : "";
