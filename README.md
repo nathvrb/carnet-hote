@@ -71,7 +71,7 @@ Important : une fois des QR codes imprimés, ne changez plus ni le domaine ni l'
 
 - **La console publique (`console.html`) reste une démonstration** : elle enregistre dans le navigateur du visiteur. Les vrais livrets des clients passent par l'espace client (section suivante).
 - **Les statistiques** : créez un compte gratuit sur Umami Cloud (cloud.umami.is), ajoutez votre site, puis collez son « Website ID » dans `umamiId` de `config.js`. Chaque livret apparaît sous son adresse (`/livret.html?id=…`). Pas de cookies, donc pas de bandeau à afficher.
-- **Langues** : le livret gère le français et l'anglais. L'allemand de la formule Premium n'est pas encore géré par le livret (à ajouter avant de vendre Premium).
+- **Langues** : le livret gère aujourd'hui le français et l'anglais. Le Confort annonce 3 langues et le Premium 4 : la gestion de langues supplémentaires (allemand, espagnol…) dans le livret et la console reste à développer avant de vendre ces formules.
 - **Anciennes modifications** : le stockage local est passé en version 2 ; les essais faits avant dans la console sont ignorés (les nouveaux exemples s'affichent).
 
 ## Espace client (forfait Autonomie)

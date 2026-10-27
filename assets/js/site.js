@@ -135,7 +135,7 @@
     ["En arrivant", [
       ["Avant votre arrivée", "Un lien à envoyer la veille : adresse, itinéraire, accès et boîte à clés. Le voyageur arrive sans vous appeler."],
       ["Le Wi-Fi en un geste", "Nom du réseau et mot de passe en tête du livret, avec un bouton pour copier."],
-      ["Français et anglais", "Le livret s'ouvre dans la langue du téléphone, avec un bouton FR / EN en haut de page."],
+      ["Trois langues, ou plus", "Le livret s'ouvre dans la langue du téléphone, avec un bouton pour changer de langue en haut de page."],
       ["Recherche intégrée", "Le voyageur tape « poubelles » ou « parking » et tombe directement sur la bonne réponse."]
     ]],
     ["Dans le logement", [
@@ -180,7 +180,6 @@
     extras.innerHTML = '<div><h4>Options</h4><dl>' +
       row(o.langue.label, "Allemand, espagnol, italien, néerlandais…", "+" + eur(o.langue.prix)) +
       row(o.express.label, o.express.detail + " (Confort et Premium)", "+" + eur(o.express.prix)) +
-      row(o.visite.label, "Par logement", "+" + eur(o.visite.prix)) +
       row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +
       row("Affiche A5 à imprimer", "QR du livret et du Wi-Fi, en PDF · toutes formules", "incluse") +
@@ -189,6 +188,7 @@
   }
 
   /* ---------- supports : maquettes ---------- */
+  each("[data-langue-prix]", function (el) { el.textContent = eur(T.options.langue.prix); });
   each("[data-sup-prix]", function (el) { var k = T.supports[el.dataset.supPrix]; if (k) el.textContent = eur(k.prix); });
   var MOCK_ID = "nid-des-tanneurs", MD = window.CDH_LIVRETS[MOCK_ID] || {};
   var mockUrl = window.cdhLivretUrl(MOCK_ID);
@@ -236,34 +236,20 @@
   }
   var fobArt = document.getElementById("sup-fob");
   if (fobArt) {
-    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 88 });
-    var colEl = document.getElementById("fob-colors"), colName = document.getElementById("fob-color-name");
-    colEl.innerHTML = (T.couleurs || []).map(function (c, i) {
-      return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="fob-couleur" value="' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span class="sr">' + esc(c.nom) + "</span></label>";
-    }).join("");
-    var setCol = function (id, fromDevis) {
-      var c = (T.couleurs || []).filter(function (x) { return x.id === id; })[0]; if (!c) return;
-      fobArt.style.setProperty("--fobc", c.hex); colName.textContent = c.nom;
-      var r = colEl.querySelector('input[value="' + id + '"]'); if (r) r.checked = true;
-      if (!fromDevis && window.cdhDevis) window.cdhDevis.choose("couleur", id);
-    };
-    colEl.addEventListener("change", function (e) { if (e.target.name === "fob-couleur") setCol(e.target.value); });
-    document.addEventListener("change", function (e) { if (e.target.name === "couleur") setCol(e.target.value, true); });
+    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 68 });
     var fobIn = document.getElementById("fob-text"), fobName = document.getElementById("fob-name");
     var fitName = function () {
       var v = (fobIn.value || "").trim().toUpperCase() || " ";
       fobName.textContent = v;
-      fobName.setAttribute("font-size", "11"); fobName.setAttribute("letter-spacing", "2.2");
+      fobName.setAttribute("font-size", "8"); fobName.setAttribute("letter-spacing", "1.4");
       try {
-        var w = fobName.getComputedTextLength(), max = 94;
-        if (w > max) { var k = max / w; fobName.setAttribute("font-size", (11 * k).toFixed(2)); fobName.setAttribute("letter-spacing", (2.2 * k).toFixed(2)); }
+        var w = fobName.getComputedTextLength(), max = 72;
+        if (w > max) { var k = max / w; fobName.setAttribute("font-size", (8 * k).toFixed(2)); fobName.setAttribute("letter-spacing", (1.4 * k).toFixed(2)); }
       } catch (e) {}
     };
     fobIn.addEventListener("input", fitName);
     fitName();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
-    var cur = document.querySelector('input[name="couleur"]:checked');
-    if (cur) setCol(cur.value, true);
   }
 
   document.addEventListener("click", function (e) {

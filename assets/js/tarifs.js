@@ -16,18 +16,18 @@ window.CDH_TARIFS = {
       populaire: true,
       accroche: "Le bon choix pour la plupart des logements.",
       delai: "7 à 10 jours ouvrés",
-      langues: 2,
-      supportsInclus: 1,
-      corrections: 2,
+      langues: 3,
+      supportsInclus: { porteCles: 1 },
+      corrections: 1,
       inclus: [
         "Livret rédigé et mis en page pour vous, rubriques illimitées",
         "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
-        "Français + anglais",
+        "3 langues : français, anglais + 1 au choix",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
         "Guide local sur-mesure : 15 adresses et activités sélectionnées",
         "Carte interactive, météo, lien « avant votre arrivée »",
-        "1 porte-clés gravé ou 1 chevalet plexi, livré chez vous",
-        "2 séries de corrections",
+        "1 porte-clés transparent avec votre QR code, livré chez vous",
+        "1 série de corrections, dans les 10 jours suivant la mise en ligne",
         "Votre console pour modifier le livret quand vous voulez"
       ]
     },
@@ -37,16 +37,17 @@ window.CDH_TARIFS = {
       accroche: "Pour les hôtes exigeants et les établissements. Plus de contenu, donc un peu plus de temps.",
       delai: "10 à 13 jours ouvrés",
       langues: 4,
-      supportsInclus: 3,
+      supportsInclus: { porteCles: 3, chevalet: 1 },
       corrections: 3,
       moisOfferts: 3,
       inclus: [
         "Tout le Confort",
-        "4 langues (FR, EN, DE + 1 au choix)",
-        "Vos couleurs, votre logo, vos photos",
+        "4 langues : français, anglais + 2 au choix",
+        "Vos couleurs et votre logo",
         "Vos vidéos tutos intégrées",
         "Services en plus : départ tardif, panier, ménage…",
-        "3 porte-clés ou chevalets, couleur au choix",
+        "3 porte-clés transparents + 1 chevalet plexi avec votre QR code",
+        "3 séries de corrections, dans les 10 jours suivant la mise en ligne",
         "3 mois de forfait offerts"
       ]
     }
@@ -96,23 +97,11 @@ window.CDH_TARIFS = {
   // Options
   options: {
     langue: { label: "Langue supplémentaire", prix: 29, par: "livret" },
-    express: { label: "Livret en ligne en priorité", detail: "En ligne sous 5 jours ouvrés, supports livrés ensuite", prix: 49, par: "commande", delai: "livret en ligne sous 5 jours ouvrés, supports livrés ensuite" },
-    visite: { label: "Visite sur place & photos (Strasbourg + 30 km)", prix: 79, par: "livret" }
+    express: { label: "Livret en ligne en priorité", detail: "En ligne sous 5 jours ouvrés, supports livrés ensuite", prix: 49, par: "commande", delai: "livret en ligne sous 5 jours ouvrés, supports livrés ensuite" }
   },
   // Supports physiques. « court » = [singulier, pluriel] pour les phrases du devis.
   supports: {
-    porteCles: { label: "Porte-clés QR gravé", choix: "Porte-clés gravé", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Accroché aux clés remises au voyageur · couleur au choix" },
-    chevalet:  { label: "Chevalet plexiglas A6", choix: "Chevalet plexi", court: ["chevalet", "chevalets"], prix: 12, detail: "Table de chevet, réception, bureau" }
+    porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés" },
+    chevalet:  { label: "Chevalet plexiglas A6", court: ["chevalet", "chevalets"], prix: 12, detail: "Table de chevet, réception, bureau" }
   },
-  // Support inclus par défaut selon l'établissement (modifiable dans le devis)
-  supportParDefaut: { location: "porteCles", maison: "chevalet", hotel: "chevalet" },
-  // Couleurs des porte-clés
-  couleurs: [
-    { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
-    { id: "sapin",      nom: "Vert sapin", hex: "#1F5B4C" },
-    { id: "terracotta", nom: "Terracotta", hex: "#A3402B" },
-    { id: "ocre",       nom: "Ocre",       hex: "#B07A1E" },
-    { id: "bordeaux",   nom: "Bordeaux",   hex: "#6E2236" },
-    { id: "noir",       nom: "Noir mat",   hex: "#232323" }
-  ]
 };

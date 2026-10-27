@@ -31,36 +31,30 @@
     var langSup = Math.max(0, s.langues - F.langues);
     var langCost = langSup * T.options.langue.prix * livrets;
     if (langSup) lines.push({ l: langSup + " " + plural(langSup, "langue supplémentaire", "langues supplémentaires"), small: s.langues + " langues au total, " + F.langues + " " + plural(F.langues, "incluse", "incluses") + (livrets > 1 ? " · × " + livrets + " livrets" : ""), a: langCost });
-    var visite = s.options.visite ? T.options.visite.prix * livrets : 0;
-    if (visite) lines.push({ l: "Visite sur place et photos", small: livrets > 1 ? livrets + " × " + eur(T.options.visite.prix) : "", a: visite });
 
-    var remiseMt = r2((base + maj + langCost + visite) * remise);
+    var remiseMt = r2((base + maj + langCost) * remise);
     if (remiseMt) lines.push({ l: "Remise multi-logements −" + Math.round(remise * 100) + " %", a: -remiseMt, minus: true });
 
-    var inclus = F.supportsInclus * livrets;
-    var incType = T.supports[s.supportInclus] ? s.supportInclus : (T.supportParDefaut[s.type] || "porteCles");
-    var coul = couleur(s.couleur);
-    var sup = s.formule === "essentiel" ? {} : (s.supports || {}); // Essentiel : rien à livrer
-    var withFob = (inclus && incType === "porteCles") || sup.porteCles > 0;
-    if (inclus) {
-      var SI = T.supports[incType];
-      lines.push({ l: inclus + " " + plural(inclus, SI.court[0], SI.court[1]) + " " + plural(inclus, "inclus", "inclus"), small: SI.label + (incType === "porteCles" ? " · " + coul.nom : ""), a: 0 });
-    }
+    var incl = {}, inclTotal = 0;
+    Object.keys(F.supportsInclus || {}).forEach(function (k) { incl[k] = F.supportsInclus[k] * livrets; inclTotal += incl[k]; });
+    var sup = s.supports || {};
+    Object.keys(T.supports).forEach(function (k) {
+      if (!incl[k]) return;
+      var SI = T.supports[k];
+      lines.push({ l: incl[k] + " " + plural(incl[k], SI.court[0], SI.court[1]) + " inclus", small: SI.label, a: 0 });
+    });
     var supportsCost = 0;
     Object.keys(T.supports).forEach(function (k) {
       var n = sup[k] || 0;
       if (!n) return;
       var c = n * T.supports[k].prix;
       supportsCost += c;
-      var smalls = [];
-      if (k === incType && inclus) smalls.push("En plus des " + T.supports[k].court[1] + " inclus");
-      if (k === "porteCles") smalls.push(coul.nom);
-      lines.push({ l: T.supports[k].label + " × " + n, small: smalls.join(" · "), a: c });
+      lines.push({ l: T.supports[k].label + " × " + n, small: incl[k] ? "En plus des " + T.supports[k].court[1] + " inclus" : "", a: c });
     });
-    var express = s.options.express && s.formule !== "essentiel" ? T.options.express.prix : 0;
+    var express = s.options.express ? T.options.express.prix : 0;
     if (express) lines.push({ l: T.options.express.label, a: express });
 
-    var creation = r2(base + maj + langCost + visite - remiseMt + supportsCost + express);
+    var creation = r2(base + maj + langCost - remiseMt + supportsCost + express);
 
     var mensuel = r2(FF.mensuel * livrets * (1 - remise));
     var moisPayesAn = 12 - T.moisOffertsAnnuel;
@@ -72,12 +66,8 @@
       lines: lines, creation: creation, mensuel: mensuel, annuel: annuel, offerts: offerts,
       forfaitAn1: forfaitAn1, premiereAnnee: r2(creation + forfaitAn1),
       livrets: livrets, remise: remise, delai: express ? T.options.express.delai : F.delai,
-      formule: F, forfait: FF, type: TY, inclus: inclus, supportInclus: incType, couleur: withFob ? coul : null
+      formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal
     };
-  }
-  function couleur(id) {
-    var c = (T.couleurs || []).filter(function (x) { return x.id === id; })[0];
-    return c || (T.couleurs || [{ id: "", nom: "", hex: "#1F5B4C" }])[0];
   }
   window.cdhComputeDevis = compute;
 
@@ -105,18 +95,12 @@
     var f = T.forfaits[k];
     return radioCard("forfait", k, f.nom, f.accroche, eur(f.mensuel) + " / mois", !!f.populaire);
   }).join("");
-  document.getElementById("sup-inclus").innerHTML = Object.keys(T.supports).map(function (k) {
-    return '<label><input type="radio" name="sup-inclus" value="' + k + '" id="sup-inclus-' + k + '">' + esc(T.supports[k].choix || T.supports[k].label) + "</label>";
-  }).join("");
-  document.getElementById("couleurs").innerHTML = (T.couleurs || []).map(function (c, i) {
-    return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="couleur" value="' + c.id + '" id="couleur-' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span>' + esc(c.nom) + "</span></label>";
-  }).join("");
   document.getElementById("supports").innerHTML = Object.keys(T.supports).map(function (k) {
     var s = T.supports[k];
     return '<div class="qty-row"><label for="sup-' + k + '">' + esc(s.label) + ' <span class="en-plus">en plus</span><small>' + esc(s.detail) + '</small></label><span class="p">' + eur(s.prix) + " l'unité</span>" +
       '<div class="stepper"><button type="button" data-step="-1" data-for="sup-' + k + '" aria-label="Retirer un">−</button><input id="sup-' + k + '" name="sup-' + k + '" type="number" inputmode="numeric" min="0" max="500" value="0"><button type="button" data-step="1" data-for="sup-' + k + '" aria-label="Ajouter un">+</button></div></div>';
   }).join("");
-  document.getElementById("options").innerHTML = ["express", "visite"].map(function (k) {
+  document.getElementById("options").innerHTML = ["express"].map(function (k) {
     var o = T.options[k];
     return '<label class="opt check" id="opt-' + k + '-card"><input type="checkbox" name="opt-' + k + '" id="opt-' + k + '"><span class="tick">' + I("check", "ico-s") + "</span><b>" + esc(o.label) + '</b><span class="p">+' + eur(o.prix) + '</span><small id="opt-' + k + '-small">' + esc(o.detail ? o.detail + " · " : "") + (o.par === "livret" ? "Par logement" : "Par commande") + "</small></label>";
   }).join("");
@@ -132,9 +116,7 @@
       formule: fd.get("formule") || "confort",
       langues: clampInt(fd.get("langues"), 1, 8),
       supports: sup,
-      supportInclus: fd.get("sup-inclus") || T.supportParDefaut[fd.get("type") || "location"],
-      couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
-      options: { express: !!fd.get("opt-express"), visite: !!fd.get("opt-visite") },
+      options: { express: !!fd.get("opt-express") },
       forfait: fd.get("forfait") || "autonomie",
       facturation: fd.get("facturation") || "mensuel"
     };
@@ -157,21 +139,11 @@
     document.getElementById("qty-hint").textContent = isLoc ? "Un livret par logement, remise dès le 2e" : (s.type === "hotel" ? "Un seul livret ; tarif selon la taille de l'hôtel" : "Un seul livret, un QR code par chambre");
     document.getElementById("one-each-u").textContent = unit;
     var F = T.formules[s.formule];
-    var ex = document.getElementById("opt-express"), exSmall = document.getElementById("opt-express-small");
-    ex.disabled = s.formule === "essentiel";
-    if (ex.disabled) ex.checked = false;
-    document.getElementById("opt-express-card").classList.toggle("off", ex.disabled);
-    exSmall.textContent = ex.disabled ? "Inutile en Essentiel : il est déjà livré en 5 jours ouvrés" : T.options.express.detail + " · Par commande";
     document.getElementById("langues-hint").textContent = F.langues + " " + plural(F.langues, "incluse", "incluses") + " dans la formule " + F.nom;
-    var inc = q.inclus, SI = T.supports[q.supportInclus];
-    document.getElementById("supports-inclus").textContent = inc ? inc + " " + plural(inc, SI.court[0], SI.court[1]) + " inclus dans votre formule." : "Essentiel : rien à livrer, l'affiche A5 à imprimer vous est envoyée en PDF.";
-    document.getElementById("sup-inclus-row").hidden = !inc;
-    setRadio("sup-inclus", q.supportInclus);
-    document.getElementById("couleurs-row").hidden = !q.couleur;
-    document.getElementById("one-each-what").textContent = SI.court[0];
-    var ess = s.formule === "essentiel";
-    document.getElementById("sup-box").hidden = ess;
-    document.getElementById("one-each").hidden = ess;
+    var parts = Object.keys(q.inclus).map(function (k) { var n = q.inclus[k], SI = T.supports[k]; return n + " " + plural(n, SI.court[0], SI.court[1]); });
+    document.getElementById("supports-inclus").textContent = parts.length ? "Inclus dans votre formule : " + parts.join(" et ") + (q.livrets > 1 ? " par livret" : "") + "." : "";
+    var oneK = s.type === "location" ? "porteCles" : "chevalet";
+    document.getElementById("one-each-what").textContent = T.supports[oneK].court[0];
 
     var today = new Date(), until = new Date(today.getTime() + (C.validiteDevisJours || 30) * 864e5);
     var fd = function (d) { return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }); };
@@ -234,21 +206,18 @@
   form.addEventListener("change", function (e) {
     if (e.target.name === "type") {
       document.getElementById("qty").value = lastQty[e.target.value];
-      if (!supTouched) setRadio("sup-inclus", T.supportParDefaut[e.target.value]);
     }
-    if (e.target.name === "sup-inclus") supTouched = true;
     if (e.target.name === "formule") syncLangues();
     if (e.target.type === "number") e.target.value = clampInt(e.target.value, +e.target.min, +e.target.max);
     update();
   });
   form.addEventListener("submit", function (e) { e.preventDefault(); });
 
-  var supTouched = false;
   document.getElementById("one-each").addEventListener("click", function () {
     var s = state(), F = T.formules[s.formule];
-    var units = s.qty, inc = F.supportsInclus * (s.type === "location" ? s.qty : 1);
-    var k = inc ? s.supportInclus : (s.type === "location" ? "porteCles" : "chevalet");
-    document.getElementById("sup-" + k).value = Math.max(0, units - inc);
+    var k = s.type === "location" ? "porteCles" : "chevalet";
+    var inc = ((F.supportsInclus || {})[k] || 0) * (s.type === "location" ? s.qty : 1);
+    document.getElementById("sup-" + k).value = Math.max(0, s.qty - inc);
     update();
   });
 
@@ -268,10 +237,7 @@
       document.getElementById("qty").value = saved.qty; lastQty[saved.type] = saved.qty;
       document.getElementById("langues").value = saved.langues;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
-      if (saved.supportInclus && T.supports[saved.supportInclus]) { setRadio("sup-inclus", saved.supportInclus); supTouched = saved.supportInclus !== T.supportParDefaut[saved.type]; }
-      if (saved.couleur) setRadio("couleur", saved.couleur);
       document.getElementById("opt-express").checked = !!(saved.options && saved.options.express);
-      document.getElementById("opt-visite").checked = !!(saved.options && saved.options.visite);
     }
   } catch (e) {}
 
