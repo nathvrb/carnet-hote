@@ -27,7 +27,7 @@
         { k: "adresse", l: "Adresse complète", ac: "street-address" },
         { k: "acces", l: "Étage, ascenseur, bâtiment, numéro de porte" },
         { k: "capacite", l: "Nombre de voyageurs maximum et de chambres" },
-        { k: "formule", l: "Formule choisie", choix: ["Essentiel", "Confort", "Premium", "Je ne sais pas encore"], formule: 1 },
+        { k: "formule", l: "Formule choisie", choix: ["Confort", "Premium", "Je ne sais pas encore"], formule: 1 },
         { k: "date", l: "Date de la prochaine réservation, ou date souhaitée de mise en ligne" }
       ] },
     { id: "accueil", titre: "Le mot d'accueil et le contact", intro: "Le livret s'ouvre sur une carte d'accueil signée de votre main. Quelques mots suffisent : nous rédigeons le message.",
@@ -118,8 +118,7 @@
         { k: "supports-plus", l: "Supports en plus du nombre inclus", min: "confort", h: "Combien de chaque ?" },
         { k: "livraison", l: "Adresse de livraison des supports", min: "confort", ac: "street-address", zone: 2 },
         { k: "autre", l: "Autre chose à nous dire ?", zone: 3 }
-      ],
-      note: "Formule Essentiel : rien à livrer. Vous recevez une affiche A5 en PDF, avec le QR code du livret et celui du Wi-Fi." },
+      ] },
     { id: "photos", titre: "Photos à nous envoyer", depot: 1, introAlt: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Envoyez-les par WhatsApp, par e-mail ou par un lien de partage (Google Drive, WeTransfer).", intro: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Ajoutez-les ci-dessous : elles sont réduites automatiquement et envoyées en même temps que vos réponses.",
       liste: ["Une belle photo du logement ou de la vue, pour la couverture", "La façade ou l'entrée, pour que le voyageur la reconnaisse", "La boîte à clés ou la serrure à code", "Le parking ou l'emplacement de stationnement", "Chaque appareil de la partie 5 : en entier, puis ses boutons de face", "Le tableau électrique et l'arrivée d'eau", "Les poubelles et les bacs de tri", "Vos photos des environs, si vous voulez qu'on les utilise pour les sorties", "Votre logo (formule Premium)"],
       q: [

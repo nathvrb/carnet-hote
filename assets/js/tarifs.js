@@ -1,6 +1,8 @@
 /* ------------------------------------------------------------------
    Grille tarifaire — utilisée par la page Offres ET le devis automatique.
    Changez un prix ici, il change partout.
+   Modèle retenu le 27/10/2026 : création payée une fois (Confort ou Premium),
+   puis forfait mensuel avec console incluse (Autonomie), Sérénité en option.
    Repères marché (oct. 2026) :
    - logiciels « à faire soi-même » : gratuit à ~12 €/mois (StyQR 3 €/mois,
      StayTap Pro dès 6,90 €/mois, Touch Stay ~12,50 €/mois)
@@ -8,23 +10,6 @@
 ------------------------------------------------------------------- */
 window.CDH_TARIFS = {
   formules: {
-    essentiel: {
-      nom: "Essentiel",
-      prix: 89,
-      accroche: "Le livret clair et complet, sans fioritures.",
-      delai: "5 jours ouvrés",
-      langues: 1,
-      supportsInclus: 0,
-      corrections: 1,
-      inclus: [
-        "Livret rédigé et mis en page pour vous (jusqu'à 10 rubriques)",
-        "Wi-Fi, arrivée, départ, règles de la maison",
-        "Adresses utiles : boulangerie, courses, pharmacie, hôpital",
-        "Numéros d'urgence et contact de l'hôte",
-        "Affiche A5 à imprimer (PDF) avec QR du livret et du Wi-Fi",
-        "1 série de corrections"
-      ]
-    },
     confort: {
       nom: "Confort",
       prix: 149,
@@ -35,13 +20,15 @@ window.CDH_TARIFS = {
       supportsInclus: 1,
       corrections: 2,
       inclus: [
-        "Tout l'Essentiel, rubriques illimitées",
+        "Livret rédigé et mis en page pour vous, rubriques illimitées",
+        "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
         "Français + anglais",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
         "Guide local sur-mesure : 15 adresses et activités sélectionnées",
         "Carte interactive, météo, lien « avant votre arrivée »",
         "1 porte-clés gravé ou 1 chevalet plexi, livré chez vous",
-        "2 séries de corrections"
+        "2 séries de corrections",
+        "Votre console pour modifier le livret quand vous voulez"
       ]
     },
     premium: {
@@ -89,24 +76,18 @@ window.CDH_TARIFS = {
 
   // Forfaits mensuels (par livret)
   forfaits: {
-    hebergement: {
-      nom: "Hébergement",
-      mensuel: 3.9,
-      accroche: "Votre livret reste en ligne, le QR code ne change jamais.",
-      inclus: ["Livret en ligne 24 h/24", "QR code permanent", "Sauvegardes", "Modification à la demande : 15 €"]
-    },
     autonomie: {
       nom: "Autonomie",
       mensuel: 7.9,
-      accroche: "Vous modifiez vous-même, quand vous voulez.",
-      inclus: ["Tout l'Hébergement", "Espace client : vous modifiez votre livret vous-même", "Message du moment (travaux, événement…)", "Retour à une version précédente en un clic", "Statistiques de consultation sur 30 jours"]
+      populaire: true,
+      accroche: "Votre console incluse : vous modifiez le livret vous-même, quand vous voulez.",
+      inclus: ["Livret en ligne 24 h/24, QR code permanent", "Console : modifications et publication en direct", "Message du moment (travaux, événement…)", "Retour à une version précédente en un clic", "Statistiques de consultation sur 30 jours", "Modification faite par nous : 15 € l'unité"]
     },
     serenite: {
       nom: "Sérénité",
-      mensuel: 14.9,
-      populaire: true,
-      accroche: "On s'occupe de tout, chaque mois.",
-      inclus: ["Tout l'Autonomie", "1 modification par mois faite par nous", "Mise à jour saisonnière du guide local", "Support prioritaire sous 24 h"]
+      mensuel: 19.9,
+      accroche: "La console, et nous faisons vos modifications pour vous.",
+      inclus: ["Tout l'Autonomie", "Vos modifications faites par nous, jusqu'à 2 demandes par mois", "Mise à jour saisonnière du guide local", "Réponse sous 24 h"]
     }
   },
   moisOffertsAnnuel: 2,          // paiement annuel = 10 mois payés

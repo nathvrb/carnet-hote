@@ -127,7 +127,7 @@ Le bouton « Mot de passe oublié » d'`espace.html` envoie un lien par e-mail, 
 
 - Logiciels où l'hôte fait tout lui-même : gratuit à ~12 €/mois par logement (StyQR 3 €/mois, StayTap Pro dès 6,90 €/mois, Touch Stay ~12,50 €/mois).
 - Freelances qui rédigent le livret : environ 100 € le livret avec QR code et affiche, sans hébergement ni mise à jour.
-- Carnet d'Hôte se place entre les deux : rédigé pour l'hôte (89 à 249 €), puis hébergé et mis à jour (3,90 à 14,90 €/mois).
+- Carnet d'Hôte se place entre les deux : rédigé pour l'hôte (149 ou 249 €), puis hébergé avec une console pour le modifier soi-même (7,90 €/mois, ou 19,90 €/mois avec les modifications faites pour l'hôte).
 
 ## Crédits
 

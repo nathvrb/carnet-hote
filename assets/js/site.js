@@ -181,7 +181,7 @@
       row(o.langue.label, "Allemand, espagnol, italien, néerlandais…", "+" + eur(o.langue.prix)) +
       row(o.express.label, o.express.detail + " (Confort et Premium)", "+" + eur(o.express.prix)) +
       row(o.visite.label, "Par logement", "+" + eur(o.visite.prix)) +
-      row("Modification ponctuelle", "Avec le forfait Hébergement", eur(T.modificationPonctuelle)) +
+      row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +
       row("Affiche A5 à imprimer", "QR du livret et du Wi-Fi, en PDF · toutes formules", "incluse") +
       Object.keys(T.supports).map(function (k) { var s = T.supports[k]; return row(s.label, s.detail + " · en plus des supports inclus", eur(s.prix)); }).join("") +

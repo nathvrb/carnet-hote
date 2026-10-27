@@ -384,7 +384,7 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 /* ---------- offres : une carte de prix ---------- */
 .offres-tete { margin-bottom: clamp(56px, 7vw, 96px); }
 .offres-tete .h2 { max-width: 20em; }
-.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--col); }
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--col) * 2); max-width: 1040px; }
 .plan { padding: 22px 0 0; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 16px; min-width: 0; border-top: 1px solid var(--bleu); }
 .plan-nom { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .plan h3 { margin: 0; font-family: var(--display); font-weight: 500; font-size: 1.6rem; line-height: 1; color: var(--bleu); }

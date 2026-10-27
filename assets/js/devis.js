@@ -135,7 +135,7 @@
       supportInclus: fd.get("sup-inclus") || T.supportParDefaut[fd.get("type") || "location"],
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
       options: { express: !!fd.get("opt-express"), visite: !!fd.get("opt-visite") },
-      forfait: fd.get("forfait") || "serenite",
+      forfait: fd.get("forfait") || "autonomie",
       facturation: fd.get("facturation") || "mensuel"
     };
   }
