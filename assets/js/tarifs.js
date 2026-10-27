@@ -22,7 +22,7 @@ window.CDH_TARIFS = {
       inclus: [
         "Livret rédigé et mis en page pour vous, rubriques illimitées",
         "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
-        "3 langues : français, anglais + 1 au choix",
+        "3 langues : français, anglais et allemand",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
         "Guide local sur-mesure : 15 adresses et activités sélectionnées",
         "Carte interactive, météo, lien « avant votre arrivée »",
@@ -42,7 +42,7 @@ window.CDH_TARIFS = {
       moisOfferts: 3,
       inclus: [
         "Tout le Confort",
-        "4 langues : français, anglais + 2 au choix",
+        "4 langues : français, anglais, allemand et italien",
         "Vos couleurs et votre logo",
         "Vos vidéos tutos intégrées",
         "Services en plus : départ tardif, panier, ménage…",

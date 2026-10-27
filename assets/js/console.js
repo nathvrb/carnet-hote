@@ -1,5 +1,5 @@
 /* Console d'édition des livrets.
-   - Bouton FR / EN : en mode EN, les textes saisis vont dans doc.en.
+   - Boutons FR / EN / DE / IT : en mode traduction, les textes saisis vont dans doc.en, doc.de ou doc.it.
      Un champ anglais vide reprend le texte français.
    - La structure (ajout, ordre, suppression, photos) se modifie en FR ;
      les traductions suivent automatiquement. */
@@ -67,16 +67,19 @@
 
   /* ---------- accès aux listes (FR et EN) ---------- */
   function arr(list) { return list === "blocs" ? doc.arrivee.blocs : doc[list]; }
-  function enArr(list, create) {
-    if (!doc.en) { if (!create) return null; doc.en = {}; }
-    var host = doc.en, key = list;
+  var TRL = ["en", "de", "it"];   /* langues de traduction : la saisie va dans doc.en, doc.de ou doc.it */
+  var LANG_LABEL = { en: "anglaise", de: "allemande", it: "italienne" };
+  function trArr(lang, list, create) {
+    if (!doc[lang]) { if (!create) return null; doc[lang] = {}; }
+    var host = doc[lang], key = list;
     if (list === "blocs") {
-      if (!doc.en.arrivee) { if (!create) return null; doc.en.arrivee = {}; }
-      host = doc.en.arrivee;
+      if (!doc[lang].arrivee) { if (!create) return null; doc[lang].arrivee = {}; }
+      host = doc[lang].arrivee;
     }
     if (!Array.isArray(host[key])) { if (!create) return null; host[key] = []; }
     return host[key];
   }
+  function enArr(list, create) { return trArr(edLang, list, create); }
   function enItem(list, i, create) {
     var e = enArr(list, create); if (!e) return null;
     if (!e[i] || typeof e[i] !== "object") { if (!create) return null; while (e.length <= i) e.push({}); if (!e[i] || typeof e[i] !== "object") e[i] = {}; }
@@ -116,7 +119,7 @@
     if (!Array.isArray(d.arrivee.blocs)) d.arrivee.blocs = [];
     ["rubriques", "services", "adresses", "activites", "depart"].forEach(function (k) { if (!Array.isArray(d[k])) d[k] = []; });
     d.rubriques.forEach(function (r, i) { if (!r.id) r.id = "r" + i + "-" + Math.random().toString(36).slice(2, 5); r.etapes = r.etapes || []; r.liste = r.liste || []; });
-    if (d.en && typeof d.en !== "object") d.en = {};
+    TRL.forEach(function (l) { if (d[l] && typeof d[l] !== "object") d[l] = {}; });
     return d;
   }
   function lines(a) { return (a || []).map(function (x) { return String(x).trim(); }).filter(Boolean); }
@@ -147,7 +150,7 @@
     d.rubriques.forEach(function (r) { r.etapes = lines(r.etapes); r.liste = lines(r.liste); });
     d.arrivee.blocs.forEach(function (b) { b.etapes = lines(b.etapes); });
     if (!d.geo) delete d.geo;
-    if (d.en) { var en = prune(d.en); if (en) d.en = en; else delete d.en; }
+    TRL.forEach(function (l) { if (d[l]) { var tr = prune(d[l]); if (tr) d[l] = tr; else delete d[l]; } });
     delete d.majLe;
     return d;
   }
@@ -197,13 +200,15 @@
       edLang = b.dataset.ed;
       applyLang(); fillForm(); renderLists(); sendPreview();
       if (tab === "arrivee") renderArrLink();
-      toast(edLang === "en" ? "Saisie de la version anglaise" : "Saisie de la version française");
+      toast(edLang === "fr" ? "Saisie de la version française" : "Saisie de la version " + LANG_LABEL[edLang]);
     });
   });
   function applyLang() {
     langBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.ed === edLang)); });
-    document.body.classList.toggle("en-mode", edLang === "en");
-    document.getElementById("en-note").hidden = edLang !== "en";
+    document.body.classList.toggle("en-mode", edLang !== "fr");
+    var note = document.getElementById("en-note");
+    note.hidden = edLang === "fr";
+    if (edLang !== "fr") note.textContent = "Vous modifiez la version " + LANG_LABEL[edLang] + ". Un champ vide reprend le texte français (affiché en gris). Les champs grisés sont communs à toutes les langues.";
     document.documentElement.style.setProperty("--bar-h", document.getElementById("cbar").offsetHeight + "px");
   }
   function short(s) { s = String(s || "").replace(/\s+/g, " ").trim(); return s.length > 90 ? s.slice(0, 88) + "…" : s; }
@@ -211,13 +216,13 @@
   /* ---------- formulaire simple ---------- */
   function fillForm() {
     if (doc.theme && (!doc.theme.police || doc.theme.police === "Gloock")) doc.theme.police = "Lora"; /* Gloock remplacée par Lora, plus lisible */
-    var en = edLang === "en";
+    var en = edLang !== "fr";
     document.querySelectorAll("[data-path]").forEach(function (el) {
       var p = el.dataset.path, tr = !!el.dataset.tr;
       var fr = getPath(doc, p), v = fr;
       if (!el.dataset.ph0) el.dataset.ph0 = el.getAttribute("placeholder") || " ";
       if (en && tr) {
-        v = getPath(doc.en || {}, p);
+        v = getPath(doc[edLang] || {}, p);
         var phv = el.dataset.lines ? (fr || []).join("\n") : short(fr);
         el.placeholder = phv || (el.dataset.ph0 === " " ? "" : el.dataset.ph0);
       } else if (el.dataset.ph0 !== " ") el.placeholder = el.dataset.ph0;
@@ -240,7 +245,7 @@
   function onField(e) {
     var el = e.target;
     if (el.type === "file") return;
-    var en = edLang === "en";
+    var en = edLang !== "fr";
     if (el.dataset.path) {
       if (el.type === "radio" && !el.checked) return;
       var v = el.type === "checkbox" ? el.checked : el.dataset.lines ? el.value.split("\n") : el.value;
@@ -249,7 +254,7 @@
         if (g === false) { el.setAttribute("aria-invalid", "true"); return; }
         el.removeAttribute("aria-invalid"); v = g || undefined;
       }
-      if (en && el.dataset.tr) { if (!doc.en) doc.en = {}; setPath(doc.en, el.dataset.path, v); }
+      if (en && el.dataset.tr) { if (!doc[edLang]) doc[edLang] = {}; setPath(doc[edLang], el.dataset.path, v); }
       else setPath(doc, el.dataset.path, v);
       if (el.dataset.path === "nom") refreshPick();
       if (el.dataset.path === "annonce.texte") countAnnonce();
@@ -293,14 +298,14 @@
     document.getElementById("a-count").textContent = t.value.length + " / 220";
   }
   document.getElementById("a-ideas").addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b || edLang === "en") return;
+    var b = e.target.closest("button"); if (!b || edLang !== "fr") return;
     doc.annonce.texte = b.dataset.text; doc.annonce.style = b.dataset.style; doc.annonce.actif = true;
     fillForm(); changed();
   });
 
   var SW = ["#1F5B4C", "#A3402B", "#1D5C7A", "#56632A", "#6A4C93", "#B5651D", "#2E3A59", "#8C2F4B"];
   function renderSwatches() {
-    var cur = (doc.theme.accent || "").toLowerCase(), off = edLang === "en" ? " disabled" : "";
+    var cur = (doc.theme.accent || "").toLowerCase(), off = edLang !== "fr" ? " disabled" : "";
     document.getElementById("swatches").innerHTML = SW.map(function (c) {
       return '<button type="button" class="swatch" style="--c:' + c + '" data-c="' + c + '" aria-label="Couleur ' + c + '" aria-pressed="' + (cur === c.toLowerCase()) + '"' + off + "></button>";
     }).join("") + '<label class="sr" for="g-color">Autre couleur</label><input type="color" id="g-color" value="' + esc(doc.theme.accent || "#1F5B4C") + '"' + off + ">";
@@ -327,7 +332,7 @@
   }
   function tv(list, i, k) {
     var fr = (arr(list)[i] || {})[k];
-    if (edLang !== "en") return fr;
+    if (edLang === "fr") return fr;
     var e = enItem(list, i, false);
     return e && e[k] && String(e[k]).trim() ? e[k] : fr;
   }
@@ -344,7 +349,7 @@
     }
     var flags = "";
     if ((list === "adresses" || list === "activites") && it.geo) flags += '<span class="flag" title="Sur la carte">' + I("pin", "ico-s") + "</span>";
-    if (edLang === "en" && !translated(list, i)) flags += '<span class="flag todo">À traduire</span>';
+    if (edLang !== "fr" && !translated(list, i)) flags += '<span class="flag todo">À traduire</span>';
     return "<b>" + esc(t || "Sans titre") + flags + "</b><small>" + esc(sub || " ") + "</small>";
   }
   var TRK = {
@@ -358,7 +363,7 @@
   }
   function fld(list, i, k, label, opts) {
     opts = opts || {};
-    var en = edLang === "en", it = arr(list)[i] || {};
+    var en = edLang !== "fr", it = arr(list)[i] || {};
     var fr = it[k], val = fr;
     var id = list + "-" + i + "-" + k;
     var ph = opts.ph || "";
@@ -388,7 +393,7 @@
     return '<div class="fld lock-en"><span>Photo <small>(facultatif)</small></span><div class="photo-row"><img class="thumb" data-thumb-src="' + esc(it.photo || "") + '" alt=""><input id="' + list + "-ph-" + i + '" aria-label="Adresse de la photo" data-list="' + list + '" data-i="' + i + '" data-k="photo" data-photo="1" value="' + esc(av) + '" placeholder="' + (av || !it.photo ? ph : "Photo importée depuis l'ordinateur") + '"' + (edLang === "en" ? " disabled" : "") + '><label class="btn tiny fr-only" for="' + list + "-phf-" + i + '">Importer</label><input type="file" accept="image/*" class="sr" id="' + list + "-phf-" + i + '" data-tlist="' + list + '" data-i="' + i + '" data-k="photo"></div></div>';
   }
   function bodyFor(list, it, i) {
-    var en = edLang === "en";
+    var en = edLang !== "fr";
     if (list === "rubriques") {
       var enIt = enItem(list, i, false) || {};
       var ph = (it.photos || []).map(function (p, j) {
@@ -447,7 +452,7 @@
         '<button type="button" class="iconbtn danger" data-act="del" aria-label="Supprimer">' + I("croix", "ico-s") + "</button></span></div>" +
         (open ? '<div class="item-body">' + bodyFor(list, it, i) + "</div>" : "") + "</div>";
     }).join("") : '<p class="hint">Rien pour l\'instant.</p>';
-    if (edLang === "en") box.querySelectorAll('input[type="file"]').forEach(function (f) { f.disabled = true; });
+    if (edLang !== "fr") box.querySelectorAll('input[type="file"]').forEach(function (f) { f.disabled = true; });
     refreshThumbs(box);
     counts();
   }
@@ -455,15 +460,17 @@
 
   /* déplace / supprime aussi la traduction pour garder le même ordre */
   function mirror(list, fn) {
-    var e = enArr(list, false); if (!e) return;
-    padTo(e, arr(list).length); fn(e);
+    TRL.forEach(function (l) {
+      var e = trArr(l, list, false); if (!e) return;
+      padTo(e, arr(list).length); fn(e);
+    });
   }
   LISTS.forEach(function (list) {
     var box = document.getElementById("list-" + list);
     box.addEventListener("click", function (e) {
       var ib = e.target.closest("[data-icon]");
       if (ib) {
-        if (edLang === "en") return;
+        if (edLang !== "fr") return;
         arr(list)[+ib.dataset.i].icone = ib.dataset.icon;
         box.querySelectorAll("[data-icon]").forEach(function (x) { if (x.dataset.i === ib.dataset.i) x.setAttribute("aria-pressed", String(x === ib)); });
         var head = ib.closest(".item").querySelector(".item-ico"); head.innerHTML = I(ib.dataset.icon);
@@ -473,12 +480,12 @@
       var i = +b.closest(".item").dataset.i, a = arr(list);
       var act = b.dataset.act;
       if (act === "toggle") { openItem[list] = openItem[list] === i ? -1 : i; renderList(list); sendPreview(); return; }
-      if (edLang === "en") return;
+      if (edLang !== "fr") return;
       if (act === "rphoto-add") { a[i].photos = a[i].photos || []; a[i].photos.push({ src: "", legende: "" }); renderList(list); changed(); return; }
       if (act === "rphoto-del") {
         var pj = +b.dataset.pj;
         a[i].photos.splice(pj, 1);
-        var ei = enItem(list, i, false); if (ei && Array.isArray(ei.photos) && ei.photos.length > pj) ei.photos.splice(pj, 1);
+        TRL.forEach(function (l) { var tl = trArr(l, list, false), ei = tl && tl[i]; if (ei && Array.isArray(ei.photos) && ei.photos.length > pj) ei.photos.splice(pj, 1); });
         renderList(list); changed(); return;
       }
       if (act === "up" && i > 0) {
@@ -497,7 +504,7 @@
           setTimeout(function () { if (b.isConnected) { b.classList.remove("armed"); b.setAttribute("aria-label", "Supprimer"); b.title = ""; } }, 3000);
           return;
         }
-        var en0 = enArr(list, false); if (en0 && en0.length > i) en0.splice(i, 1);
+        TRL.forEach(function (l) { var en0 = trArr(l, list, false); if (en0 && en0.length > i) en0.splice(i, 1); });
         a.splice(i, 1); openItem[list] = -1; toast("Élément supprimé");
       }
       renderList(list); changed();
@@ -505,7 +512,7 @@
   });
   document.querySelectorAll("[data-add]").forEach(function (b) {
     b.addEventListener("click", function () {
-      if (edLang === "en") return;
+      if (edLang !== "fr") return;
       var list = b.dataset.add, a = arr(list);
       if (list === "rubriques") a.push({ id: "r-" + Date.now().toString(36), titre: "Nouvelle rubrique", icone: "info", resume: "", texte: "", etapes: [], liste: [], astuce: "" });
       if (list === "blocs") a.push({ icone: "info", titre: "Nouveau bloc", texte: "", etapes: [], astuce: "" });
@@ -785,7 +792,7 @@
       if (COMPTE) { remote = { existe: false }; baseEdit = null; hideConflict(); }
       doc = blank(); writeDraft();
       openItem = {};
-      if (edLang === "en") { edLang = "fr"; applyLang(); }
+      if (edLang !== "fr") { edLang = "fr"; applyLang(); }
       afterLoad(true); showTab("general"); document.getElementById("g-nom").focus(); document.getElementById("g-nom").select();
       toast("Nouveau livret créé. Donnez-lui un nom.");
       return;
@@ -856,8 +863,12 @@
   /* ---------- lien « avant votre arrivée » ---------- */
   function arrMessage() {
     var url = window.cdhLivretUrl(doc.id, "arrivee"), h = doc.hote || {};
-    var who = edLang === "en" ? ((doc.en && doc.en.hote && doc.en.hote.signature) || h.signature || h.nom || "") : (h.signature || h.nom || "");
-    if (edLang === "en") return "Hello! Your stay at " + doc.nom + " is coming up. Here's how to get here and pick up the keys: " + url + "\nSee you tomorrow!" + (who ? "\n" + who : "");
+    var tr = edLang !== "fr" ? doc[edLang] : null;
+    var who = edLang !== "fr" ? ((tr && tr.hote && tr.hote.signature) || h.signature || h.nom || "") : (h.signature || h.nom || "");
+    var sig = who ? "\n" + who : "";
+    if (edLang === "en") return "Hello! Your stay at " + doc.nom + " is coming up. Here's how to get here and pick up the keys: " + url + "\nSee you tomorrow!" + sig;
+    if (edLang === "de") return "Guten Tag! Ihr Aufenthalt in „" + doc.nom + "“ steht bevor. So kommen Sie an und erhalten die Schlüssel: " + url + "\nBis morgen!" + sig;
+    if (edLang === "it") return "Buongiorno! Il vostro soggiorno a " + doc.nom + " si avvicina. Ecco come arrivare e ritirare le chiavi: " + url + "\nA domani!" + sig;
     return "Bonjour ! Votre séjour au " + doc.nom + " approche. Voici comment venir et récupérer les clés : " + url + "\nÀ demain !" + (who ? "\n" + who : "");
   }
   function renderArrLink() {
@@ -906,12 +917,13 @@
     var accent = doc.theme.accent || "#1F5B4C";
     var disp = FONT_CSS[doc.theme.police] || FONT_CSS.Gloock;
     var body = '"Schibsted Grotesk", system-ui, sans-serif';
-    var bi = !!(doc.en && Object.keys(doc.en).length);
+    var trs = TRL.filter(function (l) { return doc[l] && Object.keys(doc[l]).length; }), bi = trs.length > 0;
+    var WEL = { en: "WELCOME", de: "WILLKOMMEN", it: "BENVENUTI" };
     var go = function () {
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = accent; ctx.fillRect(0, 0, W, 470);
       ctx.fillStyle = "rgba(255,255,255,.82)"; ctx.font = "600 34px " + body; ctx.textAlign = "center";
-      ctx.fillText(bi ? "BIENVENUE · WELCOME" : "BIENVENUE", W / 2, 130);
+      ctx.fillText(["BIENVENUE"].concat(trs.map(function (l) { return WEL[l]; })).join(" · "), W / 2, 130);
       ctx.fillStyle = "#ffffff"; ctx.font = "92px " + disp;
       var nl = wrap(ctx, doc.nom || "", W - 160).slice(0, 2);
       nl.forEach(function (l, i) { ctx.fillText(l, W / 2, 250 + i * 104 - (nl.length - 1) * 40); });

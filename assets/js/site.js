@@ -135,7 +135,7 @@
     ["En arrivant", [
       ["Avant votre arrivée", "Un lien à envoyer la veille : adresse, itinéraire, accès et boîte à clés. Le voyageur arrive sans vous appeler."],
       ["Le Wi-Fi en un geste", "Nom du réseau et mot de passe en tête du livret, avec un bouton pour copier."],
-      ["Trois langues, ou plus", "Le livret s'ouvre dans la langue du téléphone, avec un bouton pour changer de langue en haut de page."],
+      ["Français, anglais, allemand, italien", "Le livret s'ouvre dans la langue du téléphone, avec un bouton pour changer de langue en haut de page."],
       ["Recherche intégrée", "Le voyageur tape « poubelles » ou « parking » et tombe directement sur la bonne réponse."]
     ]],
     ["Dans le logement", [
@@ -178,7 +178,7 @@
     var o = T.options;
     var row = function (label, small, price) { return '<div class="row"><dt>' + esc(label) + (small ? "<small>" + esc(small) + "</small>" : "") + '</dt><span class="dots"></span><dd>' + price + "</dd></div>"; };
     extras.innerHTML = '<div><h4>Options</h4><dl>' +
-      row(o.langue.label, "Allemand, espagnol, italien, néerlandais…", "+" + eur(o.langue.prix)) +
+      row(o.langue.label, "L'italien pour le Confort (le Premium l'inclut) ; autres langues, nous consulter", "+" + eur(o.langue.prix)) +
       row(o.express.label, o.express.detail + " (Confort et Premium)", "+" + eur(o.express.prix)) +
       row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +

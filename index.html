@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=24">
+<link rel="stylesheet" href="assets/css/site.css?v=25">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -335,7 +335,7 @@
             <div class="qty-row">
               <label for="langues">Langues du livret<small id="langues-hint">1 incluse dans la formule</small></label>
               <span class="p" id="langues-p"></span>
-              <div class="stepper"><button type="button" data-step="-1" data-for="langues" aria-label="Retirer une langue">−</button><input id="langues" name="langues" type="number" inputmode="numeric" min="1" max="8" value="1"><button type="button" data-step="1" data-for="langues" aria-label="Ajouter une langue">+</button></div>
+              <div class="stepper"><button type="button" data-step="-1" data-for="langues" aria-label="Retirer une langue">−</button><input id="langues" name="langues" type="number" inputmode="numeric" min="1" max="4" value="1"><button type="button" data-step="1" data-for="langues" aria-label="Ajouter une langue">+</button></div>
             </div>
             <div class="sup-box" id="sup-box">
               <div class="sup-line" id="couleurs-row"><span class="lbl">Couleur du bandeau <a href="#supports-qr">voir la maquette</a></span><div class="couleurs" id="couleurs" role="radiogroup" aria-label="Couleur du bandeau"></div></div>
@@ -447,7 +447,7 @@
         <details><summary>Mes voyageurs doivent-ils installer une application ?</summary><p>Non. Le QR code ouvre une simple page web, sur n'importe quel téléphone, directement depuis l'appareil photo. Vous pouvez aussi envoyer le lien avant l'arrivée, par la messagerie Airbnb ou Booking.</p></details>
         <details><summary>Que se passe-t-il si je change le code Wi-Fi ?</summary><p>Vous le changez vous-même dans votre console, puis « Publier » : c'est en ligne tout de suite, la console est incluse dans le forfait. Avec Sérénité, un message suffit et nous le faisons dans la journée. Sinon, nous pouvons le faire pour vous : <span data-modif>15 €</span> la modification. Dans tous les cas, le QR code ne change pas.</p></details>
         <details><summary>Combien de temps pour créer mon livret ?</summary><p>7 à 10 jours ouvrés en Confort et 10 à 13 en Premium, à compter de la réception de vos informations. Premium demande plus de travail : traductions, vidéos et trois supports à fabriquer. Pressé ? Avec l'option « Livret en ligne en priorité », votre livret est en ligne sous 5 jours ouvrés et les supports suivent.</p></details>
-        <details><summary>Mes voyageurs sont étrangers, le livret est-il traduit ?</summary><p>Oui. Le Confort comprend trois langues (français, anglais et une langue de votre choix), le Premium en comprend quatre. Chaque langue supplémentaire coûte <span data-langue-prix>29 €</span>. Le livret s'ouvre dans la langue du téléphone et un bouton permet de changer à tout moment.</p></details>
+        <details><summary>Mes voyageurs sont étrangers, le livret est-il traduit ?</summary><p>Oui. Le Confort comprend trois langues (français, anglais et allemand) et le Premium quatre (avec l'italien). Ajouter l'italien au Confort coûte <span data-langue-prix>29 €</span>. Le livret s'ouvre dans la langue du téléphone et un bouton permet de changer à tout moment.</p></details>
         <details><summary>Et s'il n'y a pas de réseau dans le logement ?</summary><p>Une fois ouvert, le livret reste disponible hors connexion sur le téléphone du voyageur, photos comprises. Seules la carte et la météo ont besoin d'internet.</p></details>
         <details><summary>À quoi ressemble le porte-clés, puis-je choisir sa couleur ?</summary><p>C'est un porte-clés transparent en acrylique, avec une fenêtre pour glisser un visuel. Nous imprimons ce visuel avec le nom de votre logement, son QR code et un bandeau de la couleur de votre choix (bleu nuit, vert sapin, terracotta, ocre, bordeaux ou noir mat), et nous vous le livrons déjà en place. Le chevalet et l'affiche reprennent les couleurs de votre livret. Le Confort en comprend un, le Premium trois, plus un chevalet plexiglas.</p></details>
         <details><summary>J'ai plusieurs logements, comment ça marche ?</summary><p>Chaque logement a son livret et son QR code. La remise s'applique dès 2 logements, sur la création comme sur le forfait : -15 % de 2 à 3 logements, -25 % de 4 à 9, -35 % à partir de 10.</p></details>
@@ -494,14 +494,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">149 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=24"></script>
-<script src="assets/js/tarifs.js?v=24"></script>
-<script src="assets/js/icons.js?v=24"></script>
+<script src="assets/js/config.js?v=25"></script>
+<script src="assets/js/tarifs.js?v=25"></script>
+<script src="assets/js/icons.js?v=25"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js?v=24"></script>
+<script src="assets/js/store.js?v=25"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js?v=24"></script>
-<script src="assets/js/devis.js?v=24"></script>
-<script src="assets/js/site.js?v=24"></script>
+<script src="assets/js/qr.js?v=25"></script>
+<script src="assets/js/devis.js?v=25"></script>
+<script src="assets/js/site.js?v=25"></script>
 </body>
 </html>

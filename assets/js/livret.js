@@ -125,6 +125,78 @@
       introuvable: "Welcome book not found", introuvableTxt: "The link may be incomplete. Scan the QR code again or contact your host.", retour: "Back to home page",
       chargement: "Opening the welcome book…", horsLigne: "No connection", horsLigneTxt: "This welcome book will open as soon as your phone is online (Wi-Fi or mobile data).", reessayer: "Try again",
       locale: "en-GB"
+    },
+    de: {
+      lieu: { location: "Die Unterkunft", maison: "Das Haus", hotel: "Das Hotel" },
+      toc: { arrivee: "Anreise", services: "Extras", adresses: "Adressen", carte: "Karte", activites: "Ausflüge", depart: "Abreise", urgences: "Notfall" },
+      demo: "Beispiel eines Willkommensbuchs von {m}. Unterkunft, Gastgeber und Geschäfte sind frei erfunden.", demoCta: "Mein eigenes erstellen",
+      bienvenue: { defaut: "Willkommen!", hotel: "Willkommen" },
+      annonce: { info: "Gut zu wissen", alerte: "Wichtig", bonplan: "Tipp" },
+      wifi: "WLAN", reseau: "Netzwerk", mdp: "Passwort", copier: "Kopieren", copie: "Kopiert", mdpCopie: "Passwort kopiert", mdpSel: "Passwort markiert: bitte kopieren",
+      arrivee: "Check-in", depart: "Check-out", contacter: "Kontakt", hote: "Gastgeber", appeler: "Anrufen", email: "E-Mail", urgence: "Notfall",
+      recherche: "Suchen: Heizung, Müll, Parken…", rechercheLabel: "Im Willkommensbuch suchen", effacer: "Suche löschen",
+      resultats: function (n, q) { return n + (n > 1 ? " Ergebnisse" : " Ergebnis") + " für „" + q + "“"; }, aucun: "Keine Ergebnisse. Versuchen Sie ein anderes Wort oder fragen Sie Ihren Gastgeber.",
+      arriveeTitre: "Vor Ihrer Anreise", arriveeSub: "So kommen Sie stressfrei an und ins Haus.",
+      hubTitre: "Was suchen Sie?",
+      hub: { arrivee: "Adresse, Zugang, Schlüssel", logement: function (n) { return n + (n > 1 ? " Themen" : " Thema"); }, services: function (n) { return n + (n > 1 ? " Extras auf Anfrage" : " Extra auf Anfrage"); }, adresses: function (n) { return n + (n > 1 ? " Adressen" : " Adresse"); }, carte: "Alles auf einer Karte", activites: function (n) { return n + (n > 1 ? " Ideen" : " Idee"); }, depart: "Checkliste vor der Abreise", urgences: "112, 15, 17, 18" },
+      bientot: "Ihr Aufenthalt steht bevor! Hier finden Sie alles, was Sie für die Anreise wissen müssen.",
+      adresse: "Adresse", itineraire: "Route", copierAdresse: "Adresse kopieren", adresseCopiee: "Adresse kopiert",
+      prevenir: "Ankunftszeit mitteilen", msgArrivee: function (n) { return "Guten Tag, wir kommen voraussichtlich gegen … Uhr in „" + n + "“ an. Bis bald!"; },
+      ouvrir: "Tippen Sie auf ein Thema, um es zu öffnen.",
+      servicesTitre: "Extras", servicesSub: "Für einen noch schöneren Aufenthalt, einfach anfragen.", demander: "Anfragen",
+      msgService: function (t, p) { return "Guten Tag, wir möchten gern buchen: " + t + (p ? " (" + p + ")" : "") + ". Vielen Dank!"; },
+      adressesTitre: "Nützliche Adressen", adressesSub: "Geschäfte, Gesundheit und gute Lokale in der Nähe.", tout: "Alle", aucuneAdresse: "Keine passende Adresse.",
+      carteTitre: "Auf der Karte", carteSub: "Die Unterkunft, nützliche Adressen und Ausflüge.", carteLogement: "Die Unterkunft", carteAdresses: "Adressen", carteActivites: "Ausflüge",
+      carteToucher: "Tippen Sie auf die Karte, um sie zu verschieben", carteHors: "Die Karte ist offline nicht verfügbar.",
+      activitesTitre: "Ausflüge in der Nähe", activitesSub: "Unsere Lieblingsziele, ausprobiert und empfohlen.", voirCarte: "Auf der Karte ansehen", aucuneActivite: "Keine passende Aktivität.",
+      aucuneRubrique: "Kein passendes Thema.",
+      departTitre: "Vor der Abreise", departSub: function (h) { return (h ? "Check-out " + h.charAt(0).toLowerCase() + h.slice(1) + ". " : "") + "Haken setzen, sobald etwas erledigt ist."; },
+      fait: function (n, t) { return n + " von " + t + " erledigt"; }, pret: "Alles erledigt, gute Heimreise!",
+      urgencesTitre: "Notfall", urgencesSub: "Kostenlose Anrufe von jedem Telefon.",
+      u112: "Notruf, in ganz Europa", u15: "Rettungsdienst (SAMU)", u18: "Feuerwehr", u17: "Polizei", u114: "Notruf per SMS (für Gehörlose und Schwerhörige)",
+      u3237: "Notdienst-Apotheke (kostenpflichtig)", antipoison: "Giftnotruf", hopital: "Nächstes Krankenhaus",
+      avis: "Bewertung abgeben", avisDemo: "In einem echten Willkommensbuch öffnet diese Schaltfläche die Bewertungsseite des Gastgebers (Google, Airbnb, Booking…).",
+      maj: "Aktualisiert am", fait_avec: "Willkommensbuch erstellt mit", horsLigneOk: "Dieses Willkommensbuch funktioniert auch offline.",
+      meteo: "Wetter", meteoSource: "Daten: MET Norway",
+      introuvable: "Willkommensbuch nicht gefunden", introuvableTxt: "Der Link ist vielleicht unvollständig. Scannen Sie den QR-Code erneut oder kontaktieren Sie Ihren Gastgeber.", retour: "Zurück zur Startseite",
+      chargement: "Willkommensbuch wird geöffnet…", horsLigne: "Keine Verbindung", horsLigneTxt: "Dieses Willkommensbuch wird angezeigt, sobald Ihr Telefon online ist (WLAN oder mobile Daten).", reessayer: "Erneut versuchen",
+      locale: "de-DE"
+    },
+    it: {
+      lieu: { location: "L'alloggio", maison: "La casa", hotel: "L'hotel" },
+      toc: { arrivee: "Arrivo", services: "Extra", adresses: "Indirizzi", carte: "Mappa", activites: "Da fare", depart: "Partenza", urgences: "Emergenze" },
+      demo: "Esempio di guida di benvenuto realizzata da {m}. Alloggio, host e negozi sono fittizi.", demoCta: "Crea la mia",
+      bienvenue: { defaut: "Benvenuti!", hotel: "Benvenuti" },
+      annonce: { info: "Da sapere", alerte: "Importante", bonplan: "Consiglio" },
+      wifi: "Wi-Fi", reseau: "Rete", mdp: "Password", copier: "Copia", copie: "Copiato", mdpCopie: "Password copiata", mdpSel: "Password selezionata: copiala",
+      arrivee: "Check-in", depart: "Check-out", contacter: "Contatta", hote: "l'host", appeler: "Chiama", email: "E-mail", urgence: "Emergenza",
+      recherche: "Cerca: riscaldamento, rifiuti, parcheggio…", rechercheLabel: "Cerca nella guida", effacer: "Cancella la ricerca",
+      resultats: function (n, q) { return n + (n > 1 ? " risultati" : " risultato") + " per «" + q + "»"; }, aucun: "Nessun risultato. Prova un'altra parola o contatta il tuo host.",
+      arriveeTitre: "Prima del vostro arrivo", arriveeSub: "Come arrivare ed entrare, senza stress.",
+      hubTitre: "Cosa cercate?",
+      hub: { arrivee: "Indirizzo, accesso, chiavi", logement: function (n) { return n + (n > 1 ? " argomenti" : " argomento"); }, services: function (n) { return n + (n > 1 ? " servizi su richiesta" : " servizio su richiesta"); }, adresses: function (n) { return n + (n > 1 ? " indirizzi" : " indirizzo"); }, carte: "Tutto su una mappa", activites: function (n) { return n + (n > 1 ? " idee" : " idea"); }, depart: "Lista di controllo prima di partire", urgences: "112, 15, 17, 18" },
+      bientot: "Il vostro soggiorno si avvicina! Ecco tutto ciò che serve per arrivare.",
+      adresse: "Indirizzo", itineraire: "Percorso", copierAdresse: "Copia l'indirizzo", adresseCopiee: "Indirizzo copiato",
+      prevenir: "Avvisare dell'orario di arrivo", msgArrivee: function (n) { return "Buongiorno, arriveremo a " + n + " verso le … A presto!"; },
+      ouvrir: "Toccate un argomento per aprirlo.",
+      servicesTitre: "Servizi extra", servicesSub: "Per un soggiorno ancora più piacevole, su semplice richiesta.", demander: "Richiedi",
+      msgService: function (t, p) { return "Buongiorno, vorremmo prenotare: " + t + (p ? " (" + p + ")" : "") + ". Grazie!"; },
+      adressesTitre: "Indirizzi utili", adressesSub: "Negozi, salute e buoni locali nei dintorni.", tout: "Tutti", aucuneAdresse: "Nessun indirizzo corrisponde.",
+      carteTitre: "Sulla mappa", carteSub: "L'alloggio, gli indirizzi utili e le gite.", carteLogement: "L'alloggio", carteAdresses: "Indirizzi", carteActivites: "Da fare",
+      carteToucher: "Toccate la mappa per spostarla", carteHors: "La mappa non è disponibile offline.",
+      activitesTitre: "Da fare nei dintorni", activitesSub: "Le nostre idee per uscire, provate e approvate.", voirCarte: "Vedi sulla mappa", aucuneActivite: "Nessuna attività corrisponde.",
+      aucuneRubrique: "Nessun argomento corrisponde.",
+      departTitre: "Prima di partire", departSub: function (h) { return (h ? "Check-out " + h.charAt(0).toLowerCase() + h.slice(1) + ". " : "") + "Spuntate man mano."; },
+      fait: function (n, t) { return n + " su " + t + (n > 1 ? " fatti" : " fatto"); }, pret: "Tutto pronto, buon viaggio!",
+      urgencesTitre: "Emergenze", urgencesSub: "Chiamate gratuite da qualsiasi telefono.",
+      u112: "Emergenze, in tutta Europa", u15: "Emergenza medica (SAMU)", u18: "Vigili del fuoco", u17: "Polizia", u114: "Emergenze via SMS (persone sorde o con problemi di udito)",
+      u3237: "Farmacia di turno (servizio a pagamento)", antipoison: "Centro antiveleni", hopital: "Ospedale più vicino",
+      avis: "Lascia una recensione", avisDemo: "In una guida reale, questo pulsante apre la pagina delle recensioni dell'host (Google, Airbnb, Booking…).",
+      maj: "Aggiornato il", fait_avec: "Guida di benvenuto creata con", horsLigneOk: "Questa guida funziona anche offline.",
+      meteo: "Meteo", meteoSource: "Dati: MET Norway",
+      introuvable: "Guida non trovata", introuvableTxt: "Il link potrebbe essere incompleto. Scansionate di nuovo il codice QR o contattate il vostro host.", retour: "Torna alla home",
+      chargement: "Apertura della guida…", horsLigne: "Nessuna connessione", horsLigneTxt: "Questa guida si aprirà appena il telefono sarà connesso a internet (Wi-Fi o dati mobili).", reessayer: "Riprova",
+      locale: "it-IT"
     }
   };
 
@@ -142,15 +214,25 @@
   }
 
   /* ---------- langue ---------- */
-  function hasEn(d) { return !!(d && d.en && Object.keys(d.en).length); }
+  var LANGS = ["fr", "en", "de", "it"];
+  function langsOf(d) {
+    var a = ["fr"];
+    ["en", "de", "it"].forEach(function (l) { if (d && d[l] && typeof d[l] === "object" && Object.keys(d[l]).length) a.push(l); });
+    return a;
+  }
+  function hasEn(d) { return langsOf(d).length > 1; }   /* « a plusieurs langues » */
   function pickLang(d) {
-    if (!hasEn(d)) return "fr";
-    if (forcedLang) return forcedLang;
+    var av = langsOf(d);
+    if (APERCU && forcedLang && LANGS.indexOf(forcedLang) > -1) return forcedLang;   /* aperçu de la console : la langue en cours de saisie */
+    if (av.length < 2) return "fr";
+    if (forcedLang && av.indexOf(forcedLang) > -1) return forcedLang;
     if (VITRINE) return "fr";
     var r = route().lang;
-    if (r === "en" || r === "fr") return r;
-    try { var s = localStorage.getItem("cdh:lang"); if (s === "en" || s === "fr") return s; } catch (e) {}
-    return /^fr/i.test(navigator.language || "fr") ? "fr" : "en";
+    if (av.indexOf(r) > -1) return r;
+    try { var s = localStorage.getItem("cdh:lang"); if (av.indexOf(s) > -1) return s; } catch (e) {}
+    var prefs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "fr"]);
+    for (var i = 0; i < prefs.length; i++) { var p = String(prefs[i] || "").slice(0, 2).toLowerCase(); if (av.indexOf(p) > -1) return p; }
+    return av.indexOf("en") > -1 && !/^fr/i.test(prefs[0] || "fr") ? "en" : "fr";
   }
   function merge(base, over) {
     if (over == null) return base;
@@ -169,9 +251,9 @@
     return over;
   }
   function localize(d, lang) {
-    if (lang !== "en" || !hasEn(d)) return d;
-    var out = merge(d, d.en);
-    out.en = d.en;
+    if (lang === "fr" || !d || !d[lang]) return d;
+    var out = merge(d, d[lang]);
+    LANGS.forEach(function (l) { if (d[l]) out[l] = d[l]; });
     return out;
   }
 
@@ -242,7 +324,7 @@
     if (a.fin) { var end = new Date(a.fin + "T23:59:59"); if (!isNaN(end) && end < new Date()) return false; }
     return true;
   }
-  function catLabel(map, key, lang) { var m = map[key] || {}; return lang === "en" && m.en ? m.en : m.label; }
+  function catLabel(map, key, lang) { var m = map[key] || {}; return lang !== "fr" && m[lang] ? m[lang] : m.label; }
 
   /* Lien pour écrire à l'hôte avec un message déjà rédigé */
   function contactLink(d, text) {
@@ -273,13 +355,19 @@
 
   /* ---------- rendu ---------- */
   /* Menu des langues : petit bouton « FR ▾ » qui ouvre la liste */
-  var LANG_NAMES = { fr: "Français", en: "English" };
-  function langMenu(lang) {
+  var LANG_NAMES = { fr: "Français", en: "English", de: "Deutsch", it: "Italiano" };
+  var X = {
+    fr: { titre: " · Livret d'accueil", bienvenue: "BIENVENUE", deuxPoints: " : ", essentiel: "L'essentiel", auj: "Auj.", credits: "Photos d'illustration" },
+    en: { titre: " · Welcome book", bienvenue: "WELCOME", deuxPoints: ": ", essentiel: "Essentials", auj: "Today", credits: "Illustration photos" },
+    de: { titre: " · Willkommensbuch", bienvenue: "WILLKOMMEN", deuxPoints: ": ", essentiel: "Das Wichtigste", auj: "Heute", credits: "Illustrationsfotos" },
+    it: { titre: " · Guida di benvenuto", bienvenue: "BENVENUTI", deuxPoints: ": ", essentiel: "L'essenziale", auj: "Oggi", credits: "Foto illustrative" }
+  };
+  function langMenu(lang, av) {
     return '<div class="lang" id="lang">' +
       '<button type="button" class="lang-btn" id="lang-btn" aria-haspopup="true" aria-expanded="false" aria-controls="lang-list" aria-label="Langue / Language : ' + LANG_NAMES[lang] + '">' +
       I("globe", "ico-s") + "<span>" + lang.toUpperCase() + "</span>" + I("bas", "ico-s lang-chev") + "</button>" +
       '<ul class="lang-list" id="lang-list" role="menu" aria-label="Langue / Language" hidden>' +
-      ["fr", "en"].map(function (l) {
+      (av || ["fr", "en"]).map(function (l) {
         return '<li role="none"><button type="button" role="menuitemradio" aria-checked="' + (l === lang) + '" data-lang="' + l + '" lang="' + l + '"><span class="lang-code">' + l.toUpperCase() + "</span><span>" + LANG_NAMES[l] + "</span>" + I("check", "ico-s lang-ok") + "</button></li>";
       }).join("") + "</ul></div>";
   }
@@ -295,7 +383,7 @@
     root.lang = lang;
     root.style.setProperty("--accent", /^#[0-9a-f]{3,8}$/i.test(theme.accent || "") ? theme.accent : "#1D5C7A");
     root.style.setProperty("--display", FONTS[theme.police] || FONTS.Lora);
-    document.title = (d.nom || "Livret d'accueil") + (lang === "en" ? " · Welcome book" : " · Livret d'accueil");
+    document.title = (d.nom || "Livret d'accueil") + X[lang].titre;
 
     var h = [];
     var marque = (window.CDH_CONFIG && window.CDH_CONFIG.marque) || "Carnet d'Hôte";
@@ -314,7 +402,7 @@
     h.push('<header class="cover' + (hasEn(d0) ? " has-lang" : "") + '">' +
       (safeImg(theme.couverture) ? '<img class="cover-img" data-ph data-cover src="' + esc(safeImg(theme.couverture)) + '" alt="">' : "") +
       '<div class="cover-art">' + motif(theme.motif, coverW()) + "</div>" +
-      (hasEn(d0) ? langMenu(lang) : "") +
+      (hasEn(d0) ? langMenu(lang, langsOf(d0)) : "") +
       '<div class="cover-text"><span class="cover-kicker">' + I("pin", "ico-s") + esc(d.ville || "") + "</span>" +
       "<h1>" + esc(d.nom || "Mon logement") + "</h1>" +
       '<p class="cover-sub">' + esc(d.sousTitre || "") + "</p></div></header>");
@@ -335,7 +423,7 @@
       '<defs><path id="' + arcId + '" d="M38 66 a28 28 0 1 1 0.01 0"/></defs>' +
       '<circle cx="38" cy="38" r="35" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
       '<circle cx="38" cy="38" r="20" fill="none" stroke="currentColor" stroke-width="1"/>' +
-      '<text font-size="7.4" font-weight="700" letter-spacing="1" fill="currentColor"><textPath href="#' + arcId + '" textLength="172" lengthAdjust="spacing">' + (lang === "en" ? "WELCOME · " : "BIENVENUE · ") + esc(ville.toUpperCase()) + " ·</textPath></text>" +
+      '<text font-size="7.4" font-weight="700" letter-spacing="1" fill="currentColor"><textPath href="#' + arcId + '" textLength="172" lengthAdjust="spacing">' + (X[lang].bienvenue + " · ") + esc(ville.toUpperCase()) + " ·</textPath></text>" +
       '<text x="38" y="41" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" font-family="ui-monospace, Menlo, monospace">' + stamp + "</text>" +
       '<path d="M78 26 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 M78 38 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 M78 50 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>' +
       '<h2 class="pc-title">' + esc(titreAcc) + "</h2>" +
@@ -381,7 +469,7 @@
       h.push('<section class="section" id="s-arrivee" data-sec>' + head("cle", t.arriveeTitre, arr.texte || t.arriveeSub));
       if (d.adresse) {
         h.push('<div class="arr-addr" data-q="' + esc(norm(d.adresse)) + '"><span class="arr-ico">' + I("pin") + '</span><div class="arr-addr-main"><small>' + esc(t.adresse) + '</small><b id="arr-addr">' + esc(d.adresse) + "</b>" +
-          (hor.arrivee ? '<span class="arr-time">' + I("horloge", "ico-s") + esc(t.arrivee) + (lang === "en" ? ": " : " : ") + esc(hor.arrivee) + "</span>" : "") +
+          (hor.arrivee ? '<span class="arr-time">' + I("horloge", "ico-s") + esc(t.arrivee) + X[lang].deuxPoints + esc(hor.arrivee) + "</span>" : "") +
           '</div><div class="arr-actions"><a class="btn small primary" href="' + esc(window.cdhMapsUrl(addrQ)) + '" target="_blank" rel="noopener">' + I("itineraire", "ico-s") + esc(t.itineraire) + '</a><button class="btn small" type="button" id="copy-addr">' + I("copier", "ico-s") + "<span>" + esc(t.copierAdresse) + "</span></button></div></div>");
       }
       h.push('<div class="arr-blocs">');
@@ -436,7 +524,7 @@
       d.adresses.forEach(function (a) {
         var m = CA[a.categorie] || CA.services;
         var q = a.requete || (a.nom + " " + (d.carte || d.ville || ""));
-        h.push('<article class="place" data-cat="' + esc(a.categorie) + '" data-q="' + esc(norm([a.nom, m.label, m.en, a.note, a.horaires].join(" "))) + '"><span class="place-ico">' + I(m.icone) + '</span><div class="place-main"><div class="place-top"><b>' + esc(a.nom) + '</b><span class="place-cat">' + esc(catLabel(CA, a.categorie, lang) || "") + '</span></div><div class="place-meta">' +
+        h.push('<article class="place" data-cat="' + esc(a.categorie) + '" data-q="' + esc(norm([a.nom, m.label, m.en, m.de, m.it, a.note, a.horaires].join(" "))) + '"><span class="place-ico">' + I(m.icone) + '</span><div class="place-main"><div class="place-top"><b>' + esc(a.nom) + '</b><span class="place-cat">' + esc(catLabel(CA, a.categorie, lang) || "") + '</span></div><div class="place-meta">' +
           (a.distance ? "<span>" + I("pin", "ico-s") + esc(a.distance) + "</span>" : "") + (a.horaires ? "<span>" + I("horloge", "ico-s") + esc(a.horaires) + "</span>" : "") + "</div>" +
           (a.note ? "<p>" + esc(a.note) + "</p>" : "") +
           '<a class="lien-act" href="' + esc(window.cdhMapsUrl(q)) + '" target="_blank" rel="noopener">' + I("itineraire", "ico-s") + esc(t.itineraire) + "</a></div></article>");
@@ -459,7 +547,7 @@
       h.push('<section class="section" id="s-activites" data-sec>' + head("montagne", t.activitesTitre, t.activitesSub) + '<div class="acts">');
       d.activites.forEach(function (a) {
         var m = CT[a.categorie] || CT.culture;
-        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en].join(" "))) + '">' +
+        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it].join(" "))) + '">' +
           photo(a.photo, a.titre, m.icone, "act-ph") +
           '<div class="act-body"><span class="act-top">' + I(m.icone, "ico-s") + esc(catLabel(CT, a.categorie, lang) || "") + "</span><h3>" + esc(a.titre) + "</h3>" +
           (a.description ? "<p>" + esc(a.description) + "</p>" : "") +
@@ -495,12 +583,12 @@
     /* Pied */
     var maj = d.majLe ? new Date(d.majLe) : null;
     h.push('<footer class="foot">' + (d.avis ? '<p class="avis">' + esc(d.avis) + "</p>" : "") + (avisBtn ? "<p>" + avisBtn + "</p>" : "") +
-      (d.credits ? "<p>" + esc(lang === "en" ? d.credits.replace("Photos d'illustration", "Illustration photos") : d.credits) + "</p>" : "") +
+      (d.credits ? "<p>" + esc(lang === "fr" ? d.credits : d.credits.replace("Photos d'illustration", X[lang].credits)) + "</p>" : "") +
       (maj && !isNaN(maj) ? "<p>" + esc(t.maj) + " " + maj.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" }) + "</p>" : "") +
       '<p class="sw-ok" id="sw-ok" hidden>' + I("check", "ico-s") + esc(t.horsLigneOk) + "</p>" +
       (d.sansMention ? "" : '<p class="made">' + esc(t.fait_avec) + ' <a href="index.html">' + esc(marque) + "</a></p>") + "</footer>");
 
-    h.push('</div><aside class="aside" aria-label="' + esc(lang === "en" ? "Essentials" : "L'essentiel") + '">');
+    h.push('</div><aside class="aside" aria-label="' + esc(X[lang].essentiel) + '">');
 
     /* Raccourcis (colonne de droite sur ordinateur) */
     var wifi = d.wifi || {};
@@ -562,7 +650,9 @@
   /* ---------- météo (MET Norway, gratuit, licence CC BY 4.0) ---------- */
   var SYMB = {
     fr: { clearsky: "Ensoleillé", clearsky_night: "Ciel dégagé", fair: "Belles éclaircies", partlycloudy: "Partiellement nuageux", cloudy: "Nuageux", fog: "Brouillard", rain: "Pluie", lightrain: "Pluie faible", heavyrain: "Forte pluie", showers: "Averses", sleet: "Neige fondue", snow: "Neige", thunder: "Orage" },
-    en: { clearsky: "Sunny", clearsky_night: "Clear", fair: "Mostly sunny", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", rain: "Rain", lightrain: "Light rain", heavyrain: "Heavy rain", showers: "Showers", sleet: "Sleet", snow: "Snow", thunder: "Thunderstorm" }
+    en: { clearsky: "Sunny", clearsky_night: "Clear", fair: "Mostly sunny", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", rain: "Rain", lightrain: "Light rain", heavyrain: "Heavy rain", showers: "Showers", sleet: "Sleet", snow: "Snow", thunder: "Thunderstorm" },
+    de: { clearsky: "Sonnig", clearsky_night: "Klar", fair: "Überwiegend sonnig", partlycloudy: "Teils bewölkt", cloudy: "Bewölkt", fog: "Nebel", rain: "Regen", lightrain: "Leichter Regen", heavyrain: "Starker Regen", showers: "Schauer", sleet: "Schneeregen", snow: "Schnee", thunder: "Gewitter" },
+    it: { clearsky: "Soleggiato", clearsky_night: "Sereno", fair: "Prevalentemente soleggiato", partlycloudy: "Parzialmente nuvoloso", cloudy: "Nuvoloso", fog: "Nebbia", rain: "Pioggia", lightrain: "Pioggia debole", heavyrain: "Pioggia forte", showers: "Rovesci", sleet: "Nevischio", snow: "Neve", thunder: "Temporale" }
   };
   function symInfo(code, lang) {
     code = String(code || "cloudy"); var night = /_night/.test(code); var base = code.replace(/_(day|night|polartwilight)$/, "");
@@ -610,7 +700,7 @@
         var ville = String(d.ville || "").split("·")[0].trim();
         var list = order.slice(0, 4).map(function (k, i) {
           var x = days[k], si = symInfo(x.sym, lang);
-          var name = i === 0 ? (lang === "en" ? "Today" : "Auj.") : x.date.toLocaleDateString(t.locale, { weekday: "short" });
+          var name = i === 0 ? X[lang].auj : x.date.toLocaleDateString(t.locale, { weekday: "short" });
           return '<li><span class="md-day">' + esc(name) + "</span>" + I(si.icon, "ico") + '<span class="md-t"><b>' + Math.round(x.max) + "°</b> " + Math.round(x.min) + "°</span></li>";
         }).join("");
         el.innerHTML = '<span class="tile-label">' + I("soleil", "ico-s") + esc(t.meteo) + (ville ? " · " + esc(ville) : "") + "</span>" +
@@ -980,7 +1070,7 @@
   }
 
   /* ---------- démarrage ---------- */
-  function uiLang() { return /^fr/i.test(navigator.language || "fr") ? "fr" : "en"; }
+  function uiLang() { var p = String((navigator.languages && navigator.languages[0]) || navigator.language || "fr").slice(0, 2).toLowerCase(); return TXT[p] ? p : "en"; }
   function notFound(offlineMsg) {
     var t = TXT[uiLang()];
     current = null;

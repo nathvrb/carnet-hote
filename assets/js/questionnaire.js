@@ -108,7 +108,7 @@
       ] },
     { id: "style", titre: "Langues, style et supports QR", intro: "Le dernier tour : l'allure du livret et l'objet que vos voyageurs scanneront.",
       q: [
-        { k: "langues", l: "Langues du livret", h: "Confort : 3 langues (français, anglais et une au choix). Premium : 4 langues (deux au choix). Une langue en plus : 29 €.", multi: ["Français", "Anglais", "Allemand", "Espagnol", "Italien", "Néerlandais", "Autre (à préciser plus bas)"] },
+        { k: "langues", l: "Langues du livret", h: "Confort : français, anglais et allemand. Premium : en plus, l'italien. L'italien en Confort : 29 €.", multi: ["Français", "Anglais", "Allemand", "Italien"] },
         { k: "ambiance", l: "Couleur préférée, ou une ambiance", h: "Par exemple « bord de lac », « Provence »." },
         { k: "logo", l: "Logo à intégrer", min: "premium", h: "Vous l'enverrez avec vos photos." },
         { k: "videos", l: "Vidéos tutos à intégrer", min: "premium", h: "Un lien, ou dites-nous que vous les envoyez." },

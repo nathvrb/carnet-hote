@@ -122,7 +122,7 @@
       type: fd.get("type") || "location",
       qty: clampInt(fd.get("qty"), 1, 200),
       formule: fd.get("formule") || "confort",
-      langues: clampInt(fd.get("langues"), 1, 8),
+      langues: clampInt(fd.get("langues"), 1, 4),
       supports: sup,
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
       options: { express: !!fd.get("opt-express") },

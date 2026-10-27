@@ -106,24 +106,24 @@
   window.cdhIcon = icon;
 
   window.CDH_CAT_ADRESSES = {
-    boulangerie: { label: "Boulangerie", icone: "pain" , en: "Bakery" },
-    courses: { label: "Courses", icone: "panier" , en: "Groceries" },
-    marche: { label: "Marché", icone: "marche" , en: "Market" },
-    pharmacie: { label: "Pharmacie", icone: "pharmacie" , en: "Pharmacy" },
-    sante: { label: "Santé", icone: "hopital" , en: "Health" },
-    restaurant: { label: "Restaurant", icone: "couverts" , en: "Restaurant" },
-    bar: { label: "Bar & cave", icone: "vin" , en: "Bar & wine" },
-    transport: { label: "Transport", icone: "tram" , en: "Transport" },
-    parking: { label: "Parking", icone: "voiture" , en: "Parking" },
-    services: { label: "Services", icone: "info" , en: "Services" }
+    boulangerie: { label: "Boulangerie", icone: "pain" , en: "Bakery", de: "Bäckerei", it: "Panetteria" },
+    courses: { label: "Courses", icone: "panier" , en: "Groceries", de: "Lebensmittel", it: "Alimentari" },
+    marche: { label: "Marché", icone: "marche" , en: "Market", de: "Markt", it: "Mercato" },
+    pharmacie: { label: "Pharmacie", icone: "pharmacie" , en: "Pharmacy", de: "Apotheke", it: "Farmacia" },
+    sante: { label: "Santé", icone: "hopital" , en: "Health", de: "Gesundheit", it: "Salute" },
+    restaurant: { label: "Restaurant", icone: "couverts" , en: "Restaurant", de: "Restaurant", it: "Ristorante" },
+    bar: { label: "Bar & cave", icone: "vin" , en: "Bar & wine", de: "Bar & Weinhandlung", it: "Bar ed enoteca" },
+    transport: { label: "Transport", icone: "tram" , en: "Transport", de: "Verkehr", it: "Trasporti" },
+    parking: { label: "Parking", icone: "voiture" , en: "Parking", de: "Parkplatz", it: "Parcheggio" },
+    services: { label: "Services", icone: "info" , en: "Services", de: "Dienstleistungen", it: "Servizi" }
   };
 
   window.CDH_CAT_ACTIVITES = {
-    culture: { label: "Culture", icone: "musee" , en: "Culture" },
-    nature: { label: "Nature", icone: "montagne" , en: "Nature" },
-    balade: { label: "Balade", icone: "velo" , en: "Outdoors" },
-    sortie: { label: "Sortie", icone: "bateau" , en: "Outing" },
-    gastronomie: { label: "Gastronomie", icone: "vin" , en: "Food & wine" },
-    famille: { label: "En famille", icone: "bebe" , en: "Family" }
+    culture: { label: "Culture", icone: "musee" , en: "Culture", de: "Kultur", it: "Cultura" },
+    nature: { label: "Nature", icone: "montagne" , en: "Nature", de: "Natur", it: "Natura" },
+    balade: { label: "Balade", icone: "velo" , en: "Outdoors", de: "Draußen", it: "All'aperto" },
+    sortie: { label: "Sortie", icone: "bateau" , en: "Outing", de: "Ausflug", it: "Gita" },
+    gastronomie: { label: "Gastronomie", icone: "vin" , en: "Food & wine", de: "Essen & Wein", it: "Gastronomia" },
+    famille: { label: "En famille", icone: "bebe" , en: "Family", de: "Familie", it: "Famiglia" }
   };
 })();
