@@ -104,4 +104,13 @@ window.CDH_TARIFS = {
     porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés" },
     chevalet:  { label: "Chevalet plexiglas A6", court: ["chevalet", "chevalets"], prix: 12, detail: "Table de chevet, réception, bureau" }
   },
+  // Couleur du bandeau du visuel imprimé (porte-clés, chevalet, affiche)
+  couleurs: [
+    { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
+    { id: "sapin",      nom: "Vert sapin", hex: "#1F5B4C" },
+    { id: "terracotta", nom: "Terracotta", hex: "#A3402B" },
+    { id: "ocre",       nom: "Ocre",       hex: "#B07A1E" },
+    { id: "bordeaux",   nom: "Bordeaux",   hex: "#6E2236" },
+    { id: "noir",       nom: "Noir mat",   hex: "#232323" }
+  ],
 };

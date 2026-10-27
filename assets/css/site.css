@@ -354,7 +354,19 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .prix-objet { padding-top: 12px; border-top: 1px solid var(--filet-pierre); color: var(--texte) !important; }
 .prix-objet b { font-family: var(--display); font-weight: 400; font-size: 1.45rem; font-variant-numeric: lining-nums tabular-nums; margin-right: 4px; color: var(--bleu); }
 .note-bas { margin: 44px 0 0; font-size: 14px; color: var(--gris); }
-.pierre .fob-text { display: grid; gap: 6px; font-size: 14.5px; font-weight: 600; margin-top: 6px; }
+.pierre .fob-body { transition: fill .3s var(--ease); }
+.fob-colors { border: 0; margin: 6px 0 0; padding: 0; min-width: 0; }
+.fob-colors legend { padding: 0; margin-bottom: 10px; font-size: 14.5px; font-weight: 600; }
+.fob-colors legend b { font-weight: 400; color: var(--gris); margin-left: 6px; }
+.couleurs { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.coul { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; font-weight: 500; }
+.coul input { position: absolute; opacity: 0; pointer-events: none; }
+.coul .dot { width: 30px; height: 30px; border-radius: 50%; background: var(--c); border: 3px solid var(--papier); box-shadow: 0 0 0 1px var(--filet); flex: none; transition: box-shadow .2s; }
+.coul:hover .dot { box-shadow: 0 0 0 1px var(--gris); }
+.coul:has(input:checked) .dot { box-shadow: 0 0 0 1.5px var(--bleu); }
+.coul:has(input:focus-visible) .dot { outline: 2px solid var(--bleu); outline-offset: 4px; }
+.pierre .coul .dot { border-color: var(--pierre); }
+.fob-text { display: grid; gap: 6px; font-size: 14.5px; font-weight: 600; margin-top: 6px; }
 .fob-text small { font-weight: 400; color: var(--gris); }
 .fob-text input { min-height: 46px; border-radius: 0; border: 1px solid var(--filet-pierre); background: var(--papier); padding: 8px 12px; font-weight: 500; width: 100%; }
 .fob-text input:focus { outline: none; border-color: var(--bleu); box-shadow: 0 0 0 1px var(--bleu); }
@@ -500,6 +512,9 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .sup-line { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 16px 0; border-bottom: 1px solid var(--filet); flex-wrap: wrap; }
 .sup-line .lbl { font-weight: 500; flex: 1 1 220px; }
 .sup-line .lbl a { display: block; font-size: 14px; color: var(--gris); text-decoration-color: var(--taupe); text-underline-offset: 3px; }
+.sup-line .couleurs { gap: 6px; }
+.sup-line .coul { font-size: 0; gap: 0; }
+.sup-line .coul .dot { width: 28px; height: 28px; border-color: var(--papier); }
 .sup-line .sup-line .sup-line .qty-row .en-plus { font-size: 12.5px; font-style: italic; font-family: var(--display); color: var(--taupe-texte); margin-left: 4px; }
 
 /* la note de devis */

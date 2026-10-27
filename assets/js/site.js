@@ -237,6 +237,18 @@
   var fobArt = document.getElementById("sup-fob");
   if (fobArt) {
     document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 68 });
+    var colEl = document.getElementById("fob-colors"), colName = document.getElementById("fob-color-name");
+    colEl.innerHTML = (T.couleurs || []).map(function (c, i) {
+      return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="fob-couleur" value="' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span class="sr">' + esc(c.nom) + "</span></label>";
+    }).join("");
+    var setCol = function (id, fromDevis) {
+      var c = (T.couleurs || []).filter(function (x) { return x.id === id; })[0]; if (!c) return;
+      fobArt.style.setProperty("--fobc", c.hex); colName.textContent = c.nom;
+      var r = colEl.querySelector('input[value="' + id + '"]'); if (r) r.checked = true;
+      if (!fromDevis && window.cdhDevis) window.cdhDevis.choose("couleur", id);
+    };
+    colEl.addEventListener("change", function (e) { if (e.target.name === "fob-couleur") setCol(e.target.value); });
+    document.addEventListener("change", function (e) { if (e.target.name === "couleur") setCol(e.target.value, true); });
     var fobIn = document.getElementById("fob-text"), fobName = document.getElementById("fob-name");
     var fitName = function () {
       var v = (fobIn.value || "").trim().toUpperCase() || " ";
@@ -250,6 +262,8 @@
     fobIn.addEventListener("input", fitName);
     fitName();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
+    var cur = document.querySelector('input[name="couleur"]:checked');
+    if (cur) setCol(cur.value, true);
   }
 
   document.addEventListener("click", function (e) {

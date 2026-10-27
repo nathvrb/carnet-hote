@@ -38,10 +38,11 @@
     var incl = {}, inclTotal = 0;
     Object.keys(F.supportsInclus || {}).forEach(function (k) { incl[k] = F.supportsInclus[k] * livrets; inclTotal += incl[k]; });
     var sup = s.supports || {};
+    var coul = couleur(s.couleur);
     Object.keys(T.supports).forEach(function (k) {
       if (!incl[k]) return;
       var SI = T.supports[k];
-      lines.push({ l: incl[k] + " " + plural(incl[k], SI.court[0], SI.court[1]) + " inclus", small: SI.label, a: 0 });
+      lines.push({ l: incl[k] + " " + plural(incl[k], SI.court[0], SI.court[1]) + " inclus", small: SI.label + (k === "porteCles" ? " · bandeau " + coul.nom.toLowerCase() : ""), a: 0 });
     });
     var supportsCost = 0;
     Object.keys(T.supports).forEach(function (k) {
@@ -66,8 +67,12 @@
       lines: lines, creation: creation, mensuel: mensuel, annuel: annuel, offerts: offerts,
       forfaitAn1: forfaitAn1, premiereAnnee: r2(creation + forfaitAn1),
       livrets: livrets, remise: remise, delai: express ? T.options.express.delai : F.delai,
-      formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal
+      formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal, couleur: coul
     };
+  }
+  function couleur(id) {
+    var c = (T.couleurs || []).filter(function (x) { return x.id === id; })[0];
+    return c || (T.couleurs || [{ id: "", nom: "", hex: "#1F3A5F" }])[0];
   }
   window.cdhComputeDevis = compute;
 
@@ -95,6 +100,9 @@
     var f = T.forfaits[k];
     return radioCard("forfait", k, f.nom, f.accroche, eur(f.mensuel) + " / mois", !!f.populaire);
   }).join("");
+  document.getElementById("couleurs").innerHTML = (T.couleurs || []).map(function (c, i) {
+    return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="couleur" value="' + c.id + '" id="couleur-' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span>' + esc(c.nom) + "</span></label>";
+  }).join("");
   document.getElementById("supports").innerHTML = Object.keys(T.supports).map(function (k) {
     var s = T.supports[k];
     return '<div class="qty-row"><label for="sup-' + k + '">' + esc(s.label) + ' <span class="en-plus">en plus</span><small>' + esc(s.detail) + '</small></label><span class="p">' + eur(s.prix) + " l'unité</span>" +
@@ -116,6 +124,7 @@
       formule: fd.get("formule") || "confort",
       langues: clampInt(fd.get("langues"), 1, 8),
       supports: sup,
+      couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
       options: { express: !!fd.get("opt-express") },
       forfait: fd.get("forfait") || "autonomie",
       facturation: fd.get("facturation") || "mensuel"
@@ -237,6 +246,7 @@
       document.getElementById("qty").value = saved.qty; lastQty[saved.type] = saved.qty;
       document.getElementById("langues").value = saved.langues;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
+      if (saved.couleur) setRadio("couleur", saved.couleur);
       document.getElementById("opt-express").checked = !!(saved.options && saved.options.express);
     }
   } catch (e) {}

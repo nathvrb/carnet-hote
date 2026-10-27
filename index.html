@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=22">
+<link rel="stylesheet" href="assets/css/site.css?v=23">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -177,7 +177,7 @@
         <p>Un porte-clés transparent sur le trousseau, un chevalet sur la table de chevet ou une affiche au mur. Le QR code ne change jamais&nbsp;: quand le livret évolue, les supports restent bons.</p>
       </div>
       <div class="objets">
-        <article class="objet objet-cle" id="sup-fob">
+        <article class="objet objet-cle" id="sup-fob" style="--fobc:#1F3A5F">
           <div class="socle">
             <svg class="fob-mock" viewBox="0 0 220 380" role="img" aria-labelledby="fob-mock-t">
               <title id="fob-mock-t">Maquette du porte-clés transparent, avec le visuel imprimé glissé à l'intérieur</title>
@@ -197,10 +197,12 @@
                 <circle cx="94" cy="104" r="6" fill="var(--pierre)" stroke="#B9AE9C" stroke-width="1.2"/>
                 <g>
                   <rect x="54" y="122" width="80" height="168" fill="#fff" stroke="#E2D8C8"/>
-                  <text id="fob-name" x="94" y="146" text-anchor="middle" fill="#182B40" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="8" font-weight="700" letter-spacing="1.4">LE NID DES TANNEURS</text>
-                  <g id="fob-mock-qr" transform="translate(60 158)"></g>
-                  <text x="94" y="256" text-anchor="middle" fill="#182B40" font-family="'Brygada 1918', Georgia, serif" font-style="italic" font-size="11.5">livret d'accueil</text>
-                  <text x="94" y="272" text-anchor="middle" fill="#615C54" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="6.4" letter-spacing=".4">Scannez pour ouvrir</text>
+                  <rect x="54" y="122" width="80" height="46" fill="var(--fobc)" class="fob-band"/>
+                  <text x="94" y="136" text-anchor="middle" fill="#fff" fill-opacity=".85" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="4.6" font-weight="700" letter-spacing="1.2">BIENVENUE</text>
+                  <text id="fob-name" x="94" y="154" text-anchor="middle" fill="#fff" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="8" font-weight="700" letter-spacing="1.4">LE NID DES TANNEURS</text>
+                  <g id="fob-mock-qr" transform="translate(61 174)"></g>
+                  <text x="94" y="262" text-anchor="middle" fill="#182B40" font-family="'Brygada 1918', Georgia, serif" font-style="italic" font-size="11">livret d'accueil</text>
+                  <text x="94" y="276" text-anchor="middle" fill="#615C54" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="6" letter-spacing=".4">Scannez pour ouvrir</text>
                 </g>
                 <path d="M54 94H134L146 106V300L134 312H54L42 300V106Z" fill="url(#fob-glass)" stroke="#fff" stroke-opacity=".9" stroke-width="1"/>
               </g>
@@ -210,6 +212,10 @@
             <h3>Porte-clés transparent</h3>
             <p class="matiere">1 inclus en Confort, 3 en Premium</p>
             <p>Accroché aux clés que vous remettez&nbsp;: le voyageur a le livret sur lui pendant tout le séjour. Nous imprimons un visuel avec le nom de votre logement et son QR code, glissé à l'intérieur&nbsp;: le QR code reste le bon, même quand le livret évolue.</p>
+            <fieldset class="fob-colors">
+              <legend>Couleur du bandeau <b id="fob-color-name">Bleu nuit</b></legend>
+              <div class="couleurs" id="fob-colors"></div>
+            </fieldset>
             <label class="fob-text" for="fob-text"><span>Nom imprimé <small>(essayez le vôtre)</small></span><input id="fob-text" maxlength="24" value="Le Nid des Tanneurs" autocomplete="off" spellcheck="false"></label>
             <p class="prix-objet"><b data-sup-prix="porteCles">9 €</b> l'unité en plus</p>
           </div>
@@ -332,6 +338,7 @@
               <div class="stepper"><button type="button" data-step="-1" data-for="langues" aria-label="Retirer une langue">−</button><input id="langues" name="langues" type="number" inputmode="numeric" min="1" max="8" value="1"><button type="button" data-step="1" data-for="langues" aria-label="Ajouter une langue">+</button></div>
             </div>
             <div class="sup-box" id="sup-box">
+              <div class="sup-line" id="couleurs-row"><span class="lbl">Couleur du bandeau <a href="#supports-qr">voir la maquette</a></span><div class="couleurs" id="couleurs" role="radiogroup" aria-label="Couleur du bandeau"></div></div>
               <div id="supports"></div>
             </div>
             <p class="hint"><span id="supports-inclus"></span> <button type="button" class="linkbtn" id="one-each">Un <span id="one-each-what">porte-clés</span> par <span id="one-each-u">logement</span></button></p>
@@ -442,7 +449,7 @@
         <details><summary>Combien de temps pour créer mon livret ?</summary><p>7 à 10 jours ouvrés en Confort et 10 à 13 en Premium, à compter de la réception de vos informations. Premium demande plus de travail : traductions, vidéos et trois supports à fabriquer. Pressé ? Avec l'option « Livret en ligne en priorité », votre livret est en ligne sous 5 jours ouvrés et les supports suivent.</p></details>
         <details><summary>Mes voyageurs sont étrangers, le livret est-il traduit ?</summary><p>Oui. Le Confort comprend trois langues (français, anglais et une langue de votre choix), le Premium en comprend quatre. Chaque langue supplémentaire coûte <span data-langue-prix>29 €</span>. Le livret s'ouvre dans la langue du téléphone et un bouton permet de changer à tout moment.</p></details>
         <details><summary>Et s'il n'y a pas de réseau dans le logement ?</summary><p>Une fois ouvert, le livret reste disponible hors connexion sur le téléphone du voyageur, photos comprises. Seules la carte et la météo ont besoin d'internet.</p></details>
-        <details><summary>À quoi ressemble le porte-clés ?</summary><p>C'est un porte-clés transparent en acrylique, avec une fenêtre pour glisser un visuel. Nous imprimons ce visuel avec le nom de votre logement et son QR code, et nous vous le livrons déjà en place. Le Confort en comprend un, le Premium trois, plus un chevalet plexiglas.</p></details>
+        <details><summary>À quoi ressemble le porte-clés, puis-je choisir sa couleur ?</summary><p>C'est un porte-clés transparent en acrylique, avec une fenêtre pour glisser un visuel. Nous imprimons ce visuel avec le nom de votre logement, son QR code et un bandeau de la couleur de votre choix (bleu nuit, vert sapin, terracotta, ocre, bordeaux ou noir mat), et nous vous le livrons déjà en place. Le chevalet et l'affiche reprennent les couleurs de votre livret. Le Confort en comprend un, le Premium trois, plus un chevalet plexiglas.</p></details>
         <details><summary>J'ai plusieurs logements, comment ça marche ?</summary><p>Chaque logement a son livret et son QR code. La remise s'applique dès 2 logements, sur la création comme sur le forfait : -15 % de 2 à 3 logements, -25 % de 4 à 9, -35 % à partir de 10.</p></details>
         <details><summary>Pour un hôtel, faut-il un livret par chambre ?</summary><p>Non. Un seul livret pour l'établissement, et un QR code dans chaque chambre : chevalet plexiglas ou porte-clés transparent. Le prix tient compte de la taille de l'hôtel, car les services à décrire sont plus nombreux.</p></details>
         <details><summary>Et si j'arrête le forfait ?</summary><p>Le livret reste en ligne jusqu'à la fin du mois payé, puis le QR code est désactivé. Vous recevez une version PDF de votre livret, à imprimer si vous le souhaitez.</p></details>
@@ -487,14 +494,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">149 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=22"></script>
-<script src="assets/js/tarifs.js?v=22"></script>
-<script src="assets/js/icons.js?v=22"></script>
+<script src="assets/js/config.js?v=23"></script>
+<script src="assets/js/tarifs.js?v=23"></script>
+<script src="assets/js/icons.js?v=23"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js?v=22"></script>
+<script src="assets/js/store.js?v=23"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js?v=22"></script>
-<script src="assets/js/devis.js?v=22"></script>
-<script src="assets/js/site.js?v=22"></script>
+<script src="assets/js/qr.js?v=23"></script>
+<script src="assets/js/devis.js?v=23"></script>
+<script src="assets/js/site.js?v=23"></script>
 </body>
 </html>

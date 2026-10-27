@@ -112,6 +112,7 @@
         { k: "ambiance", l: "Couleur préférée, ou une ambiance", h: "Par exemple « bord de lac », « Provence »." },
         { k: "logo", l: "Logo à intégrer", min: "premium", h: "Vous l'enverrez avec vos photos." },
         { k: "videos", l: "Vidéos tutos à intégrer", min: "premium", h: "Un lien, ou dites-nous que vous les envoyez." },
+        { k: "couleur-support", l: "Couleur du bandeau (porte-clés)", min: "confort", choix: ["Bleu nuit", "Vert sapin", "Terracotta", "Ocre", "Bordeaux", "Noir mat"] },
         { k: "gravure", l: "Nom à imprimer sur le porte-clés", min: "confort", h: "Par défaut, le nom de votre logement. 24 caractères maximum.", max: 24 },
         { k: "supports-plus", l: "Supports en plus du nombre inclus", min: "confort", h: "Combien de chaque ?" },
         { k: "livraison", l: "Adresse de livraison des supports", min: "confort", ac: "street-address", zone: 2 },
