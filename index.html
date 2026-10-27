@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
 <link rel="preload" as="image" href="photos/bastide-aux-amandiers/table-hotes.jpg">
-<link rel="stylesheet" href="assets/css/site.css?v=18">
+<link rel="stylesheet" href="assets/css/site.css?v=19">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -127,28 +127,45 @@
   <!-- CONTENU : les détails d'un intérieur -->
   <section class="band ivoire contenu" id="contenu" aria-labelledby="t-feats">
     <div class="wrap">
-      <div class="planches">
-        <figure class="planche p-cles">
-          <img src="photos/nid-des-tanneurs/boite-a-cles.jpg" alt="Boîte à clés à code fixée sur un mur de briques" width="800" height="1200" loading="lazy">
-          <figcaption><b>Avant l'arrivée.</b> Adresse, porte, boîte à clés&nbsp;: une page à envoyer la veille. Le code, lui, reste dans votre message.</figcaption>
-        </figure>
-        <div class="contenu-tete">
+      <div class="contenu-tete">
+        <div>
           <h2 class="h2" id="t-feats">Ce que vos voyageurs trouveront dans le livret</h2>
           <p>Les réponses aux questions qu'on se pose dans un logement qu'on ne connaît pas, écrites pour votre logement à vous, avec vos photos.</p>
         </div>
-        <figure class="planche p-linge">
-          <img src="photos/nid-des-tanneurs/lave-linge-programmes.jpg" alt="Sélecteur de programmes d'un lave-linge" width="1200" height="800" loading="lazy">
-          <figcaption><b>Modes d'emploi.</b> Le bon programme, et la porte qui reste bloquée deux minutes après le lavage&nbsp;: chaque appareil expliqué en étapes, photos à l'appui.</figcaption>
-        </figure>
-        <figure class="planche p-radiateur">
-          <img src="photos/nid-des-tanneurs/radiateur.jpg" alt="Radiateur en fonte sous une fenêtre" width="1200" height="800" loading="lazy">
-          <figcaption><b>Le logement.</b> Chauffage, box, disjoncteur, poubelles&nbsp;: ce qu'on cherche une fois par séjour, toujours au mauvais moment.</figcaption>
-        </figure>
-        <figure class="planche p-cafe">
-          <img src="photos/nid-des-tanneurs/cafetiere.jpg" alt="Machine à café et bouilloire sur un plan de travail" width="960" height="1200" loading="lazy">
-          <figcaption><b>Les petites choses.</b> Capsules ou grains, où sont les filtres&nbsp;: ce qui fait la différence entre un logement et un accueil.</figcaption>
-        </figure>
+        <div class="defile-nav">
+          <button type="button" class="defile-btn" id="defile-prec" aria-controls="defile" aria-label="Photo précédente" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+          <button type="button" class="defile-btn" id="defile-suiv" aria-controls="defile" aria-label="Photo suivante"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+        </div>
       </div>
+    </div>
+    <div class="defile" id="defile" tabindex="0" role="region" aria-label="Photos : ce que contient un livret, à faire défiler">
+      <figure class="planche">
+        <img src="photos/nid-des-tanneurs/boite-a-cles.jpg" alt="Boîte à clés à code fixée sur un mur de briques" width="800" height="1200" loading="lazy">
+        <figcaption><b>Avant l'arrivée.</b> Adresse, porte, boîte à clés&nbsp;: une page à envoyer la veille. Le code, lui, reste dans votre message.</figcaption>
+      </figure>
+      <figure class="planche">
+        <img src="photos/nid-des-tanneurs/radiateur.jpg" alt="Radiateur en fonte sous une fenêtre" width="1200" height="800" loading="lazy">
+        <figcaption><b>Le logement.</b> Chauffage, box, disjoncteur, poubelles&nbsp;: ce qu'on cherche une fois par séjour, toujours au mauvais moment.</figcaption>
+      </figure>
+      <figure class="planche">
+        <img src="photos/nid-des-tanneurs/lave-linge-programmes.jpg" alt="Sélecteur de programmes d'un lave-linge" width="1200" height="800" loading="lazy">
+        <figcaption><b>Modes d'emploi.</b> Le bon programme, et la porte qui reste bloquée deux minutes après le lavage&nbsp;: chaque appareil expliqué en étapes, photos à l'appui.</figcaption>
+      </figure>
+      <figure class="planche">
+        <img src="photos/nid-des-tanneurs/cafetiere.jpg" alt="Machine à café et bouilloire sur un plan de travail" width="960" height="1200" loading="lazy">
+        <figcaption><b>Les petites choses.</b> Capsules ou grains, où sont les filtres&nbsp;: ce qui fait la différence entre un logement et un accueil.</figcaption>
+      </figure>
+      <figure class="planche">
+        <img src="photos/hotel-les-ondines/petit-dejeuner.jpg" alt="Buffet de petit-déjeuner avec viennoiseries et thermos de café" width="960" height="1200" loading="lazy">
+        <figcaption><b>Services en plus.</b> Petit-déjeuner, départ tardif, ménage&nbsp;: le voyageur demande en un clic, par message.</figcaption>
+      </figure>
+      <figure class="planche">
+        <img src="photos/bastide-aux-amandiers/lourmarin.jpg" alt="Étal de légumes sur un marché provençal, prix écrits à la craie" width="1200" height="799" loading="lazy">
+        <figcaption><b>Vos adresses.</b> Le marché du vendredi, la boulangerie, la pharmacie de garde&nbsp;: avec les horaires et l'itinéraire.</figcaption>
+      </figure>
+    </div>
+    <div class="wrap">
+      <div class="defile-barre" id="defile-barre" aria-hidden="true"><span></span></div>
       <div class="sommaire-bloc">
         <h3 class="h3">Au sommaire de chaque livret</h3>
         <div class="sommaire" id="feats"></div>
@@ -474,14 +491,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">89 €</b><small id="bar-sub">puis 3,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=18"></script>
-<script src="assets/js/tarifs.js?v=18"></script>
-<script src="assets/js/icons.js?v=18"></script>
+<script src="assets/js/config.js?v=19"></script>
+<script src="assets/js/tarifs.js?v=19"></script>
+<script src="assets/js/icons.js?v=19"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js?v=18"></script>
+<script src="assets/js/store.js?v=19"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js?v=18"></script>
-<script src="assets/js/devis.js?v=18"></script>
-<script src="assets/js/site.js?v=18"></script>
+<script src="assets/js/qr.js?v=19"></script>
+<script src="assets/js/devis.js?v=19"></script>
+<script src="assets/js/site.js?v=19"></script>
 </body>
 </html>

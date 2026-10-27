@@ -308,6 +308,34 @@
       Object.keys(liens).forEach(function (id) { var el = document.getElementById(id); if (el) suivi.observe(el); });
     }
   }
+  /* bande de photos : flèches (une photo à la fois), barre d'avancement */
+  var def = document.getElementById("defile");
+  if (def) {
+    var prec = document.getElementById("defile-prec"), suiv = document.getElementById("defile-suiv"), barre = document.getElementById("defile-barre");
+    var planches = def.querySelectorAll(".planche");
+    var calme = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var aller = function (sens) {
+      var pad = parseFloat(getComputedStyle(def).paddingLeft) || 0, x = def.scrollLeft, cible = null;
+      var pos = Array.prototype.map.call(planches, function (p) { return p.offsetLeft - pad; });
+      if (sens > 0) { for (var i = 0; i < pos.length; i++) if (pos[i] > x + 4) { cible = pos[i]; break; } }
+      else { for (var j = pos.length - 1; j >= 0; j--) if (pos[j] < x - 4) { cible = pos[j]; break; } }
+      if (cible === null) cible = sens > 0 ? def.scrollWidth : 0;
+      def.scrollTo({ left: cible, behavior: calme ? "auto" : "smooth" });
+    };
+    var majDefile = function () {
+      var max = def.scrollWidth - def.clientWidth;
+      if (barre) { barre.style.setProperty("--w", Math.min(1, def.clientWidth / def.scrollWidth).toFixed(3)); barre.style.setProperty("--p", max > 0 ? (def.scrollLeft / max).toFixed(3) : 0); }
+      if (prec) prec.disabled = def.scrollLeft < 4;
+      if (suiv) suiv.disabled = def.scrollLeft > max - 4;
+    };
+    if (prec) prec.addEventListener("click", function () { aller(-1); });
+    if (suiv) suiv.addEventListener("click", function () { aller(1); });
+    def.addEventListener("scroll", majDefile, { passive: true });
+    window.addEventListener("resize", majDefile);
+    def.querySelectorAll("img").forEach(function (im) { im.addEventListener("load", majDefile); });
+    majDefile();
+  }
+
   var railLinks = document.querySelectorAll(".rail a");
   if (railLinks.length && "IntersectionObserver" in window) {
     var visible = {};
