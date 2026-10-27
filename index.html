@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:wght@400;500;600&family=Lora:wght@400..600&family=Young+Serif&display=swap">
 <link rel="preload" as="image" href="photos/hotel-les-ondines/chambre.jpg">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=17">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -31,21 +31,23 @@
       <a href="#faq">Questions</a>
     </nav>
     <a class="btn sapin small" href="#devis"><span class="l">Calculer mon devis</span><span class="s">Devis</span></a>
-    <button class="menu-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu-mob"><span class="menu-ico" aria-hidden="true"></span><span class="menu-t">Menu</span></button>
+    <details class="menu" id="menu">
+      <summary class="burger"><span class="sr">Menu</span><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></summary>
+      <nav class="menu-pan" aria-label="Aller à une partie du site">
+        <ul>
+          <li><a href="#parcours">Comment ça marche</a></li>
+          <li><a href="#exemples">Exemples de livrets</a></li>
+          <li><a href="#supports-qr">Supports QR</a></li>
+          <li><a href="#offres">Tarifs</a></li>
+          <li><a href="#devis">Calculer mon devis</a></li>
+          <li><a href="#console">Essayer la console</a></li>
+          <li><a href="#faq">Questions fréquentes</a></li>
+          <li><a href="#contact">Nous contacter</a></li>
+        </ul>
+        <a class="menu-espace" href="espace.html">Espace client</a>
+      </nav>
+    </details>
   </div>
-  <nav class="menu-mob" id="menu-mob" aria-label="Aller à une partie du site" hidden>
-    <ul>
-      <li><a href="#parcours">Comment ça marche</a></li>
-      <li><a href="#exemples">Exemples de livrets</a></li>
-      <li><a href="#supports-qr">Supports QR</a></li>
-      <li><a href="#offres">Tarifs</a></li>
-      <li><a href="#devis">Calculer mon devis</a></li>
-      <li><a href="#console">Essayer la console</a></li>
-      <li><a href="#faq">Questions fréquentes</a></li>
-      <li><a href="#contact">Nous contacter</a></li>
-    </ul>
-    <a class="btn sapin" href="espace.html">Espace client</a>
-  </nav>
 </header>
 
 <main id="haut">
@@ -484,14 +486,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">89 €</b><small id="bar-sub">puis 3,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js"></script>
-<script src="assets/js/tarifs.js"></script>
-<script src="assets/js/icons.js"></script>
+<script src="assets/js/config.js?v=17"></script>
+<script src="assets/js/tarifs.js?v=17"></script>
+<script src="assets/js/icons.js?v=17"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js"></script>
+<script src="assets/js/store.js?v=17"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js"></script>
-<script src="assets/js/devis.js"></script>
-<script src="assets/js/site.js"></script>
+<script src="assets/js/qr.js?v=17"></script>
+<script src="assets/js/devis.js?v=17"></script>
+<script src="assets/js/site.js?v=17"></script>
 </body>
 </html>

@@ -111,27 +111,36 @@ p, li, dd, summary { text-wrap: pretty; }
 .nav a:hover { color: var(--encre); background-size: 100% 1px; }
 .top .btn { margin-left: 8px; }
 .top .btn .s { display: none; }
-.menu-btn, .menu-mob { display: none; }
+.menu { display: none; }
 @media (max-width: 960px) {
   .nav { display: none; }
   .top .wrap > .btn { margin-left: auto; }
-  .menu-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 14px; background: none; border: 1px solid var(--filet); border-radius: 2px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
-  .menu-btn:hover { border-color: var(--encre); }
-  .menu-ico, .menu-ico::before { display: block; width: 16px; height: 1.5px; background: currentColor; position: relative; transition: transform .25s var(--ease), background .2s; }
-  .menu-ico::before { content: ""; position: absolute; left: 0; top: 5px; }
-  .menu-ico { margin-bottom: 5px; }
-  .top.menu-ouvert .menu-ico { transform: translateY(2.5px) rotate(45deg); }
-  .top.menu-ouvert .menu-ico::before { transform: translateY(-5px) rotate(-90deg); top: 5px; }
-  .menu-mob { position: absolute; left: 0; right: 0; top: 100%; background: var(--ivoire); border-bottom: 1px solid var(--filet); box-shadow: 0 24px 40px -24px rgba(34, 30, 25, .35); max-height: calc(100vh - 80px - env(safe-area-inset-top, 0px)); max-height: calc(100dvh - 80px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; padding: 6px max(clamp(20px, 4.5vw, 48px), env(safe-area-inset-left, 0px)) 22px; }
-  .menu-mob:not([hidden]) { display: block; }
-  .menu-mob ul { list-style: none; margin: 0 0 16px; padding: 0; }
-  .menu-mob li { border-bottom: 1px solid var(--filet); }
-  .menu-mob li a { display: flex; align-items: center; justify-content: space-between; min-height: 52px; text-decoration: none; font-family: var(--display); font-size: 1.3rem; letter-spacing: -.005em; }
-  .menu-mob li a::after { content: ""; width: 8px; height: 8px; border-right: 1.5px solid var(--laiton-texte); border-top: 1.5px solid var(--laiton-texte); transform: rotate(45deg); }
-  .menu-mob li a[aria-current] { color: var(--sapin); box-shadow: inset 3px 0 0 var(--laiton); padding-left: 12px; font-weight: 500; }
-  .menu-mob .btn { width: 100%; margin-left: 0; }
+  .top .wrap { gap: 16px; }
+  /* menu des parties : trois traits, s'ouvre même sans script (details/summary) */
+  .menu { display: block; position: relative; }
+  .burger { list-style: none; cursor: pointer; display: grid; align-content: center; justify-items: center; gap: 5px; width: 44px; height: 44px; margin-right: -10px; -webkit-tap-highlight-color: transparent; }
+  .burger::-webkit-details-marker { display: none; }
+  .burger::marker { content: ""; }
+  .burger i { display: block; width: 22px; height: 1.6px; background: var(--encre); border-radius: 1px; transition: transform .25s var(--ease), opacity .2s; }
+  .menu[open] .burger i:nth-of-type(1) { transform: translateY(6.6px) rotate(45deg); }
+  .menu[open] .burger i:nth-of-type(2) { opacity: 0; }
+  .menu[open] .burger i:nth-of-type(3) { transform: translateY(-6.6px) rotate(-45deg); }
+  .menu-pan {
+    position: absolute; right: -10px; top: calc(100% + 12px); width: min(290px, calc(100vw - 24px));
+    background: var(--papier); border: 1px solid var(--filet); border-top: 2px solid var(--sapin);
+    box-shadow: 0 22px 44px -22px rgba(34, 30, 25, .4);
+    padding: 6px 0 10px; max-height: calc(100dvh - 100px); overflow-y: auto; overscroll-behavior: contain;
+  }
+  .menu[open] .menu-pan { animation: menu-in .2s var(--ease); }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } }
+  .menu-pan ul { list-style: none; margin: 0; padding: 0; }
+  .menu-pan li a { display: block; padding: 11px 20px; text-decoration: none; font-size: 16px; font-weight: 500; color: var(--encre); }
+  .menu-pan li a:hover, .menu-pan li a:focus-visible { background: var(--ivoire); }
+  .menu-pan li a[aria-current] { color: var(--sapin); box-shadow: inset 2px 0 0 var(--laiton); font-weight: 600; }
+  .menu-espace { display: block; margin: 8px 20px 0; padding-top: 12px; border-top: 1px solid var(--filet); font-size: 14.5px; font-weight: 600; color: var(--laiton-texte); text-decoration: none; }
 }
-@media (max-width: 560px) { .top .btn .l { display: none; } .top .btn .s { display: inline; } .menu-btn { padding: 0 12px; } }
+@media (prefers-reduced-motion: reduce) { .menu[open] .menu-pan { animation: none; } .burger i { transition: none; } }
+@media (max-width: 430px) { .top .btn .l { display: none; } .top .btn .s { display: inline; } }
 @media (max-width: 420px) { .top .btn { padding: 0 12px; font-size: 13.5px; } .logo { font-size: 1.28rem; } .top .wrap { gap: 10px; } }
 
 /* ---------- héros : une page de magazine ---------- */
