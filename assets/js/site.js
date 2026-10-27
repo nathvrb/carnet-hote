@@ -163,8 +163,11 @@
     return '<article class="plan"><div class="plan-nom"><h3>' + esc(f.nom) + "</h3>" + (f.populaire ? '<span class="choisi">le plus choisi</span>' : "") + "</div>" +
       '<p class="acc">' + esc(f.accroche) + '</p><div class="price"><b>' + eur(f.prix) + "</b><span>par livret, payé une fois</span></div>" +
       "<ul>" + f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
-      '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '</span><a class="btn trait" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
+      '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '*</span><a class="btn trait" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
   }).join("");
+
+  var pn = document.getElementById("plans-note");
+  if (pn) pn.textContent = T.noteSupports;
 
   var forf = document.getElementById("forfaits");
   if (forf) forf.innerHTML = Object.keys(T.forfaits).map(function (k) {
@@ -179,7 +182,6 @@
     var row = function (label, small, price) { return '<div class="row"><dt>' + esc(label) + (small ? "<small>" + esc(small) + "</small>" : "") + '</dt><span class="dots"></span><dd>' + price + "</dd></div>"; };
     extras.innerHTML = '<div><h4>Options</h4><dl>' +
       row(o.langue.label, "L'italien pour le Confort (le Premium l'inclut) ; autres langues, nous consulter", "+" + eur(o.langue.prix)) +
-      row(o.express.label, o.express.detail + " (Confort et Premium)", "+" + eur(o.express.prix)) +
       row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +
       row("Affiche A5 à imprimer", "QR du livret et du Wi-Fi, en PDF · toutes formules", "incluse") +

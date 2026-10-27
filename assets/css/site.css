@@ -686,3 +686,4 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
   .folio-col { position: static; }
   .folio { border: 1px solid #999; max-width: 560px; margin: 0 auto; background: #fff; color: #000; }
 }
+.plans-note { max-width: 1040px; margin-top: 18px; font-size: 14px; color: var(--gris); }

@@ -34,7 +34,6 @@
   if (o && T) {
     var ls = [
       ["Langue supplémentaire", eur(T.options.langue.prix) + " par livret"],
-      [T.options.express.label, eur(T.options.express.prix) + " par commande"],
       ["Modification faite par nos soins, à l'unité (forfait Autonomie)", eur(T.modificationPonctuelle)]
     ].concat(Object.keys(T.supports).map(function (k) { return [T.supports[k].label + " en plus", eur(T.supports[k].prix) + " l'unité"]; }));
     o.innerHTML = "<table><tbody>" + ls.map(function (x) { return "<tr><td>" + esc(x[0]) + '</td><td class="p">' + esc(x[1]) + "</td></tr>"; }).join("") + "</tbody></table>";

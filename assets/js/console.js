@@ -1072,7 +1072,7 @@
     document.getElementById("actif").checked = remote.actif !== false;
     var mail = a[0] || "e-mail du compte";
     document.getElementById("invite").value = "Bonjour,\n\nVotre espace pour modifier votre livret d'accueil « " + (doc.nom || "") + " » est prêt :\n" + espaceUrl() +
-      "\n\nIdentifiant : " + mail + "\nMot de passe : celui que je vous transmets à part (vous pourrez le changer dans « Mon compte »).\n\nÀ chaque modification, cliquez sur « Publier » : vos voyageurs voient aussitôt la nouvelle version, le QR code ne change pas.\n\n" + (C.marque || "");
+      "\n\nIdentifiant : " + mail + "\nMot de passe : celui que nous vous transmettons à part (vous pourrez le changer dans « Mon compte »).\n\nÀ chaque modification, cliquez sur « Publier » : vos voyageurs voient aussitôt la nouvelle version, le QR code ne change pas.\n\n" + (C.marque || "");
   }
   bindCopy("copy-invite", "invite", "Message copié");
   document.getElementById("acces-form").addEventListener("submit", function (e) {

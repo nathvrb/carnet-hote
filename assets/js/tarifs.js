@@ -15,7 +15,7 @@ window.CDH_TARIFS = {
       prix: 149,
       populaire: true,
       accroche: "Le bon choix pour la plupart des logements.",
-      delai: "7 à 10 jours ouvrés",
+      delai: "3 à 5 jours ouvrés",
       langues: 3,
       supportsInclus: { porteCles: 1 },
       corrections: 1,
@@ -35,7 +35,7 @@ window.CDH_TARIFS = {
       nom: "Premium",
       prix: 249,
       accroche: "Pour les hôtes exigeants et les établissements. Plus de contenu, donc un peu plus de temps.",
-      delai: "10 à 13 jours ouvrés",
+      delai: "3 à 7 jours ouvrés",
       langues: 4,
       supportsInclus: { porteCles: 3, chevalet: 1 },
       corrections: 3,
@@ -91,13 +91,14 @@ window.CDH_TARIFS = {
       inclus: ["Tout l'Autonomie", "Vos modifications faites par nous, jusqu'à 2 demandes par mois", "Mise à jour saisonnière du guide local", "Réponse sous 24 h"]
     }
   },
+  // Astérisque des délais : les supports physiques sont livrés ensuite
+  noteSupports: "* La livraison du porte-clés et du chevalet peut être sujette à retard, selon les délais de fabrication et de livraison.",
   moisOffertsAnnuel: 2,          // paiement annuel = 10 mois payés
   modificationPonctuelle: 15,
 
   // Options
   options: {
-    langue: { label: "Langue supplémentaire", prix: 29, par: "livret" },
-    express: { label: "Livret en ligne en priorité", detail: "En ligne sous 5 jours ouvrés, supports livrés ensuite", prix: 49, par: "commande", delai: "livret en ligne sous 5 jours ouvrés, supports livrés ensuite" }
+    langue: { label: "Langue supplémentaire", prix: 29, par: "livret" }
   },
   // Supports physiques. « court » = [singulier, pluriel] pour les phrases du devis.
   supports: {

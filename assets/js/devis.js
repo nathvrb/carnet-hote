@@ -52,10 +52,7 @@
       supportsCost += c;
       lines.push({ l: T.supports[k].label + " × " + n, small: incl[k] ? "En plus des " + T.supports[k].court[1] + " inclus" : "", a: c });
     });
-    var express = s.options.express ? T.options.express.prix : 0;
-    if (express) lines.push({ l: T.options.express.label, a: express });
-
-    var creation = r2(base + maj + langCost - remiseMt + supportsCost + express);
+    var creation = r2(base + maj + langCost - remiseMt + supportsCost);
 
     var mensuel = r2(FF.mensuel * livrets * (1 - remise));
     var moisPayesAn = 12 - T.moisOffertsAnnuel;
@@ -66,7 +63,7 @@
     return {
       lines: lines, creation: creation, mensuel: mensuel, annuel: annuel, offerts: offerts,
       forfaitAn1: forfaitAn1, premiereAnnee: r2(creation + forfaitAn1),
-      livrets: livrets, remise: remise, delai: express ? T.options.express.delai : F.delai,
+      livrets: livrets, remise: remise, delai: F.delai,
       formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal, couleur: coul
     };
   }
@@ -94,7 +91,7 @@
   }).join("");
   document.getElementById("formules").innerHTML = Object.keys(T.formules).map(function (k) {
     var f = T.formules[k];
-    return radioCard("formule", k, f.nom, f.accroche + " Livré en " + f.delai + ".", eur(f.prix), !!f.populaire);
+    return radioCard("formule", k, f.nom, f.accroche + " Livré en " + f.delai + "*.", eur(f.prix), !!f.populaire);
   }).join("");
   document.getElementById("forfaits-choix").innerHTML = Object.keys(T.forfaits).map(function (k) {
     var f = T.forfaits[k];
@@ -107,10 +104,6 @@
     var s = T.supports[k];
     return '<div class="qty-row"><label for="sup-' + k + '">' + esc(s.label) + ' <span class="en-plus">en plus</span><small>' + esc(s.detail) + '</small></label><span class="p">' + eur(s.prix) + " l'unité</span>" +
       '<div class="stepper"><button type="button" data-step="-1" data-for="sup-' + k + '" aria-label="Retirer un">−</button><input id="sup-' + k + '" name="sup-' + k + '" type="number" inputmode="numeric" min="0" max="500" value="0"><button type="button" data-step="1" data-for="sup-' + k + '" aria-label="Ajouter un">+</button></div></div>';
-  }).join("");
-  document.getElementById("options").innerHTML = ["express"].map(function (k) {
-    var o = T.options[k];
-    return '<label class="opt check" id="opt-' + k + '-card"><input type="checkbox" name="opt-' + k + '" id="opt-' + k + '"><span class="tick">' + I("check", "ico-s") + "</span><b>" + esc(o.label) + '</b><span class="p">+' + eur(o.prix) + '</span><small id="opt-' + k + '-small">' + esc(o.detail ? o.detail + " · " : "") + (o.par === "livret" ? "Par logement" : "Par commande") + "</small></label>";
   }).join("");
   document.getElementById("langues-p").textContent = "+" + eur(T.options.langue.prix) + " / langue en plus";
 
@@ -125,7 +118,6 @@
       langues: clampInt(fd.get("langues"), 1, 4),
       supports: sup,
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
-      options: { express: !!fd.get("opt-express") },
       forfait: fd.get("forfait") || "autonomie",
       facturation: fd.get("facturation") || "mensuel"
     };
@@ -177,7 +169,7 @@
       '<div class="folio-tot"><div class="fl big"><span class="l">Création</span><span class="d"></span><span class="a">' + eur(q.creation, true) + '</span></div>' +
       '<div class="fl"><span class="l">Puis</span><span class="d"></span><span class="a">' + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + "</span></div>" +
       '<div class="fl"><span class="l">Total 1re année</span><span class="d"></span><span class="a">' + eur(q.premiereAnnee, true) + "</span></div></div>" +
-      '<p class="folio-note">Livraison : ' + esc(q.delai) + ", à compter de la réception de vos informations. " + esc(C.conditions) + " " + esc(C.mentionTVA) + ".</p>";
+      '<p class="folio-note">Livraison : ' + esc(q.delai) + "*, à compter de la réception de vos informations. " + esc(C.conditions) + " " + esc(C.mentionTVA) + '.</p><p class="folio-note">' + esc(T.noteSupports) + "</p>";
     document.getElementById("folio").innerHTML = h;
     document.getElementById("bar-total").textContent = eur(q.creation);
     document.getElementById("bar-sub").textContent = "puis " + (s.facturation === "annuel" ? eur(q.annuel) + "/an" : eur(q.mensuel) + "/mois");
@@ -192,7 +184,7 @@
       out.push("  " + x.l + (x.small ? " (" + x.small + ")" : "") + " : " + (x.a ? (x.a < 0 ? "-" : "") + eur(Math.abs(x.a), true) : "inclus"));
     });
     out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + (q.offerts ? " (" + q.offerts + " mois offerts)" : ""));
-    out.push("", "Création : " + eur(q.creation, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai);
+    out.push("", "Création : " + eur(q.creation, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai + "*", T.noteSupports);
     return out.join("\n");
   }
 
@@ -255,7 +247,6 @@
       document.getElementById("langues").value = saved.langues;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
       if (saved.couleur) setRadio("couleur", saved.couleur);
-      document.getElementById("opt-express").checked = !!(saved.options && saved.options.express);
     }
   } catch (e) {}
 
