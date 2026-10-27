@@ -4,7 +4,7 @@
    - livrets des clients (base Supabase, adresse passée par « sw.js?api=… ») : réseau d'abord,
      dernière version enregistrée si hors ligne ; photos de la base : copie enregistrée d'abord
    Pour forcer la mise à jour de tous les téléphones, changez le numéro de VERSION. */
-var VERSION = "cdh-v23";
+var VERSION = "cdh-v24";
 var CORE = ["livret.html", "assets/css/livret.css", "assets/js/config.js", "assets/js/icons.js", "assets/js/store.js", "assets/js/cloud.js", "assets/js/livret.js", "data/livrets.js"];
 var API = "";
 try { API = new URL(new URL(self.location.href).searchParams.get("api") || "").origin; } catch (e) {}
@@ -31,7 +31,8 @@ self.addEventListener("message", function (e) {
 });
 
 function networkFirst(req, fallbackUrl) {
-  return fetch(req).then(function (res) {
+  /* « no-cache » : on redemande toujours au serveur si le fichier a changé (GitHub Pages garde sinon une copie 10 minutes) */
+  return fetch(req, { cache: "no-cache" }).then(function (res) {
     if (res && res.ok && res.type === "basic") { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); }
     return res;
   }).catch(function () {
