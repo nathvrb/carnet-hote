@@ -127,9 +127,9 @@ window.CDH_TARIFS = {
   supportParDefaut: { location: "porteCles", maison: "chevalet", hotel: "chevalet" },
   // Couleurs des porte-clés
   couleurs: [
+    { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
     { id: "sapin",      nom: "Vert sapin", hex: "#1F5B4C" },
     { id: "terracotta", nom: "Terracotta", hex: "#A3402B" },
-    { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
     { id: "ocre",       nom: "Ocre",       hex: "#B07A1E" },
     { id: "bordeaux",   nom: "Bordeaux",   hex: "#6E2236" },
     { id: "noir",       nom: "Noir mat",   hex: "#232323" }

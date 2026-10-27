@@ -3,11 +3,11 @@
 .espace .cbar { justify-content: space-between; }
 .who-mail { font-size: 13.5px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46vw; align-self: center; }
 .es-main { width: min(1160px, 100%); margin: 0 auto; padding: clamp(28px, 5vw, 56px) max(20px, env(safe-area-inset-right, 0px)) 80px max(20px, env(safe-area-inset-left, 0px)); }
-.es-sur { margin: 0 0 14px; font-size: 11.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--brass-ink); }
+.es-sur { margin: 0 0 12px; font-family: var(--display); font-style: italic; font-size: 16px; color: var(--ink-soft); }
 .es-view h1 { font-family: var(--display); font-optical-sizing: auto; font-weight: 400; font-size: clamp(2.2rem, 4.4vw, 3.1rem); line-height: 1.02; margin: 0 0 14px; letter-spacing: -.024em; }
 .es-view h2 { margin: 0; font-size: 1.1rem; }
 .lead { margin: 0 0 22px; color: var(--ink-soft); max-width: 60ch; font-size: 16px; line-height: 1.6; }
-.es-card { background: var(--field); border-top: 3px solid var(--fob); border-radius: 2px; padding: clamp(24px, 5vw, 42px); box-shadow: 0 0 0 1px var(--line), 0 34px 60px -40px rgba(60, 40, 10, .45); }
+.es-card { background: var(--field); border-top: 3px solid var(--fob); border-radius: 2px; padding: clamp(24px, 5vw, 42px); box-shadow: 0 0 0 1px var(--line), 0 34px 60px -40px rgba(17, 30, 45, .45); }
 .es-narrow { max-width: 480px; margin: clamp(8px, 5vh, 48px) auto 0; }
 .es-foot { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
 .es-wait { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--ink-soft); padding: 60px 0; }
@@ -34,18 +34,12 @@
 .es-login .es-card { max-width: 500px; width: 100%; justify-self: start; }
 .es-visuel { margin: 0; display: grid; justify-items: center; gap: 26px; padding-top: 30px; }
 .es-objet { position: relative; width: min(78%, 330px); }
-.es-tag {
-  aspect-ratio: 100 / 136; background: var(--stone);
-  -webkit-mask: var(--tag) center / 100% 100% no-repeat; mask: var(--tag) center / 100% 100% no-repeat;
-}
+.es-tag { aspect-ratio: 2 / 3; background: var(--stone); }
 .es-tag img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block; }
 .es-tag { position: relative; }
-.es-tag::after { content: ""; position: absolute; left: 50%; top: 7.5%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35); }
-.es-anneau {
-  position: absolute; z-index: 2; left: 50%; top: calc(7.5% - 40px); width: 48px; height: 48px; margin-left: -24px;
-  border-radius: 50%; border: 5px solid var(--brass); box-shadow: 0 6px 10px -6px rgba(40, 28, 10, .5);
-}
-.es-visuel figcaption { max-width: 22em; text-align: center; font-family: var(--display); font-style: italic; font-size: 1.12rem; line-height: 1.45; color: var(--ink-soft); }
+
+.es-anneau { display: none; }
+.es-visuel figcaption { max-width: 22em; text-align: left; font-family: var(--display); font-style: italic; font-size: 1.12rem; line-height: 1.45; color: var(--ink-soft); }
 @media (max-width: 860px) {
   .es-login { grid-template-columns: 1fr; }
   .es-visuel { display: none; }
@@ -55,12 +49,12 @@
 /* ---------- tableau de bord ---------- */
 .es-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; padding-bottom: 26px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
 .es-head .lead { margin-bottom: 0; }
-.badge { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--brass-ink); border: 1px solid color-mix(in srgb, var(--brass) 70%, transparent); border-radius: 2px; padding: 5px 10px; }
+.badge { font-size: 12.5px; font-weight: 600; letter-spacing: 0; color: var(--brass-ink); border: 1px solid color-mix(in srgb, var(--brass) 70%, transparent); border-radius: 2px; padding: 5px 10px; }
 
 /* cartes des livrets */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 24px; margin: 0 0 36px; }
 .lcard { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; transition: border-color .2s, box-shadow .3s var(--ease); }
-.lcard:hover { border-color: var(--line-strong); box-shadow: 0 30px 50px -40px rgba(40, 28, 10, .55); }
+.lcard:hover { border-color: var(--line-strong); box-shadow: 0 30px 50px -40px rgba(17, 30, 45, .55); }
 .lcard-top { position: relative; height: 164px; overflow: hidden; background: var(--c, var(--fob)); }
 .lcard-top::before { /* silhouette du porte-clés, visible quand il n'y a pas de photo */
   content: ""; position: absolute; right: 30px; bottom: -34px; width: 92px; height: 138px; transform: rotate(12deg);

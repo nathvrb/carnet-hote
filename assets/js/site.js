@@ -30,13 +30,17 @@
   var fobQr = document.getElementById("fob-qr");
   function setFob(id) {
     if (!fobQr) return;
-    try { fobQr.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(id), { fg: "#12302A", margin: 1, size: 88 }); } catch (e) {}
+    try { fobQr.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(id), { fg: "#182B40", margin: 1, size: 88 }); } catch (e) {}
   }
   setFob("nid-des-tanneurs");
   /* tableau des clés (nouvelle vitrine) : un QR code sur chaque porte-clés */
   each("[data-fob-qr]", function (g) {
-    try { g.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(g.dataset.fobQr), { fg: "#12302A", margin: 1, size: +(g.dataset.size || 88) }); } catch (e) {}
+    try { g.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(g.dataset.fobQr), { fg: "#182B40", margin: 1, size: +(g.dataset.size || 88) }); } catch (e) {}
   });
+  each("[data-livret-qr]", function (el) {
+    try { el.innerHTML = window.cdhQrSvg(window.cdhLivretUrl(el.dataset.livretQr), { fg: "#182B40", margin: 0, label: el.dataset.label || "" }); } catch (e) {}
+  });
+  each("[data-email-lien]", function (a) { a.href = "mailto:" + C.email; });
   each(".switch button", function (b) {
     b.addEventListener("click", function () {
       each(".switch button", function (o) { o.setAttribute("aria-selected", String(o === b)); });
@@ -71,7 +75,6 @@
     "hotel-les-ondines": "Le classeur de chambre en version digitale : petit-déjeuner, spa, room service, parking et départ tardif.",
     "bastide-aux-amandiers": "Table d'hôtes, règles de la piscine, marchés provençaux et villages perchés du Luberon."
   };
-  var FONT = { "Lora": "Lora, Georgia, serif", "Gloock": "Lora, Georgia, serif", "Marcellus": "Marcellus, Georgia, serif", "Young Serif": "'Young Serif', Georgia, serif", "Newsreader": "Newsreader, Georgia, serif" };
   if (demos) {
     var ids = Object.keys(window.CDH_LIVRETS).filter(function (k) { return window.CDH_LIVRETS[k].demo; });
     var cover = function (d) { return d.theme && d.theme.couverture ? new URL(d.theme.couverture, location.href).href : ""; };
@@ -80,13 +83,13 @@
         var d = window.CDH_LIVRETS[k], c = cover(d);
         return '<button type="button" role="tab" id="tab-' + esc(k) + '" aria-controls="salon-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-salon="' + esc(k) + '">' +
           '<span class="vign" style="--c:' + esc(d.theme.accent) + ';' + (c ? "background-image:url('" + esc(c) + "')" : "") + '" aria-hidden="true"></span>' +
-          '<span><span class="t">' + esc(TYPE[d.type] || "") + '</span><span class="nom" style="font-family:' + esc(FONT[d.theme.police] || FONT.Lora) + '">' + esc(d.nom) + '</span><span class="ville">' + esc(d.ville) + "</span></span></button>";
+          '<span><span class="t">' + esc(TYPE[d.type] || "") + '</span><span class="nom">' + esc(d.nom) + '</span><span class="ville">' + esc(d.ville) + "</span></span></button>";
       }).join("") + "</div>" +
       '<div class="salon-detail" id="salon-panel" role="tabpanel" aria-labelledby="tab-' + esc(ids[0]) + '"><p id="salon-pitch"></p>' +
       '<div class="salon-qr"><div class="qr" id="salon-qr"></div><div><small>Scannez avec l\'appareil photo de votre téléphone, ou ouvrez-le ici.</small>' +
       '<a class="btn ivoire small" id="salon-open" href="#" target="_blank" rel="noopener">Ouvrir le livret</a></div></div></div>' +
-      '<div class="salon-scene" id="salon-scene"><div class="salon-photo" data-reveal><img id="salon-img" alt="" loading="lazy"></div>' +
-      '<div class="phone salon-phone" data-reveal style="--d:.1s"><div class="screen"><iframe id="demo-frame" name="cdh-vitrine" loading="lazy" title="Livret d\'exemple"></iframe></div></div></div>';
+      '<div class="salon-scene" id="salon-scene"><div class="salon-photo"><img id="salon-img" alt="" loading="lazy"></div>' +
+      '<div class="phone salon-phone"><div class="screen"><iframe id="demo-frame" name="cdh-vitrine" loading="lazy" title="Livret d\'exemple"></iframe></div></div></div>';
 
     var dframe = document.getElementById("demo-frame"), scene = document.getElementById("salon-scene");
     var tabs = demos.querySelectorAll("[data-salon]");
@@ -98,7 +101,7 @@
       tabs.forEach(function (t) { var on = t.dataset.salon === k; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
       document.getElementById("salon-panel").setAttribute("aria-labelledby", "tab-" + k);
       document.getElementById("salon-pitch").textContent = PITCH[k] || d.sousTitre || "";
-      document.getElementById("salon-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(k), { fg: "#12302A", margin: 1, label: "QR code du livret " + d.nom });
+      document.getElementById("salon-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(k), { fg: "#182B40", margin: 1, label: "QR code du livret " + d.nom });
       document.getElementById("salon-open").href = "livret.html#" + k;
       document.getElementById("salon-open").setAttribute("aria-label", "Ouvrir le livret " + d.nom + " dans un nouvel onglet");
       var img = document.getElementById("salon-img");
@@ -150,23 +153,23 @@
   ];
   var feats = document.getElementById("feats");
   if (feats) feats.innerHTML = MOMENTS.map(function (m) {
-    return '<div class="moment"><h3>' + esc(m[0]) + "</h3><dl>" + m[1].map(function (f) { return "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl></div>";
+    return '<div class="som-groupe"><h4>' + esc(m[0]) + "</h4><dl>" + m[1].map(function (f) { return "<div><dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd></div>"; }).join("") + "</dl></div>";
   }).join("");
 
   /* ---------- offres ---------- */
   var plans = document.getElementById("plans");
   if (plans) plans.innerHTML = Object.keys(T.formules).map(function (k) {
     var f = T.formules[k];
-    return '<article class="plan' + (f.populaire ? " feature" : "") + '">' + (f.populaire ? '<span class="badge">Le plus choisi</span>' : "") +
-      "<h3>" + esc(f.nom) + '</h3><p class="acc">' + esc(f.accroche) + '</p><div class="price"><b>' + eur(f.prix) + "</b><span>par livret, payé une fois</span></div>" +
+    return '<article class="plan"><div class="plan-nom"><h3>' + esc(f.nom) + "</h3>" + (f.populaire ? '<span class="choisi">le plus choisi</span>' : "") + "</div>" +
+      '<p class="acc">' + esc(f.accroche) + '</p><div class="price"><b>' + eur(f.prix) + "</b><span>par livret, payé une fois</span></div>" +
       "<ul>" + f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
-      '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '</span><a class="btn' + (f.populaire ? "" : " trait") + '" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
+      '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '</span><a class="btn trait" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
   }).join("");
 
   var forf = document.getElementById("forfaits");
   if (forf) forf.innerHTML = Object.keys(T.forfaits).map(function (k) {
     var f = T.forfaits[k];
-    return '<div class="forfait"><h4>' + esc(f.nom) + (f.populaire ? " <small>Recommandé</small>" : "") + '</h4><div class="pm">' + eur(f.mensuel) + " <span>/ mois / livret</span></div><p>" + esc(f.accroche) + "</p><ul>" +
+    return '<div class="forfait"><h4>' + esc(f.nom) + (f.populaire ? " <small>celui que nous conseillons</small>" : "") + '</h4><div class="pm">' + eur(f.mensuel) + " <span>par mois et par livret</span></div><p>" + esc(f.accroche) + "</p><ul>" +
       f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
   }).join("");
 
@@ -190,16 +193,16 @@
   var MOCK_ID = "nid-des-tanneurs", MD = window.CDH_LIVRETS[MOCK_ID] || {};
   var mockUrl = window.cdhLivretUrl(MOCK_ID);
   function qrAt(x, y, size, fg) {
-    return '<g transform="translate(' + x + " " + y + ')">' + window.cdhQrSvg(mockUrl, { fg: fg || "#12302A", margin: 1, size: size }) + "</g>";
+    return '<g transform="translate(' + x + " " + y + ')">' + window.cdhQrSvg(mockUrl, { fg: fg || "#182B40", margin: 1, size: size }) + "</g>";
   }
   function wifiQrAt(x, y, size) {
     var w = MD.wifi || {};
-    return '<g transform="translate(' + x + " " + y + ')">' + window.cdhQrSvg(window.cdhWifiString(w.reseau || "", w.motDePasse || ""), { fg: "#12302A", margin: 0, size: size }) + "</g>";
+    return '<g transform="translate(' + x + " " + y + ')">' + window.cdhQrSvg(window.cdhWifiString(w.reseau || "", w.motDePasse || ""), { fg: "#182B40", margin: 0, size: size }) + "</g>";
   }
   function txt(x, y, str, o) {
     o = o || {};
-    return '<text x="' + x + '" y="' + y + '" text-anchor="' + (o.anchor || "middle") + '" fill="' + (o.fill || "#12302A") + '"' + (o.op ? ' fill-opacity="' + o.op + '"' : "") +
-      ' font-family="' + (o.serif ? "Newsreader, Georgia, serif" : "Schibsted Grotesk, system-ui, sans-serif") + '" font-size="' + (o.size || 8) + '"' + (o.weight ? ' font-weight="' + o.weight + '"' : "") + (o.ls ? ' letter-spacing="' + o.ls + '"' : "") + ">" + esc(str) + "</text>";
+    return '<text x="' + x + '" y="' + y + '" text-anchor="' + (o.anchor || "middle") + '" fill="' + (o.fill || "#182B40") + '"' + (o.op ? ' fill-opacity="' + o.op + '"' : "") +
+      ' font-family="' + (o.serif ? "'Brygada 1918', Georgia, serif" : "'Schibsted Grotesk', system-ui, sans-serif") + '" font-size="' + (o.size || 8) + '"' + (o.weight ? ' font-weight="' + o.weight + '"' : "") + (o.ls ? ' letter-spacing="' + o.ls + '"' : "") + ">" + esc(str) + "</text>";
   }
   var ACC = (MD.theme && MD.theme.accent) || "#A3402B", NOM = MD.nom || "Le Nid des Tanneurs", VILLE = MD.ville || "", WIFI = (MD.wifi || {});
   var plexi = document.getElementById("plexi-card");
@@ -211,11 +214,11 @@
       qrAt(82, 110, 76) +
       txt(120, 200, "Scannez pour ouvrir", { size: 8, weight: 700 }) +
       txt(120, 211, "le livret d'accueil", { size: 8, weight: 700 }) +
-      '<path d="M60 222H180" stroke="#D5DDD6" stroke-width="1"/>' +
+      '<path d="M60 222H180" stroke="#D9D2C6" stroke-width="1"/>' +
       wifiQrAt(60, 229, 26) +
-      txt(94, 238, "WI-FI", { anchor: "start", size: 5.6, weight: 700, ls: 1.2, fill: "#4C6159" }) +
+      txt(94, 238, "WI-FI", { anchor: "start", size: 5.6, weight: 700, ls: 1.2, fill: "#5A6472" }) +
       txt(94, 247, WIFI.reseau || "", { anchor: "start", size: 7.2, weight: 600 }) +
-      txt(94, 255.5, WIFI.motDePasse || "", { anchor: "start", size: 6.4, fill: "#4C6159" });
+      txt(94, 255.5, WIFI.motDePasse || "", { anchor: "start", size: 6.4, fill: "#5A6472" });
   }
   var poster = document.getElementById("poster-card");
   if (poster) {
@@ -225,15 +228,15 @@
       txt(120, 91, VILLE, { fill: "#fff", op: .8, size: 7 }) +
       qrAt(76, 112, 88) +
       txt(120, 214, "Scannez pour ouvrir le livret d'accueil", { size: 7.2, weight: 700 }) +
-      txt(120, 225, "Wi-Fi, équipements, adresses et numéros utiles", { size: 5.8, fill: "#4C6159" }) +
-      '<path d="M50 233H190" stroke="#D5DDD6" stroke-width="1"/>' +
+      txt(120, 225, "Wi-Fi, équipements, adresses et numéros utiles", { size: 5.8, fill: "#5A6472" }) +
+      '<path d="M50 233H190" stroke="#D9D2C6" stroke-width="1"/>' +
       wifiQrAt(52, 238, 24) +
-      txt(84, 246, "WI-FI : SCANNEZ POUR VOUS CONNECTER", { anchor: "start", size: 4.3, weight: 700, ls: .3, fill: "#4C6159" }) +
+      txt(84, 246, "WI-FI : SCANNEZ POUR VOUS CONNECTER", { anchor: "start", size: 4.3, weight: 700, ls: .3, fill: "#5A6472" }) +
       txt(84, 256, WIFI.reseau || "", { anchor: "start", size: 7, weight: 600 });
   }
   var fobArt = document.getElementById("sup-fob");
   if (fobArt) {
-    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#12302A", margin: 1, size: 88 });
+    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 88 });
     var colEl = document.getElementById("fob-colors"), colName = document.getElementById("fob-color-name");
     colEl.innerHTML = (T.couleurs || []).map(function (c, i) {
       return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="fob-couleur" value="' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span class="sr">' + esc(c.nom) + "</span></label>";
@@ -305,14 +308,6 @@
       Object.keys(liens).forEach(function (id) { var el = document.getElementById(id); if (el) suivi.observe(el); });
     }
   }
-  var reveals = document.querySelectorAll("[data-reveal]");
-  if ("IntersectionObserver" in window) {
-    var ro = new IntersectionObserver(function (en) {
-      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("vu"); ro.unobserve(x.target); } });
-    }, { rootMargin: "0px 0px -8% 0px" });
-    reveals.forEach(function (el) { ro.observe(el); });
-  } else reveals.forEach(function (el) { el.classList.add("vu"); });
-
   var railLinks = document.querySelectorAll(".rail a");
   if (railLinks.length && "IntersectionObserver" in window) {
     var visible = {};

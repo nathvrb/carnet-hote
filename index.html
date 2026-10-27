@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Carnet d'Hôte · Livrets d'accueil digitaux</title>
 <meta name="description" content="Livrets d'accueil digitaux pour locations courte durée, maisons d'hôtes et hôtels : rédigés pour vous, accessibles par QR code, modifiables à tout moment.">
-<meta name="theme-color" content="#F5F1E8">
+<meta name="theme-color" content="#F4EFE6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:wght@400;500;600&family=Lora:wght@400..600&family=Young+Serif&display=swap">
-<link rel="preload" as="image" href="photos/hotel-les-ondines/chambre.jpg">
-<link rel="stylesheet" href="assets/css/site.css?v=17">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="preload" as="image" href="photos/bastide-aux-amandiers/table-hotes.jpg">
+<link rel="stylesheet" href="assets/css/site.css?v=18">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -19,10 +19,7 @@
 
 <header class="top" id="top">
   <div class="wrap">
-    <a class="logo" href="#haut" aria-label="Carnet d'Hôte, retour en haut de page">
-      <svg viewBox="0 0 22 34" aria-hidden="true"><circle cx="11" cy="5.5" r="4.2" fill="none" stroke="var(--laiton)" stroke-width="1.7"/><path d="M11 9.5c3.6 0 9 5.6 9 13.6C20 29 16 33 11 33S2 29 2 23.1C2 15.1 7.4 9.5 11 9.5Z" fill="var(--sapin)"/><circle cx="11" cy="13" r="1.5" fill="var(--ivoire)"/></svg>
-      <span data-brand>Carnet d'Hôte</span>
-    </a>
+    <a class="logo" href="#haut" aria-label="Carnet d'Hôte, retour en haut de page"><span data-brand>Carnet d'Hôte</span></a>
     <nav class="nav" aria-label="Navigation principale">
       <a href="#exemples">Exemples</a>
       <a href="#supports-qr">Supports</a>
@@ -30,13 +27,14 @@
       <a href="#console">Console</a>
       <a href="#faq">Questions</a>
     </nav>
-    <a class="btn sapin small" href="#devis"><span class="l">Calculer mon devis</span><span class="s">Devis</span></a>
+    <a class="btn small" href="#devis"><span class="l">Calculer mon devis</span><span class="s">Devis</span></a>
     <details class="menu" id="menu">
       <summary class="burger"><span class="sr">Menu</span><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></summary>
       <nav class="menu-pan" aria-label="Aller à une partie du site">
         <ul>
           <li><a href="#parcours">Comment ça marche</a></li>
           <li><a href="#exemples">Exemples de livrets</a></li>
+          <li><a href="#contenu">Ce que contient un livret</a></li>
           <li><a href="#supports-qr">Supports QR</a></li>
           <li><a href="#offres">Tarifs</a></li>
           <li><a href="#devis">Calculer mon devis</a></li>
@@ -52,67 +50,51 @@
 
 <main id="haut">
 
-  <!-- HÉROS : une page de magazine -->
-  <section class="hero" aria-labelledby="t-hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <h1 class="display" id="t-hero">Le livret d'accueil<br> qui tient dans<br> un QR code.</h1>
-        <p class="lead">On rédige le livret d'accueil de votre location, maison d'hôtes ou hôtel : Wi-Fi, modes d'emploi, bonnes adresses, numéros utiles. Vos voyageurs scannent le QR code et trouvent la réponse avant même de vous écrire.</p>
-        <div class="cta-row">
-          <a class="btn sapin" href="#devis">Calculer mon devis</a>
-          <a class="lien" href="#exemples">Ouvrir les exemples</a>
+  <!-- COUVERTURE -->
+  <section class="couv" aria-labelledby="t-hero">
+    <div class="wrap couv-grid">
+      <h1 class="couv-titre" id="t-hero">Le livret d'accueil qui s'ouvre d'un scan.</h1>
+      <div class="couv-texte">
+        <p class="couv-lead">Nous rédigeons le livret de votre location, de votre maison d'hôtes ou de votre hôtel&nbsp;: Wi-Fi, arrivée, modes d'emploi, adresses du quartier. Vos voyageurs scannent le QR code posé chez vous et trouvent la réponse sans vous écrire. Aucune application à installer, à partir de <span data-prix-min>89 €</span>.</p>
+        <div class="couv-actions">
+          <a class="btn" href="#devis">Calculer mon devis</a>
+          <a class="lien" href="#exemples">Parcourir les exemples</a>
         </div>
-        <ul class="proof" aria-label="En bref">
-          <li>Aucune application à installer</li>
-          <li>Modifiable sans réimprimer</li>
-          <li>À partir de <span data-prix-min>89 €</span></li>
-        </ul>
       </div>
-
-      <figure class="hero-scene">
-        <div class="scene">
-        <div class="tag-photo" data-reveal>
-          <img src="photos/hotel-les-ondines/chambre.jpg" alt="Chambre d'hôtel aux boiseries chaudes, lit fait et lampes allumées" width="1200" height="800" fetchpriority="high">
-        </div>
-        <svg class="tag-anneau" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="22" fill="none" stroke="var(--laiton)" stroke-width="5"/></svg>
-        <div class="phone hero-phone" data-reveal style="--d:.12s">
+      <div class="tampon">
+        <div class="tampon-qr" data-livret-qr="nid-des-tanneurs" data-label="QR code du livret d'exemple Le Nid des Tanneurs"></div>
+        <p>Scannez avec l'appareil photo de votre téléphone&nbsp;: le livret du Nid des Tanneurs s'ouvre, comme pour un voyageur.</p>
+      </div>
+      <div class="couv-epreuve">
+        <div class="phone hero-phone">
           <div class="screen">
             <iframe id="hero-frame" name="cdh-vitrine" src="livret.html#nid-des-tanneurs" title="Aperçu d'un vrai livret d'accueil : Le Nid des Tanneurs"></iframe>
           </div>
         </div>
-        <svg class="hero-cle" data-reveal style="--d:.24s" viewBox="0 0 140 300" role="img" aria-label="Porte-clés gravé avec le QR code du livret d'exemple">
-          <defs><linearGradient id="vernis" x1="0" y1="0" x2="1" y2=".4"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient></defs>
-          <circle cx="70" cy="21" r="17" fill="none" stroke="var(--laiton)" stroke-width="5"/>
-          <path d="M70 34C99 34 132 80 132 164C132 233 105 292 70 292C35 292 8 233 8 164C8 80 41 34 70 34Z" fill="#1F5B4C"/>
-          <path d="M70 34C99 34 132 80 132 164C132 233 105 292 70 292C35 292 8 233 8 164C8 80 41 34 70 34Z" fill="url(#vernis)"/>
-          <circle cx="70" cy="52" r="6" fill="var(--ivoire)"/>
-          <text x="70" y="88" text-anchor="middle" class="grav">CHAMBRE 12</text>
-          <rect x="24" y="100" width="92" height="92" rx="9" fill="#fff"/>
-          <g data-fob-qr="nid-des-tanneurs" data-size="84" transform="translate(28 104)" color="#12302A"></g>
-          <text x="70" y="228" text-anchor="middle" class="sous">livret d'accueil</text>
-        </svg>
-        </div>
-        <figcaption>Le Nid des Tanneurs, à Strasbourg : un livret d'exemple que vous pouvez parcourir. Faites défiler l'écran du téléphone, ou scannez la clé.</figcaption>
-      </figure>
+      </div>
     </div>
+    <figure class="wrap couv-planche">
+      <img src="photos/bastide-aux-amandiers/table-hotes.jpg" alt="Longue table dressée sous une pergola en fer forgé, dans la lumière du soir" width="1200" height="801" fetchpriority="high">
+      <figcaption><span>Une table d'hôtes dans le Luberon, en fin de journée. Les lieux de nos exemples sont fictifs&nbsp;; leurs livrets fonctionnent vraiment.</span> <a class="lien" id="hero-open" href="livret.html#nid-des-tanneurs" target="_blank" rel="noopener">Ouvrir le livret en plein écran</a></figcaption>
+    </figure>
   </section>
 
   <!-- MESSAGES : une journée d'hôte -->
-  <section class="band pierre" aria-labelledby="t-msgs">
-    <div class="wrap">
-      <div class="head-split">
-        <h2 class="h2" id="t-msgs">Les messages que vous ne recevrez plus à 23 h</h2>
-        <p class="lead">Chaque question qu'un voyageur pourrait vous poser a sa réponse dans le livret, au bon endroit, dans sa langue.</p>
+  <section class="registre" aria-labelledby="t-msgs">
+    <div class="wrap registre-grid">
+      <div class="registre-tete">
+        <h2 class="h2" id="t-msgs">Les messages que vous ne recevrez plus à 23&nbsp;h</h2>
+        <p>Chaque question qu'un voyageur pourrait vous poser a sa réponse dans le livret, au bon endroit, dans sa langue.</p>
       </div>
       <div class="journee">
         <p class="journee-tete" aria-hidden="true"><span>Ce qu'on vous écrit</span><span>Où le livret répond déjà</span></p>
         <ol class="journee-liste">
-          <li><time>08:40</time><q>On doit laisser les clés où en partant ?</q><span class="rubrique">Check-list de départ</span></li>
+          <li><time>08:40</time><q>On doit laisser les clés où en partant&nbsp;?</q><span class="rubrique">Check-list de départ</span></li>
           <li><time>09:12</time><q>Le lave-linge clignote et la porte reste bloquée…</q><span class="rubrique">Rubrique Lave-linge, en 5 étapes</span></li>
-          <li><time>10:05</time><q>Il y a une pharmacie ouverte le dimanche ?</q><span class="rubrique">Adresses utiles et numéro de garde</span></li>
-          <li><time>18:20</time><q>Vous auriez un resto pas trop touristique ?</q><span class="rubrique">Vos adresses, avec l'itinéraire</span></li>
-          <li><time>20:31</time><q>On fait quoi des bouteilles vides ?</q><span class="rubrique">Rubrique Poubelles et tri</span></li>
-          <li><time>22:47</time><q>Bonsoir ! C'est quoi le mot de passe du Wi-Fi ?</q><span class="rubrique">En tête du livret, avec un bouton Copier</span></li>
+          <li><time>10:05</time><q>Il y a une pharmacie ouverte le dimanche&nbsp;?</q><span class="rubrique">Adresses utiles et numéro de garde</span></li>
+          <li><time>18:20</time><q>Vous auriez un resto pas trop touristique&nbsp;?</q><span class="rubrique">Vos adresses, avec l'itinéraire</span></li>
+          <li><time>20:31</time><q>On fait quoi des bouteilles vides&nbsp;?</q><span class="rubrique">Rubrique Poubelles et tri</span></li>
+          <li><time>22:47</time><q>Bonsoir&nbsp;! C'est quoi le mot de passe du Wi-Fi&nbsp;?</q><span class="rubrique">En tête du livret, avec un bouton Copier</span></li>
         </ol>
       </div>
     </div>
@@ -121,158 +103,167 @@
   <!-- ÉTAPES -->
   <section class="band ivoire" id="parcours" aria-labelledby="t-steps">
     <div class="wrap">
-      <h2 class="h2 etroit" id="t-steps">Vous répondez à quelques questions, on s'occupe du reste</h2>
+      <h2 class="h2 parcours-titre" id="t-steps">De vos réponses au QR code posé chez vous, en deux semaines au plus.</h2>
       <ol class="parcours">
-        <li><span class="quand">Jour 1</span><h3>Vous remplissez le questionnaire</h3><p><a href="questionnaire.html">15 minutes en ligne</a>, ou une visite sur place autour de Strasbourg. Envoyez-nous des photos de vos équipements.</p></li>
-        <li><span class="quand">Jours 2 à 4</span><h3>On rédige votre livret</h3><p>Textes clairs, modes d'emploi pas à pas, traductions et une sélection d'adresses vérifiées autour de chez vous.</p></li>
-        <li><span class="quand">Avant la livraison</span><h3>Vous relisez sur votre téléphone</h3><p>Vous recevez le lien de l'aperçu. On corrige jusqu'à ce que tout soit juste.</p></li>
-        <li><span class="quand">5 à 13 jours ouvrés</span><h3>Le QR code est en place</h3><p>Livret en ligne et affiche prête à imprimer. En Confort et Premium, porte-clés ou chevalets livrés chez vous. Le délai dépend de la formule.</p></li>
+        <li><span class="quand">Jour 1</span><h3>Vous remplissez le questionnaire</h3><p><a href="questionnaire.html">15 minutes en ligne</a>, ou une visite sur place autour de Strasbourg. Vous ajoutez les photos de vos équipements.</p></li>
+        <li><span class="quand">Jours 2 à 4</span><h3>Nous rédigeons votre livret</h3><p>Textes clairs, modes d'emploi pas à pas, traductions et une sélection d'adresses vérifiées autour de chez vous.</p></li>
+        <li><span class="quand">Avant la livraison</span><h3>Vous relisez sur votre téléphone</h3><p>Vous recevez le lien de l'aperçu. Nous corrigeons jusqu'à ce que tout soit juste.</p></li>
+        <li><span class="quand">5 à 13 jours ouvrés</span><h3>Le QR code est en place</h3><p>Livret en ligne et affiche prête à imprimer. En Confort et Premium, porte-clés ou chevalets livrés chez vous. Le délai dépend de la formule.</p></li>
       </ol>
     </div>
   </section>
 
-  <!-- EXEMPLES : le salon -->
-  <section class="band sapin salon" id="exemples" aria-labelledby="t-demos">
-    <div class="wrap salon-grid">
+  <!-- EXEMPLES -->
+  <section class="band bleu salon" id="exemples" aria-labelledby="t-demos">
+    <div class="wrap">
       <div class="salon-texte">
-        <h2 class="h2" id="t-demos">Trois livrets à ouvrir sur votre téléphone</h2>
-        <p class="lead">Scannez un QR code avec l'appareil photo de votre téléphone, ou ouvrez le livret ici : il s'adapte aussi à la tablette et à l'ordinateur. Établissements, hôtes et commerces sont fictifs.</p>
+        <h2 class="h2 grand" id="t-demos">Trois livrets à parcourir</h2>
+        <p>Une location à Strasbourg, un hôtel au bord du lac d'Annecy, une maison d'hôtes dans le Luberon. Les lieux sont fictifs, les livrets sont réels&nbsp;: faites défiler l'écran, ou scannez le code avec votre téléphone.</p>
       </div>
       <div class="salon-app" id="demo-cards"></div>
     </div>
   </section>
 
-  <!-- CONTENU : le séjour -->
-  <section class="band ivoire" aria-labelledby="t-feats">
+  <!-- CONTENU : les détails d'un intérieur -->
+  <section class="band ivoire contenu" id="contenu" aria-labelledby="t-feats">
     <div class="wrap">
-      <div class="head-split">
-        <h2 class="h2" id="t-feats">Tout ce que vos voyageurs cherchent, rangé au même endroit</h2>
-        <figure class="vignette" data-reveal>
+      <div class="planches">
+        <figure class="planche p-cles">
           <img src="photos/nid-des-tanneurs/boite-a-cles.jpg" alt="Boîte à clés à code fixée sur un mur de briques" width="800" height="1200" loading="lazy">
+          <figcaption><b>Avant l'arrivée.</b> Adresse, porte, boîte à clés&nbsp;: une page à envoyer la veille. Le code, lui, reste dans votre message.</figcaption>
+        </figure>
+        <div class="contenu-tete">
+          <h2 class="h2" id="t-feats">Ce que vos voyageurs trouveront dans le livret</h2>
+          <p>Les réponses aux questions qu'on se pose dans un logement qu'on ne connaît pas, écrites pour votre logement à vous, avec vos photos.</p>
+        </div>
+        <figure class="planche p-linge">
+          <img src="photos/nid-des-tanneurs/lave-linge-programmes.jpg" alt="Sélecteur de programmes d'un lave-linge" width="1200" height="800" loading="lazy">
+          <figcaption><b>Modes d'emploi.</b> Le bon programme, et la porte qui reste bloquée deux minutes après le lavage&nbsp;: chaque appareil expliqué en étapes, photos à l'appui.</figcaption>
+        </figure>
+        <figure class="planche p-radiateur">
+          <img src="photos/nid-des-tanneurs/radiateur.jpg" alt="Radiateur en fonte sous une fenêtre" width="1200" height="800" loading="lazy">
+          <figcaption><b>Le logement.</b> Chauffage, box, disjoncteur, poubelles&nbsp;: ce qu'on cherche une fois par séjour, toujours au mauvais moment.</figcaption>
+        </figure>
+        <figure class="planche p-cafe">
+          <img src="photos/nid-des-tanneurs/cafetiere.jpg" alt="Machine à café et bouilloire sur un plan de travail" width="960" height="1200" loading="lazy">
+          <figcaption><b>Les petites choses.</b> Capsules ou grains, où sont les filtres&nbsp;: ce qui fait la différence entre un logement et un accueil.</figcaption>
         </figure>
       </div>
-      <div class="sejour" id="feats"></div>
+      <div class="sommaire-bloc">
+        <h3 class="h3">Au sommaire de chaque livret</h3>
+        <div class="sommaire" id="feats"></div>
+      </div>
     </div>
   </section>
 
   <!-- SUPPORTS -->
   <section class="band pierre" id="supports-qr" aria-labelledby="t-sup">
     <div class="wrap">
-      <div class="head-split">
-        <h2 class="h2" id="t-sup">Le QR code, là où vos voyageurs le cherchent</h2>
-        <p class="lead">Un porte-clés gravé sur le trousseau, un chevalet sur la table de chevet ou une affiche au mur. Le QR code ne change jamais : quand le livret évolue, les supports restent bons.</p>
+      <div class="sup-tete">
+        <h2 class="h2" id="t-sup">Le QR code, posé là où on le cherche</h2>
+        <p>Un porte-clés gravé sur le trousseau, un chevalet sur la table de chevet ou une affiche au mur. Le QR code ne change jamais&nbsp;: quand le livret évolue, les supports restent bons.</p>
       </div>
       <div class="objets">
-        <article class="objet objet-cle" id="sup-fob" style="--fobc:#1F5B4C">
-          <div class="socle" data-reveal>
+        <article class="objet objet-cle" id="sup-fob" style="--fobc:#1F3A5F">
+          <div class="socle">
             <svg class="fob-mock" viewBox="0 0 220 380" role="img" aria-labelledby="fob-mock-t">
               <title id="fob-mock-t">Maquette du porte-clés gravé</title>
-              <defs>
-                <linearGradient id="fob-shine" x1="0" y1="0" x2="1" y2=".35"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".45" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".14"/></linearGradient>
-                <filter id="fob-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
-              </defs>
-              <ellipse cx="114" cy="364" rx="66" ry="9" fill="#3B2A14" opacity=".2" filter="url(#fob-blur)"/>
-              <g transform="translate(140 50) rotate(-24)">
-                <circle cx="0" cy="24" r="17" fill="none" stroke="var(--laiton)" stroke-width="8"/>
-                <rect x="-4.5" y="40" width="9" height="128" rx="3" fill="var(--laiton)"/>
-                <rect x="3" y="128" width="15" height="8" rx="1.5" fill="var(--laiton)"/>
-                <rect x="3" y="142" width="10" height="8" rx="1.5" fill="var(--laiton)"/>
-                <rect x="3" y="155" width="17" height="9" rx="1.5" fill="var(--laiton)"/>
+              <g transform="translate(140 50) rotate(-24)" fill="#9C8B76">
+                <circle cx="0" cy="24" r="17" fill="none" stroke="#9C8B76" stroke-width="8"/>
+                <rect x="-4.5" y="40" width="9" height="128" rx="3"/>
+                <rect x="3" y="128" width="15" height="8" rx="1.5"/>
+                <rect x="3" y="142" width="10" height="8" rx="1.5"/>
+                <rect x="3" y="155" width="17" height="9" rx="1.5"/>
               </g>
               <g transform="translate(10 6)">
                 <path d="M100 62C132 62 170 114 170 208C170 284 140 342 100 342C60 342 30 284 30 208C30 114 68 62 100 62Z" fill="var(--fobc)" class="fob-body"/>
-                <path d="M100 62C132 62 170 114 170 208C170 284 140 342 100 342C60 342 30 284 30 208C30 114 68 62 100 62Z" fill="url(#fob-shine)"/>
-                <path d="M100 70C127 70 162 118 162 208C162 278 135 334 100 334C65 334 38 278 38 208C38 118 73 70 100 70Z" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="1.5"/>
-                <circle cx="100" cy="86" r="8" fill="var(--socle)"/>
-                <circle cx="100" cy="52" r="32" fill="none" stroke="var(--laiton)" stroke-width="6"/>
-                <text id="fob-name" x="100" y="128" text-anchor="middle" fill="#fff" fill-opacity=".88" font-family="Hanken Grotesk, system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="2.2">LE NID DES TANNEURS</text>
-                <rect x="52" y="142" width="96" height="96" rx="12" fill="#fff"/>
-                <g id="fob-mock-qr" transform="translate(56 146)" color="#12302A"></g>
-                <text x="100" y="268" text-anchor="middle" fill="#fff" font-family="Hanken Grotesk, system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="2.6">SCANNEZ-MOI</text>
-                <text x="100" y="288" text-anchor="middle" fill="#fff" fill-opacity=".72" font-family="Newsreader, Georgia, serif" font-style="italic" font-size="14">livret d'accueil</text>
+                <path d="M100 70C127 70 162 118 162 208C162 278 135 334 100 334C65 334 38 278 38 208C38 118 73 70 100 70Z" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>
+                <circle cx="100" cy="86" r="8" fill="var(--pierre)"/>
+                <circle cx="100" cy="52" r="32" fill="none" stroke="#9C8B76" stroke-width="6"/>
+                <text id="fob-name" x="100" y="128" text-anchor="middle" fill="#fff" fill-opacity=".9" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="2.2">LE NID DES TANNEURS</text>
+                <rect x="52" y="142" width="96" height="96" rx="10" fill="#fff"/>
+                <g id="fob-mock-qr" transform="translate(56 146)"></g>
+                <text x="100" y="276" text-anchor="middle" fill="#fff" fill-opacity=".85" font-family="'Brygada 1918', Georgia, serif" font-style="italic" font-size="15">livret d'accueil</text>
               </g>
             </svg>
           </div>
           <div class="cartel">
             <h3>Porte-clés gravé</h3>
             <p class="matiere">1 inclus en Confort, 3 en Premium</p>
-            <p>Accroché aux clés que vous remettez : le voyageur a le livret sur lui pendant tout le séjour. Nom et QR code gravés, couleur au choix.</p>
+            <p>Accroché aux clés que vous remettez&nbsp;: le voyageur a le livret sur lui pendant tout le séjour. Nom et QR code gravés, couleur au choix.</p>
             <fieldset class="fob-colors">
-              <legend>Couleur <b id="fob-color-name">Vert sapin</b></legend>
+              <legend>Couleur <b id="fob-color-name">Bleu nuit</b></legend>
               <div class="couleurs" id="fob-colors"></div>
             </fieldset>
             <label class="fob-text" for="fob-text"><span>Texte gravé <small>(18 caractères)</small></span><input id="fob-text" maxlength="18" value="Le Nid des Tanneurs" autocomplete="off" spellcheck="false"></label>
-            <p class="prix-objet"><b data-sup-prix="porteCles">9 €</b> l'unité en plus</p>
+            <p class="prix-objet"><b data-sup-prix="porteCles">9 €</b> l'unité en plus</p>
           </div>
         </article>
 
         <article class="objet">
-          <div class="socle" data-reveal>
+          <div class="socle">
             <svg class="plexi-mock" viewBox="0 0 240 300" role="img" aria-labelledby="plexi-mock-t">
               <title id="plexi-mock-t">Maquette du chevalet plexiglas A6</title>
               <defs>
-                <linearGradient id="plexi-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".38" stop-color="#fff" stop-opacity=".04"/><stop offset=".5" stop-color="#fff" stop-opacity=".28"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient>
-                <filter id="plexi-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+                <linearGradient id="plexi-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".4" stop-color="#fff" stop-opacity=".03"/><stop offset=".52" stop-color="#fff" stop-opacity=".2"/><stop offset=".64" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#fff" stop-opacity=".1"/></linearGradient>
               </defs>
-              <ellipse cx="120" cy="280" rx="100" ry="8" fill="#3B2A14" opacity=".18" filter="url(#plexi-blur)"/>
-              <path d="M30 262 H210 L222 280 H18Z" fill="#EFE9DC" fill-opacity=".95" stroke="#CFC4AF"/>
-              <rect x="44" y="26" width="152" height="238" rx="5" fill="#fff" stroke="#CFC4AF"/>
+              <path d="M30 262 H210 L222 280 H18Z" fill="#EDE6DA" stroke="#C9BDAA"/>
+              <rect x="44" y="26" width="152" height="238" rx="4" fill="#fff" stroke="#C9BDAA"/>
               <g id="plexi-card"></g>
-              <rect x="44" y="26" width="152" height="238" rx="5" fill="url(#plexi-glass)" stroke="#fff" stroke-opacity=".9"/>
+              <rect x="44" y="26" width="152" height="238" rx="4" fill="url(#plexi-glass)" stroke="#fff" stroke-opacity=".9"/>
             </svg>
           </div>
           <div class="cartel">
             <h3>Chevalet plexiglas A6</h3>
             <p class="matiere">Pour les hôtels et chambres d'hôtes</p>
             <p>Sur la table de chevet, le bureau ou à la réception. Carte imprimée aux couleurs du livret, avec le QR code du Wi-Fi.</p>
-            <p class="prix-objet"><b data-sup-prix="chevalet">12 €</b> l'unité en plus</p>
+            <p class="prix-objet"><b data-sup-prix="chevalet">12 €</b> l'unité en plus</p>
           </div>
         </article>
 
         <article class="objet">
-          <div class="socle" data-reveal>
+          <div class="socle">
             <svg class="poster-mock" viewBox="0 0 240 300" role="img" aria-labelledby="poster-mock-t">
               <title id="poster-mock-t">Maquette de l'affiche A5 à imprimer</title>
-              <defs><filter id="poster-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>
-              <g transform="rotate(-2.5 120 150)">
-                <rect x="38" y="34" width="166" height="236" fill="#3B2A14" opacity=".16" filter="url(#poster-blur)" transform="translate(3 6)"/>
-                <rect x="36" y="30" width="168" height="238" fill="#fff"/>
+              <g transform="rotate(-2 120 150)">
+                <rect x="36" y="30" width="168" height="238" fill="#fff" stroke="#D9CFBF"/>
                 <g id="poster-card"></g>
-                <rect x="96" y="22" width="48" height="16" fill="#E8DFC9" fill-opacity=".85" transform="rotate(4 120 30)"/>
+                <rect x="96" y="22" width="48" height="16" fill="#E2D8C8" fill-opacity=".9" transform="rotate(4 120 30)"/>
               </g>
             </svg>
           </div>
           <div class="cartel">
             <h3>Affiche A5 à imprimer</h3>
             <p class="matiere">Dans toutes les formules</p>
-            <p>Un PDF prêt à imprimer et à encadrer : QR code du livret et du Wi-Fi. C'est le seul support de la formule Essentiel, rien à attendre par la poste.</p>
+            <p>Un PDF prêt à imprimer et à encadrer&nbsp;: QR code du livret et du Wi-Fi. C'est le seul support de la formule Essentiel, rien à attendre par la poste.</p>
             <p class="prix-objet"><b>Incluse</b> en PDF</p>
           </div>
         </article>
       </div>
-      <p class="note-bas">Maquettes indicatives : le rendu final dépend de la matière choisie.</p>
+      <p class="note-bas">Maquettes indicatives&nbsp;: le rendu final dépend de la matière choisie.</p>
     </div>
   </section>
 
   <!-- OFFRES -->
   <section class="band ivoire" id="offres" aria-labelledby="t-offres">
     <div class="wrap">
-      <div class="head-split">
-        <h2 class="h2" id="t-offres">La création se paie une fois</h2>
-        <p class="lead">Choisissez le niveau de finition. Un petit forfait mensuel garde ensuite le livret en ligne et le QR code actif.</p>
+      <div class="offres-tete">
+        <h2 class="h2" id="t-offres">Un prix de création, payé une fois. Puis un petit forfait pour garder le livret en ligne.</h2>
       </div>
       <div class="plans" id="plans"></div>
 
-      <div class="sous-titre">
-        <h3 class="h3">Ensuite, un forfait au choix</h3>
-        <p>Sans engagement. Paiement annuel : <span data-mois-offerts>2</span> mois offerts.</p>
+      <div class="forfaits-bloc">
+        <div class="forfaits-tete">
+          <h3 class="h3">Le forfait mensuel</h3>
+          <p>Sans engagement. Payé à l'année&nbsp;: <span data-mois-offerts>2</span> mois offerts.</p>
+        </div>
+        <div class="forfaits" id="forfaits"></div>
       </div>
-      <div class="forfaits" id="forfaits"></div>
 
       <div class="carte">
-        <div class="sous-titre">
-          <h3 class="h3">Options et supports QR</h3>
-          <p>Remise multi-logements : <span data-remises>-15 % dès 2, -25 % dès 4, -35 % dès 10</span>.</p>
+        <div class="carte-tete">
+          <h3 class="h3">Options et supports</h3>
+          <p>Remise multi-logements&nbsp;: <span data-remises>-15 % dès 2, -25 % dès 4, -35 % dès 10</span>.</p>
         </div>
         <div class="extras" id="extras"></div>
         <p class="tva" data-tva>Prix nets. TVA non applicable, art. 293 B du CGI.</p>
@@ -283,9 +274,9 @@
   <!-- DEVIS -->
   <section class="band papier" id="devis" aria-labelledby="t-devis">
     <div class="wrap">
-      <div class="head-split">
+      <div class="devis-tete">
         <h2 class="h2" id="t-devis">Votre devis en une minute</h2>
-        <p class="lead">Faites vos choix, le prix se calcule tout seul. Envoyez-nous la demande : on vous rappelle sous 24 h pour lancer votre livret.</p>
+        <p>Faites vos choix, le prix se calcule tout seul. Envoyez-nous la demande : on vous rappelle sous 24 h pour lancer votre livret.</p>
       </div>
 
       <div class="devis">
@@ -347,7 +338,7 @@
         <aside class="folio-col" aria-label="Votre devis">
           <div class="folio" id="folio" aria-live="polite"></div>
           <div class="folio-actions">
-            <a class="btn sapin" href="#demande">Recevoir ce devis</a>
+            <a class="btn" href="#demande">Recevoir ce devis</a>
             <button class="btn trait" type="button" id="print-devis">Imprimer ou PDF</button>
           </div>
         </aside>
@@ -369,7 +360,7 @@
           <label for="r-tel"><span>Téléphone <small>(facultatif)</small></span><input id="r-tel" name="telephone" type="tel" autocomplete="tel"></label>
           <label for="r-lieu"><span>Établissement et ville</span><input id="r-lieu" name="etablissement" placeholder="Ex. : T2 Petite France, Strasbourg"></label>
           <label class="full" for="r-msg"><span>Message <small>(facultatif)</small></span><textarea id="r-msg" name="message" placeholder="Date de mise en location, équipements particuliers, questions…"></textarea></label>
-          <div class="full"><button class="btn sapin" type="submit" id="r-submit">Envoyer ma demande</button></div>
+          <div class="full"><button class="btn" type="submit" id="r-submit">Envoyer ma demande</button></div>
           <div class="form-status" id="r-status" hidden></div>
         </form>
       </div>
@@ -377,11 +368,11 @@
   </section>
 
   <!-- CONSOLE -->
-  <section class="band sapin console-sec" id="console" aria-labelledby="t-console">
+  <section class="band bleu console-sec" id="console" aria-labelledby="t-console">
     <div class="wrap console-grid">
       <div class="console-text">
         <h2 class="h2" id="t-console">Changez votre livret vous-même, en deux minutes</h2>
-        <p class="lead">Nouveau code Wi-Fi, restaurant fermé pour congés, travaux dans la rue : avec les forfaits Autonomie et Sérénité, vous modifiez votre livret depuis votre téléphone. Le QR code reste le même, vos supports imprimés restent valables.</p>
+        <p>Nouveau code Wi-Fi, restaurant fermé pour congés, travaux dans la rue : avec les forfaits Autonomie et Sérénité, vous modifiez votre livret depuis votre téléphone. Le QR code reste le même, vos supports imprimés restent valables.</p>
         <ul class="ticks">
           <li>Modifier une rubrique et voir le résultat en direct</li>
           <li>Afficher un message du moment, avec une date de fin</li>
@@ -394,7 +385,7 @@
         <div class="cta-row"><a class="btn ivoire" href="console.html">Essayer la console</a><a class="btn clair" href="espace.html">Espace client</a></div>
         <p class="note">Démonstration : vos modifications restent enregistrées dans votre navigateur. Clients : connectez-vous à l'espace client pour modifier votre vrai livret.</p>
       </div>
-      <div class="ecran" data-reveal aria-hidden="true">
+      <div class="ecran" aria-hidden="true">
         <div class="mock">
           <div class="mock-bar"><i></i><i></i><i></i><span>Console, Le Nid des Tanneurs</span><b class="mock-pub">Publié</b></div>
           <div class="mock-body">
@@ -429,8 +420,8 @@
   <section class="band ivoire" id="faq" aria-labelledby="t-faq">
     <div class="wrap faq">
       <div class="faq-tete">
-        <h2 class="h2" id="t-faq">Avant de vous lancer</h2>
-        <p class="lead">Une autre question ? Écrivez-nous : réponse sous 24 h.</p>
+        <h2 class="h2" id="t-faq">Questions fréquentes</h2>
+        <p>Une autre question&nbsp;? <a href="#contact">Écrivez-nous</a>, réponse sous 24&nbsp;h.</p>
       </div>
       <div class="qa">
         <details><summary>Mes voyageurs doivent-ils installer une application ?</summary><p>Non. Le QR code ouvre une simple page web, sur n'importe quel téléphone, directement depuis l'appareil photo. Vous pouvez aussi envoyer le lien avant l'arrivée, par la messagerie Airbnb ou Booking.</p></details>
@@ -448,52 +439,49 @@
     </div>
   </section>
 
-  <!-- FIN : contact -->
+  <!-- CONTACT -->
   <section class="band pierre fin" id="contact" aria-labelledby="t-contact">
     <div class="wrap fin-grid">
-      <figure class="fin-photo" data-reveal>
-        <div class="tag-cadre">
-          <svg class="tag-anneau" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="22" fill="none" stroke="var(--laiton)" stroke-width="5"/></svg>
-          <div class="tag-photo petit"><img src="photos/bastide-aux-amandiers/table-hotes.jpg" alt="Table d'hôtes dressée en plein air sous une pergola" width="1200" height="801" loading="lazy"></div>
-        </div>
-      </figure>
-      <div class="fin-texte">
-        <h2 class="h2 grand" id="t-contact">Parlons de votre logement.</h2>
-        <p class="lead">Racontez-nous votre lieu : on vous dit en une réponse ce que le livret peut faire pour vos voyageurs, et ce qu'il coûte.</p>
-        <dl class="coordonnees">
-          <div class="cline"><dt>E-mail</dt><dd><b data-email id="c-email">contact@carnetdhote.fr</b><button class="btn small trait" type="button" data-copy="c-email">Copier</button></dd></div>
-          <div class="cline"><dt>Téléphone</dt><dd><b data-tel id="c-tel">06 39 98 00 00</b><button class="btn small trait" type="button" data-copy="c-tel">Copier</button></dd></div>
-          <div class="cline"><dt>Secteur</dt><dd><span data-zone>Strasbourg & toute la France</span></dd></div>
-        </dl>
-        <a class="btn sapin" href="#devis">Calculer mon devis</a>
+      <div class="fin-tete">
+        <h2 class="h2" id="t-contact">Une question sur votre logement&nbsp;?</h2>
+        <p>Décrivez-nous votre lieu en quelques lignes&nbsp;: nous vous disons ce que le livret peut faire pour vos voyageurs, et ce qu'il coûte. Réponse sous 24&nbsp;h.</p>
       </div>
+      <dl class="coordonnees">
+        <div class="cline c-mail"><dt>Par e-mail</dt><dd><a class="c-grand" data-email-lien href="mailto:contact@carnetdhote.fr"><span data-email id="c-email">contact@carnetdhote.fr</span></a><button class="btn small trait" type="button" data-copy="c-email">Copier</button></dd></div>
+        <div class="cline"><dt>Par téléphone</dt><dd><b data-tel id="c-tel">06 39 98 00 00</b><button class="btn small trait" type="button" data-copy="c-tel">Copier</button></dd></div>
+        <div class="cline"><dt>Où</dt><dd><span data-zone>Strasbourg & toute la France</span></dd></div>
+      </dl>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <div class="wrap">
-    <div class="foot-haut">
-      <p class="foot-marque"><span data-brand>Carnet d'Hôte</span></p>
-      <p class="foot-phrase">Livrets d'accueil digitaux pour les locations, les maisons d'hôtes et les hôtels. Rédigés pour vous, ouverts d'un scan.</p>
+  <div class="wrap foot-grid">
+    <div class="foot-marque">
+      <p class="foot-nom"><span data-brand>Carnet d'Hôte</span></p>
+      <p>Livrets d'accueil digitaux pour les locations, les maisons d'hôtes et les hôtels. Rédigés pour vous, ouverts d'un scan.</p>
     </div>
-    <div class="foot-bas">
-      <nav class="foot-nav" aria-label="Pied de page"><a href="#exemples">Exemples</a><a href="#offres">Tarifs</a><a href="#devis">Devis</a><a href="#faq">Questions</a><a href="espace.html">Espace client</a><a href="console.html">Console</a></nav>
+    <nav class="foot-nav" aria-label="Pied de page">
+      <a href="#exemples">Exemples</a><a href="#offres">Tarifs</a><a href="#devis">Devis</a><a href="questionnaire.html">Questionnaire</a><a href="#faq">Questions</a><a href="espace.html">Espace client</a><a href="console.html">Console</a>
+    </nav>
+    <div class="colophon">
+      <h2>Colophon</h2>
+      <p>Composé en Brygada 1918 et Schibsted Grotesk. Photographies des livrets d'exemple&nbsp;: Unsplash. Logements, hôtes et commerces des exemples sont fictifs.</p>
       <p class="legal">© <span id="year">2026</span> <span data-brand>Carnet d'Hôte</span>. <span data-siret>SIRET en cours d'immatriculation</span>. <span data-tva-court>TVA non applicable, art. 293 B du CGI</span>.</p>
     </div>
   </div>
 </footer>
 
-<div class="devis-bar" id="devis-bar"><div><b id="bar-total">89 €</b><small id="bar-sub">puis 3,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
+<div class="devis-bar" id="devis-bar"><div><b id="bar-total">89 €</b><small id="bar-sub">puis 3,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=17"></script>
-<script src="assets/js/tarifs.js?v=17"></script>
-<script src="assets/js/icons.js?v=17"></script>
+<script src="assets/js/config.js?v=18"></script>
+<script src="assets/js/tarifs.js?v=18"></script>
+<script src="assets/js/icons.js?v=18"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js?v=17"></script>
+<script src="assets/js/store.js?v=18"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js?v=17"></script>
-<script src="assets/js/devis.js?v=17"></script>
-<script src="assets/js/site.js?v=17"></script>
+<script src="assets/js/qr.js?v=18"></script>
+<script src="assets/js/devis.js?v=18"></script>
+<script src="assets/js/site.js?v=18"></script>
 </body>
 </html>
