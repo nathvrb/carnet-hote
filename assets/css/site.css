@@ -164,13 +164,9 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .tampon-qr { width: 112px; height: 112px; padding: 8px; border: 1px solid var(--bleu); color: var(--bleu); background: var(--ivoire); }
 .tampon-qr svg { width: 100%; height: 100%; display: block; }
 .tampon p { margin: 0; font-family: var(--display); font-style: italic; font-size: 15px; line-height: 1.4; color: var(--gris); }
-.couv-epreuve { grid-column: 9 / span 4; grid-row: 1 / span 3; justify-self: end; position: relative; z-index: 2; }
-.couv-planche { margin-top: clamp(56px, 6vw, 84px); margin-bottom: 0; position: relative; }
+.couv-epreuve { grid-column: 9 / span 4; grid-row: 1 / span 3; justify-self: end; position: relative; z-index: 2; display: grid; justify-items: center; }
+.couv-ouvrir { margin-top: 16px; font-size: 14.5px; }
 .couv { padding-bottom: clamp(72px, 9vw, 128px); }
-.couv-planche img { width: 100%; height: clamp(260px, 34vw, 500px); object-fit: cover; object-position: 50% 58%; }
-.couv-planche figcaption { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 32px; }
-.couv-planche figcaption span { font-family: var(--display); font-style: italic; font-size: 15px; line-height: 1.45; color: var(--gris); max-width: 46em; }
-.couv-planche figcaption .lien { font-size: 14.5px; }
 
 @media (min-width: 1181px) { .hero-phone { --w: 300px; --bz: 10px; --s: .74667; --h: 612px; --ih: 592px; border-radius: 46px; } .hero-phone .screen { border-radius: 36px; } }
 @media (max-width: 1180px) {
@@ -185,8 +181,8 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
   .couv-titre { font-size: clamp(2.9rem, 12.5vw, 4.6rem); }
   .tampon { display: none; }
   .couv-epreuve { justify-self: center; margin-top: 48px; }
-  .couv-planche img { height: clamp(260px, 62vw, 420px); }
-}
+  .couv-ouvrir { margin-top: 18px; }
+  }
 @media (hover: none) { .tampon { display: none; } }
 @media (max-width: 560px) {
   .hero-phone { --w: 236px; --bz: 8px; --s: .58667; --h: 482px; --ih: 466px; border-radius: 36px; }
