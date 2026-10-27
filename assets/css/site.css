@@ -649,8 +649,8 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .cline dt { font-size: 14px; color: var(--gris); }
 .cline dd { margin: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .cline b, .cline .c-grand { font-family: var(--display); font-weight: 400; font-size: clamp(1.35rem, 2.2vw, 1.75rem); color: var(--bleu); font-variant-numeric: lining-nums; overflow-wrap: anywhere; letter-spacing: -.01em; }
-.c-mail { padding: 26px 0 30px; }
-.cline .c-grand { font-size: clamp(1.7rem, 3.9vw, 3.3rem); line-height: 1.05; letter-spacing: -.025em; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 8px; text-decoration-color: var(--taupe); }
+.c-mail { padding: 20px 0; }
+.cline .c-grand { font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.2; letter-spacing: -.01em; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; text-decoration-color: var(--taupe); }
 .cline .c-grand:hover { text-decoration-color: var(--bleu); }
 @media (max-width: 900px) { .fin-tete, .coordonnees { grid-column: 1 / -1; } }
 @media (max-width: 520px) { .cline { grid-template-columns: 1fr; gap: 6px; } }
