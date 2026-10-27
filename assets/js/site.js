@@ -284,6 +284,27 @@
     var onScroll = function () { top.classList.toggle("scrolled", window.scrollY > 8); };
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   }
+  /* Menu déroulant (téléphone et tablette) : liste des parties, se referme après le choix */
+  var mb = document.getElementById("menu-btn"), mm = document.getElementById("menu-mob");
+  if (mb && mm) {
+    var ferme = function (rendre) { mm.hidden = true; mb.setAttribute("aria-expanded", "false"); top.classList.remove("menu-ouvert"); if (rendre) mb.focus(); };
+    mb.addEventListener("click", function () {
+      var ouvre = mm.hidden; mm.hidden = !ouvre; mb.setAttribute("aria-expanded", ouvre ? "true" : "false"); top.classList.toggle("menu-ouvert", ouvre);
+      if (ouvre) { var a = mm.querySelector("a"); if (a && window.matchMedia("(hover: none)").matches === false) a.focus(); }
+    });
+    mm.addEventListener("click", function (e) { if (e.target.closest("a")) ferme(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !mm.hidden) ferme(true); });
+    document.addEventListener("click", function (e) { if (!mm.hidden && !top.contains(e.target)) ferme(false); });
+    window.matchMedia("(min-width: 961px)").addEventListener("change", function (e) { if (e.matches) ferme(false); });
+    /* partie en cours surlignée dans le menu */
+    if ("IntersectionObserver" in window) {
+      var liens = {}; mm.querySelectorAll("a[href^='#']").forEach(function (l) { liens[l.getAttribute("href").slice(1)] = l; });
+      var io2 = new IntersectionObserver(function (en) {
+        en.forEach(function (x) { if (!x.isIntersecting) return; mm.querySelectorAll("a[aria-current]").forEach(function (l) { l.removeAttribute("aria-current"); }); var l = liens[x.target.id]; if (l) l.setAttribute("aria-current", "true"); });
+      }, { rootMargin: "-30% 0px -60% 0px" });
+      Object.keys(liens).forEach(function (id) { var el = document.getElementById(id); if (el) io2.observe(el); });
+    }
+  }
   var reveals = document.querySelectorAll("[data-reveal]");
   if ("IntersectionObserver" in window) {
     var ro = new IntersectionObserver(function (en) {

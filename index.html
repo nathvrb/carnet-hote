@@ -30,8 +30,22 @@
       <a href="#console">Console</a>
       <a href="#faq">Questions</a>
     </nav>
-    <a class="btn sapin small" href="#devis">Calculer mon devis</a>
+    <a class="btn sapin small" href="#devis"><span class="l">Calculer mon devis</span><span class="s">Devis</span></a>
+    <button class="menu-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu-mob"><span class="menu-ico" aria-hidden="true"></span><span class="menu-t">Menu</span></button>
   </div>
+  <nav class="menu-mob" id="menu-mob" aria-label="Aller à une partie du site" hidden>
+    <ul>
+      <li><a href="#parcours">Comment ça marche</a></li>
+      <li><a href="#exemples">Exemples de livrets</a></li>
+      <li><a href="#supports-qr">Supports QR</a></li>
+      <li><a href="#offres">Tarifs</a></li>
+      <li><a href="#devis">Calculer mon devis</a></li>
+      <li><a href="#console">Essayer la console</a></li>
+      <li><a href="#faq">Questions fréquentes</a></li>
+      <li><a href="#contact">Nous contacter</a></li>
+    </ul>
+    <a class="btn sapin" href="espace.html">Espace client</a>
+  </nav>
 </header>
 
 <main id="haut">
@@ -103,7 +117,7 @@
   </section>
 
   <!-- ÉTAPES -->
-  <section class="band ivoire" aria-labelledby="t-steps">
+  <section class="band ivoire" id="parcours" aria-labelledby="t-steps">
     <div class="wrap">
       <h2 class="h2 etroit" id="t-steps">Vous répondez à quelques questions, on s'occupe du reste</h2>
       <ol class="parcours">
@@ -433,7 +447,7 @@
   </section>
 
   <!-- FIN : contact -->
-  <section class="band pierre fin" aria-labelledby="t-contact">
+  <section class="band pierre fin" id="contact" aria-labelledby="t-contact">
     <div class="wrap fin-grid">
       <figure class="fin-photo" data-reveal>
         <div class="tag-cadre">
