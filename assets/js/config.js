@@ -31,6 +31,11 @@ window.CDH_CONFIG = {
   // (sb_publishable_…, faite pour être publique). Vides : la console reste une démonstration.
   supabaseUrl: "https://banisbeqqzdodnrxnast.supabase.co",
   supabaseCle: "sb_publishable_rxgiSoqSFq1DajBuY0aMvA_Q5TCQ8Z3",
+  // Mentions légales (pages mentions-legales.html, cgv.html, confidentialite.html).
+  // Laissés vides, ces champs apparaissent en jaune « à compléter » sur les pages.
+  editeur: "",       // Nom et prénom de l'exploitant (entrepreneur individuel)
+  adresse: "",       // Adresse postale professionnelle (siège de l'entreprise)
+  mediateur: "",     // Médiateur de la consommation (obligatoire pour vendre à des particuliers)
   // Mentions du devis
   siret: "SIRET en cours d'immatriculation",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",

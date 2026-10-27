@@ -1,0 +1,30 @@
+/* Pages juridiques : mentions légales, CGV, confidentialité (s'appuie sur site.css) */
+.legal { padding: clamp(40px, 7vw, 88px) 0 clamp(56px, 9vw, 112px); }
+.legal article { max-width: 760px; margin: 0 auto; }
+.legal .maj { margin: 0 0 8px; font-size: 14px; color: var(--gris); }
+.legal h1 { margin: 0 0 20px; font-family: var(--display); font-weight: 400; font-size: clamp(2.1rem, 4.6vw, 3.2rem); line-height: 1.05; letter-spacing: -.02em; color: var(--bleu); text-wrap: balance; }
+.legal .intro { margin: 0 0 40px; font-size: 1.08rem; color: var(--gris); }
+.legal h2 { margin: 44px 0 12px; padding-top: 22px; border-top: 1px solid var(--filet-pierre); font-family: var(--display); font-weight: 500; font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; color: var(--bleu); }
+.legal h2 .n { display: inline-block; min-width: 2.1em; color: var(--taupe-texte); font-style: italic; font-weight: 400; }
+.legal h3 { margin: 24px 0 6px; font-size: 1rem; font-weight: 650; color: var(--texte); }
+.legal p, .legal li { margin: 0 0 12px; color: var(--texte); font-size: 16.5px; line-height: 1.65; }
+.legal ul, .legal ol { margin: 0 0 14px; padding-left: 1.2em; }
+.legal li { margin-bottom: 6px; }
+.legal a { color: var(--bleu); text-decoration-color: var(--taupe); text-underline-offset: 3px; }
+.legal a:hover { text-decoration-color: var(--bleu); }
+.legal table { width: 100%; border-collapse: collapse; margin: 8px 0 18px; font-size: 15.5px; }
+.legal th, .legal td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--filet); }
+.legal th { font-weight: 600; color: var(--bleu); border-bottom-color: var(--filet-pierre); }
+.legal td.p { white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+.legal dl { margin: 0 0 14px; display: grid; grid-template-columns: minmax(130px, 200px) 1fr; gap: 8px 20px; }
+.legal dt { color: var(--gris); font-size: 14.5px; }
+.legal dd { margin: 0; }
+.a-completer { background: #F6E7B8; color: #5A4300; padding: 1px 6px; border-radius: 2px; font-style: normal; }
+.legal .encart { margin: 20px 0; padding: 16px 18px; background: var(--papier); border-left: 3px solid var(--taupe); }
+.legal .encart p:last-child { margin-bottom: 0; }
+.legal .legal-nav { padding-left: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; padding: 0; list-style: none; font-size: 14.5px; }
+.legal .legal-nav li { font-size: inherit; margin: 0; }
+.legal-nav a { text-decoration: none; }
+.legal-nav [aria-current] { font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 560px) { .legal dl { grid-template-columns: 1fr; gap: 2px; } .legal dt { margin-top: 10px; } .legal td.p { white-space: normal; } }
+@media print { .top, .foot, .legal-nav { display: none !important; } .legal { padding: 0; } .a-completer { background: none; } }
