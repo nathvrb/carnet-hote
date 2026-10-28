@@ -11,7 +11,7 @@ window.CDH_CONFIG = {
   zone: "Partout en France, 100 % à distance",
   // Adresse publique du site une fois en ligne (sert aux QR codes des livrets).
   // Laissez vide : le site utilisera automatiquement l'adresse où il est ouvert.
-  domaine: "",
+  domaine: "https://carnetdhote.fr",
   // Statistiques de consultation des livrets (Umami Cloud, gratuit, sans cookies).
   // Créez un site sur cloud.umami.is et collez ici son « Website ID ».
   // Vide = aucune statistique.

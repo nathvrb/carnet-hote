@@ -90,7 +90,7 @@ Les hôtes se connectent sur `espace.html`, modifient leur livret dans la consol
 1. Créez un compte sur [supabase.com](https://supabase.com), puis **New project** : nom `carnet-hote`, région **Europe (Paris)**, un mot de passe de base (gardez-le). Laissez « Data API » activé.
 2. **SQL Editor** → **New query** → collez tout le fichier `supabase/installation.sql` → **Run**. Message attendu : « Success. No rows returned ».
 3. **Authentication → Sign In / Providers** (ou « Providers ») → **Email** : laissez la connexion par e-mail active et **désactivez « Allow new users to sign up »**. Seuls les comptes que vous créez pourront se connecter.
-4. **Authentication → URL Configuration** : *Site URL* = l'adresse du site (`https://nathvrb.github.io/carnet-hote/`, plus tard votre domaine) ; dans *Redirect URLs*, ajoutez `https://nathvrb.github.io/carnet-hote/espace.html`.
+4. **Authentication → URL Configuration** : *Site URL* = l'adresse du site (`https://carnetdhote.fr/`) ; dans *Redirect URLs*, ajoutez `https://nathvrb.github.io/carnet-hote/espace.html`.
 5. Votre compte administrateur : **Authentication → Users → Add user → Create new user**, votre e-mail + un mot de passe, cochez **Auto Confirm User**. Puis dans le **SQL Editor** : `select cdh.ajouter_admin('votre@email.fr');`
 6. **Project Settings → API Keys** : copiez la clé **Publishable** (`sb_publishable_…`). L'adresse du projet (`https://xxxx.supabase.co`) est sur la page d'accueil du projet (bouton **Connect**). Collez-les dans `assets/js/config.js` : `supabaseUrl` et `supabaseCle`. Cette clé est faite pour être publique ; ne mettez **jamais** la clé *secret* dans le site.
 7. Allez sur `espace.html`, connectez-vous : vous voyez le badge « Administrateur ».
