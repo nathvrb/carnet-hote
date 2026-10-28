@@ -633,6 +633,8 @@
       }
       function ko() {
         img.classList.add("off");
+        /* Bloc « Avant l'arrivée » : une photo introuvable ne laisse pas de cadre vide */
+        var ap = img.closest(".arr-ph"); if (ap) ap.remove();
         if (img.hasAttribute("data-gal")) {
           var fig = img.closest(".gph"); if (fig) fig.hidden = true;
           var gal = img.closest(".gallery");

@@ -540,7 +540,7 @@ p, li { text-wrap: pretty; }
 .arr-time .ico-s { width: 16px; height: 16px; }
 .arr-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .arr-blocs { display: grid; gap: 0; }
-.arr-bloc { display: grid; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.arr-bloc { align-self: start; display: grid; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
 .arr-bloc:last-child { border-bottom: 0; padding-bottom: 4px; }
 .arr-ph { aspect-ratio: 16 / 10; }
 .arr-bloc-body { display: grid; gap: 10px; }
@@ -618,6 +618,7 @@ button.lg { cursor: pointer; }
 @media (min-width: 760px) {
   .arr-blocs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
   .arr-bloc:has(.arr-ph) { grid-row: span 2; }
+  .arr-bloc { align-content: start; }
   .svcs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
   .map { height: 440px; }
   .quick .meteo { grid-column: 1 / -1; }
