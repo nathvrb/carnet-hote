@@ -24,7 +24,7 @@ window.CDH_TARIFS = {
         "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
         "3 langues : français, anglais et allemand",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
-        "Guide local sur-mesure : 15 adresses et activités sélectionnées",
+        "Guide local sur-mesure : 15 adresses et activités, vérifiées et complétées par nos soins",
         "Carte interactive, météo, lien « avant votre arrivée »",
         "1 porte-clés transparent avec votre QR code, livré chez vous",
         "1 série de corrections, dans les 10 jours suivant la mise en ligne",
