@@ -112,3 +112,6 @@
 /* titres à l'encre bleue, comme la vitrine */
 .q-col-main h1, .q-head h2, .q-final h2 { color: var(--bleu); }
 .q-final h2 { color: var(--sur-sapin); }
+
+.q-obj { margin: 0 0 14px; padding: 10px 14px; background: #F4EFE6; border-left: 3px solid #B5A18A; font-size: 14.5px; line-height: 1.45; }
+.q-obj.ok { border-left-color: #1F5B4C; background: #EAF1EC; }

@@ -85,10 +85,11 @@
       q: [
         { k: "services", l: "Services", lignes: ["Départ tardif", "Arrivée anticipée", "Ménage en cours de séjour", "Linge ou serviettes en plus", "Panier petit-déjeuner ou produits locaux", "Bois pour la cheminée ou le poêle", "Location de vélos", "Transfert depuis la gare ou l'aéroport", "Lit bébé, chaise haute", "Autre service"], check: "Je le propose", cols: [{ l: "Prix" }, { l: "Conditions", h: "Délai, disponibilité, paiement." }] }
       ] },
-    { id: "adresses", titre: "Vos bonnes adresses et sorties", intro: "Donnez juste les noms et ce que vous aimez : nous ajoutons les horaires, les distances, l'itinéraire et la place sur la carte. Vos coups de cœur comptent plus que la liste complète.",
+    { id: "adresses", titre: "Vos bonnes adresses et sorties", intro: "C'est la partie que vos voyageurs ouvrent le plus. Donnez juste les noms et ce que vous aimez : nous ajoutons les horaires, les distances, l'itinéraire et la place sur la carte. Visez au moins 6 adresses et 4 sorties : un livret bien garni est bien plus utile (et plus beau). Il vous manque d'idées ? Cochez la case en bas de la partie, nous complétons.",
       q: [
-        { k: "adresses", l: "Adresses utiles", lignes: ["Boulangerie", "Supérette ou supermarché", "Marché (jour et lieu)", "Pharmacie", "Médecin ou maison de santé", "Restaurant 1", "Restaurant 2", "Restaurant 3", "Café ou bar", "Producteur, cave, épicerie fine"], cols: [{ l: "Nom" }, { l: "Votre conseil", h: "Ce que vous aimez, quoi commander." }] },
-        { k: "sorties", l: "Sorties et activités", min: "confort", lignes: ["Balade ou randonnée", "Visite (village, château, musée)", "Activité avec des enfants", "Idée pour un jour de pluie", "Autre coup de cœur"], cols: [{ l: "Quoi ?" }, { l: "Pourquoi vous la conseillez", h: "Durée, saison, avec enfants ?" }] },
+        { k: "adresses", l: "Adresses utiles", objectif: [6, "adresse"], lignes: ["Boulangerie", "Supérette ou supermarché", "Marché (jour et lieu)", "Pharmacie", "Médecin ou maison de santé", "Restaurant 1", "Restaurant 2", "Restaurant 3", "Café ou bar", "Producteur, cave, épicerie fine"], cols: [{ l: "Nom" }, { l: "Votre conseil", h: "Ce que vous aimez, quoi commander." }] },
+        { k: "sorties", l: "Sorties et activités", min: "confort", objectif: [4, "sortie"], lignes: ["Balade ou randonnée", "Visite (village, château, musée)", "Activité avec des enfants", "Idée pour un jour de pluie", "Autre coup de cœur"], cols: [{ l: "Quoi ?" }, { l: "Pourquoi vous la conseillez", h: "Durée, saison, avec enfants ?" }] },
+        { k: "completer", l: "Si vous n'avez pas tout rempli", choix: ["Complétez pour moi avec des adresses et sorties vérifiées, je valide", "Ne complétez rien, je donne tout moi-même"], h: "Nous cherchons les bonnes adresses autour du logement (nom, distance, horaires) et vous les montrons avant la mise en ligne." },
         { k: "partenaire", l: "Un partenaire qui offre une réduction à vos voyageurs ?", h: "Restaurant, location, spa : on l'affiche en bon plan.", zone: 2 }
       ] },
     { id: "depart", titre: "Départ et avis", intro: "Le voyageur coche une liste avant de partir. Quand tout est coché, un bouton l'emmène vers votre page d'avis.",
@@ -136,10 +137,10 @@
   function name(si, k) { return "s" + si + "_" + k; }
   function champ(si, q, idx) {
     var id = "q-" + si + "-" + idx, nm = name(si, q.k), lab = nb(q.l), h = q.h ? '<small class="q-h" id="' + id + '-h">' + esc(nb(q.h)) + "</small>" : "";
-    var meta = ' data-l="' + esc(q.l) + '"' + (q.min ? ' data-min="' + q.min + '"' : "") + (q.formule ? ' data-formule="1"' : "");
+    var meta = (q.objectif ? ' data-obj="' + q.objectif[0] + '" data-obj-n="' + q.objectif[1] + '"' : "") + ' data-l="' + esc(q.l) + '"' + (q.min ? ' data-min="' + q.min + '"' : "") + (q.formule ? ' data-formule="1"' : "");
     var aria = q.h ? ' aria-describedby="' + id + '-h"' : "";
     if (q.lignes) {
-      return '<fieldset class="q q-lignes"' + meta + '><legend class="q-lab">' + esc(lab) + "</legend>" + q.lignes.map(function (ln, i) {
+      return '<fieldset class="q q-lignes"' + meta + '><legend class="q-lab">' + esc(lab) + "</legend>" + (q.objectif ? '<p class="q-obj" aria-live="polite"></p>' : "") + q.lignes.map(function (ln, i) {
         var base = nm + "_" + i;
         return '<div class="q-ligne" data-ligne="' + esc(ln) + '"><p class="q-ligne-t">' + esc(nb(ln)) + "</p>" +
           (q.check ? '<label class="q-check"><input type="checkbox" name="' + base + '_ok" data-c="' + esc(q.check) + '"><span>' + esc(q.check) + "</span></label>" : "") +
@@ -281,6 +282,17 @@
     var f2 = $("#q-formule-note");
     f2.hidden = !(f === "essentiel");
   }
+  /* Compteur d'adresses / de sorties : encourage à remplir davantage */
+  function majObjectifs() {
+    $$("fieldset[data-obj]", form).forEach(function (fs) {
+      var obj = +fs.getAttribute("data-obj"), nom = fs.getAttribute("data-obj-n");
+      var n = $$(".q-ligne", fs).filter(function (l) { var f = $("input[type=text]", l); return f && f.value.trim() !== ""; }).length;
+      var el = $(".q-obj", fs); if (!el) return;
+      el.className = "q-obj" + (n >= obj ? " ok" : "");
+      el.textContent = n >= obj ? n + " " + nom + (n > 1 ? "s" : "") + " : votre livret sera bien garni, merci !"
+        : n + " " + nom + (n > 1 ? "s" : "") + " sur " + obj + " conseillées. Plus il y en a, plus votre livret est riche et utile à vos voyageurs.";
+    });
+  }
   function majAvancement() {
     var touche = 0, total = 0;
     $$(".q-sec", form).forEach(function (sec, i) {
@@ -294,7 +306,7 @@
     $("#q-bar").style.setProperty("--p", total ? (touche / total) : 0);
   }
   var tempo = 0;
-  function change() { majFormule(); majAvancement(); clearTimeout(tempo); tempo = setTimeout(sauver, 350); }
+  function change() { majFormule(); majAvancement(); majObjectifs(); clearTimeout(tempo); tempo = setTimeout(sauver, 350); }
 
   /* ---------- sommaire : partie en cours ---------- */
   function suivre() {
@@ -439,5 +451,5 @@
   build();
   if (restaurer()) { $("#q-reprise").hidden = false; }
   else prefill();
-  majFormule(); majAvancement(); suivre();
+  majFormule(); majAvancement(); majObjectifs(); suivre();
 })();
