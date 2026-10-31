@@ -651,7 +651,7 @@
         .then(function (j) {
           var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
           if (!m) return null;
-          var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/800px-");
+          var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/960px-");
           return fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles=" + encodeURIComponent("File:" + file))
             .then(function (r) { return r.json(); })
             .then(function (q) {
