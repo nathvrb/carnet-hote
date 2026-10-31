@@ -711,12 +711,72 @@
       });
     }, Promise.resolve()).then(function () { t.remove(); return res; }, function (e) { t.remove(); throw e; });
   }
+  /* Photos libres des sorties (champ « wiki ») : récupérées une fois sur Wikimedia Commons (licences libres
+     seulement), copiées dans la banque commune photos/_lieux/ puis servies par la base comme les autres photos.
+     Le livret ne dépend plus de Wikipédia à l'affichage ; le crédit (auteur, licence) reste écrit sur la photo. */
+  var FREE_LIC = /^(cc0|cc[ -]by|public domain|pd\b|gfdl|licence ouverte|attribution)/i;
+  function txt(h) { var d = document.createElement("div"); d.innerHTML = String(h || ""); return (d.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80); }
+  function jget(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }, function () { return null; }); }
+  function commonsFile(file) {
+    return jget("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata|mime|size&iiurlwidth=960&format=json&origin=*&titles=" + encodeURIComponent("File:" + file)).then(function (q) {
+      var pg = q && q.query && q.query.pages, k = pg && Object.keys(pg)[0], ii = k && pg[k].imageinfo && pg[k].imageinfo[0], md = ii && ii.extmetadata;
+      var lic = md && md.LicenseShortName && md.LicenseShortName.value;
+      if (!ii || !ii.thumburl || !lic || !FREE_LIC.test(lic) || !/^image\/(jpeg|png)$/.test(ii.mime || "")) return null;
+      return { file: file, src: ii.thumburl, by: txt(md.Artist && md.Artist.value), lic: lic };
+    });
+  }
+  function wikiPhoto(wiki) {
+    var tries = [];
+    String(wiki || "").split("|").forEach(function (t) { t = t.trim(); if (t) { tries.push(["fr", t]); tries.push(["en", t]); } });
+    function search() {
+      if (!tries.length) return Promise.resolve(null);
+      return jget("https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=10&format=json&origin=*&prop=imageinfo&iiprop=extmetadata|mime|size&iiurlwidth=960&gsrsearch=" + encodeURIComponent(tries[0][1] + " filetype:bitmap")).then(function (q) {
+        var pg = q && q.query && q.query.pages, L = pg ? Object.keys(pg).map(function (k) { return pg[k]; }).sort(function (a, b) { return a.index - b.index; }) : [];
+        for (var i = 0; i < L.length; i++) {
+          var ii = L[i].imageinfo && L[i].imageinfo[0], md = ii && ii.extmetadata, lic = md && md.LicenseShortName && md.LicenseShortName.value;
+          if (ii && ii.thumburl && /^image\/jpeg$/.test(ii.mime) && ii.width >= 1000 && ii.width > ii.height && lic && FREE_LIC.test(lic))
+            return { file: String(L[i].title || "").replace(/^File:/, ""), src: ii.thumburl, by: txt(md.Artist && md.Artist.value), lic: lic };
+        }
+        return null;
+      });
+    }
+    function one(i) {
+      if (i >= tries.length) return search();
+      return jget("https://" + tries[i][0] + ".wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(tries[i][1])).then(function (j) {
+        var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
+        if (!m || /\.svg$/i.test(decodeURIComponent(m[1]))) return one(i + 1);
+        return commonsFile(decodeURIComponent(m[1])).then(function (c) { return c || one(i + 1); });
+      });
+    }
+    return one(0).catch(function () { return null; });
+  }
+  function resolveWikiPhotos() {
+    if (!COMPTE || !acct || !acct.admin || !doc) return Promise.resolve(0);
+    var list = (doc.activites || []).filter(function (a) { return a.wiki && !String(a.photo || "").trim(); }), n = 0;
+    if (!list.length) return Promise.resolve(0);
+    var t = toast("Photos des sorties : copie dans la banque…", 120000);
+    return list.reduce(function (p, a) {
+      return p.then(function () {
+        return wikiPhoto(a.wiki).then(function (info) {
+          if (!info) return;
+          var h = 5381; for (var i = 0; i < info.file.length; i++) h = ((h * 33) ^ info.file.charCodeAt(i)) >>> 0;
+          var key = slug(info.file.replace(/\.[a-z0-9]+$/i, "")) + "-" + h.toString(36);
+          return fetch(K.urlLieu(key), { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok; }, function () { return false; }).then(function (deja) {
+            if (deja) return K.urlLieu(key);
+            return fetch(info.src).then(function (r) { if (!r.ok) throw new Error("image"); return r.blob(); }).then(function (b) { return K.envoyerPhotoLieu(key, b); });
+          }).then(function (url) {
+            a.photo = url; a.photoCredit = "© " + (info.by || "Wikimedia Commons") + " · " + info.lic; n++; writeDraft();
+          });
+        }).catch(function () {});
+      });
+    }, Promise.resolve()).then(function () { t.remove(); return n; });
+  }
   function publierCompte(force) {
     if (!doc || pubBtn.disabled) return;
     if (!remote.existe) { if (acct && acct.admin) openCreate(); return; }
     var id = doc.id;
     busyPub(true);
-    uploadInlinePhotos(id).then(function () {
+    uploadInlinePhotos(id).then(resolveWikiPhotos).then(function () {
       return K.publier(id, cleaned(), force ? null : baseEdit);
     }).then(function (r) {
       busyPub(false);
@@ -755,7 +815,7 @@
     if (!/^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$/.test(id)) { cMsg.hidden = false; cMsg.textContent = K.messages.identifiant_invalide; cId.focus(); return; }
     go.disabled = true; go.textContent = "Mise en ligne…";
     var oldId = doc.id;
-    uploadInlinePhotos(oldId).then(function () {
+    uploadInlinePhotos(oldId).then(resolveWikiPhotos).then(function () {
       var c = cleaned(); c.id = id;
       return K.creer(id, c);
     }).then(function (r) {
@@ -1013,24 +1073,27 @@
     }
     placerPhotosClient(msg);
   }
-  /* Photos du client (« depot:… ») : copiées tout de suite dans les photos du livret, sans téléchargement */
+  /* Après import : photos du client (« depot:… ») puis photos libres des sorties, copiées tout de suite dans la base */
   function placerPhotosClient(msg) {
-    var n = photoSlots(doc, true).length, nom = doc.nom, id0 = doc.id;
-    if (!n) return;
+    var n = photoSlots(doc, true).length, w = (doc.activites || []).filter(function (a) { return a.wiki && !String(a.photo || "").trim(); }).length, nom = doc.nom, id0 = doc.id;
+    if (!n && !w) return;
     if (!COMPTE || !acct || !acct.admin) {
-      msg.textContent = "« " + nom + " » importé. Connectez-vous avec le compte administrateur pour que les " + n + " photos du client se placent toutes seules.";
+      msg.textContent = "« " + nom + " » importé. Connectez-vous avec le compte administrateur pour que les photos se placent toutes seules.";
       return;
     }
-    msg.textContent = "« " + nom + " » importé. Placement des " + n + " photos du client…";
-    uploadInlinePhotos(id0, true).then(function (r) {
+    msg.textContent = "« " + nom + " » importé. Placement des photos…";
+    var r1 = { ok: 0, ko: 0 };
+    (n ? uploadInlinePhotos(id0, true) : Promise.resolve(r1)).then(function (r) { r1 = r; return resolveWikiPhotos(); }).then(function (nw) {
       if (!doc || doc.id !== id0) return;
       afterLoad(true);
+      var parts = [];
+      if (n) parts.push(r1.ok + " photo" + (r1.ok > 1 ? "s" : "") + " du client en place" + (r1.ko ? " (" + r1.ko + " introuvable" + (r1.ko > 1 ? "s" : "") + ", emplacement retiré)" : ""));
+      if (w) parts.push(nw + " photo" + (nw > 1 ? "s" : "") + " de sorties sur " + w + " copiée" + (nw > 1 ? "s" : "") + " dans la banque");
       msg.className = "msg ok";
-      msg.textContent = "« " + nom + " » importé, " + r.ok + " photo" + (r.ok > 1 ? "s" : "") + " du client en place" +
-        (r.ko ? " (" + r.ko + " introuvable" + (r.ko > 1 ? "s" : "") + " dans le dossier, emplacement retiré)" : "") + ". Vérifiez puis publiez.";
+      msg.textContent = "« " + nom + " » importé : " + parts.join(", ") + ". Vérifiez puis publiez.";
     }, function (er) {
       msg.className = "msg err";
-      msg.textContent = "Livret importé, mais les photos du client n'ont pas pu être copiées (" + (er && er.message || "erreur") + "). Elles le seront à la publication.";
+      msg.textContent = "Livret importé, mais les photos n'ont pas pu être copiées (" + (er && er.message || "erreur") + "). Elles le seront à la publication.";
     });
   }
   document.getElementById("do-import").addEventListener("click", function () { importText(document.getElementById("import").value); });

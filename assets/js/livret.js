@@ -548,7 +548,7 @@
       d.activites.forEach(function (a) {
         var m = CT[a.categorie] || CT.culture;
         h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it].join(" "))) + '"' + (a.wiki && !safeImg(a.photo) ? ' data-wiki="' + esc(a.wiki) + '"' : "") + ">" +
-          photo(a.photo, a.titre, m.icone, "act-ph") +
+          (safeImg(a.photo) && a.photoCredit ? photo(a.photo, a.titre, m.icone, "act-ph").replace(/<\/div>$/, '<span class="ph-credit">' + esc(a.photoCredit) + "</span></div>") : photo(a.photo, a.titre, m.icone, "act-ph")) +
           '<div class="act-body"><span class="act-top">' + I(m.icone, "ico-s") + esc(catLabel(CT, a.categorie, lang) || "") + "</span><h3>" + esc(a.titre) + "</h3>" +
           (a.description ? "<p>" + esc(a.description) + "</p>" : "") +
           '<div class="act-meta">' + (a.distance ? '<span class="tag">' + I("pin", "ico-s") + esc(a.distance) + "</span>" : "") + (a.duree ? '<span class="tag">' + I("horloge", "ico-s") + esc(a.duree) + "</span>" : "") + "</div>" +

@@ -222,6 +222,19 @@
       return authed("GET", "/storage/v1/object/authenticated/depots/" + encPath(String(path || "").replace(/^\/+/, "")), { raw: true, timeout: 60000 })
         .then(function (b) { return b && b.type && /^image\//.test(b.type) ? b : new Blob([b], { type: "image/jpeg" }); });
     },
+    /* Banque de photos des lieux (sorties, monuments) partagée entre livrets : photos/_lieux/<clé>.jpg */
+    urlLieu: function (key) { return BASE + "/storage/v1/object/public/" + BUCKET + "/_lieux/" + encodeURIComponent(key) + ".jpg"; },
+    envoyerPhotoLieu: function (key, blob) {
+      var url = BASE + "/storage/v1/object/public/" + BUCKET + "/_lieux/" + encodeURIComponent(key) + ".jpg";
+      var b = blob && /^image\/(jpeg|png|webp)$/.test(blob.type) ? blob : new Blob([blob], { type: "image/jpeg" });
+      return authed("POST", "/storage/v1/object/" + BUCKET + "/_lieux/" + encodeURIComponent(key) + ".jpg", {
+        blob: b, timeout: 60000, headers: { "x-upsert": "false", "cache-control": "max-age=31536000" }
+      }).then(function () { return url; }, function (e) {
+        /* Déjà dans la banque (déposée par un autre livret) : on la réutilise */
+        if (e && (e.status === 409 || (e.raw && String(e.raw.statusCode) === "409") || /duplicate|already exists/i.test((e.raw && (e.raw.error || e.raw.message)) || ""))) return url;
+        throw e;
+      });
+    },
     estPhotoCloud: function (src) { return !!src && ON && String(src).indexOf(BASE + "/storage/v1/object/public/") === 0; },
 
     /* Voyageurs (sans compte) */
