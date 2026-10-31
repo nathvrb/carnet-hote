@@ -306,7 +306,7 @@
       if (sent) {
         status.className = "form-status ok";
         status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! On vous répond sous 24 h à " + esc(mv) + ".</span>" +
-          '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 15 minutes et vos réponses se sauvegardent.</span>' +
+          '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 30 minutes et vos réponses se sauvegardent.</span>' +
           '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>';
         /* Les informations déjà données sont reprises dans le questionnaire (stockées sur l'appareil, pas dans l'adresse) */
         try { var st = state(); localStorage.setItem("cdh:questionnaire:prefill", JSON.stringify({ nom: nom.value.trim(), email: mv, tel: document.getElementById("r-tel").value.trim(), logement: document.getElementById("r-lieu").value.trim(), formule: st.formule, type: st.type })); } catch (e) {}
