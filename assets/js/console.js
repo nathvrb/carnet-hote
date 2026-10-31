@@ -788,7 +788,14 @@
         return own.reduce(function (q, k) {
           return q.then(function (found) {
             if (found) return found;
-            return fetch(K.urlLieu(k), { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok ? K.urlLieu(k) : ""; }, function () { return ""; });
+            /* .jpg d'abord, puis .jpeg, .png, .webp (majuscules comprises) */
+            return ["jpg", "jpeg", "png", "webp", "JPG", "JPEG", "PNG"].reduce(function (z, ext) {
+              return z.then(function (u) {
+                if (u) return u;
+                var url = K.urlLieu(k).replace(/\.jpg$/, "." + ext);
+                return fetch(url, { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok ? url : ""; }, function () { return ""; });
+              });
+            }, Promise.resolve(""));
           });
         }, Promise.resolve("")).then(function (mine) {
           lastWiki.rows.push({ t: a.titre, own: own });
@@ -814,6 +821,7 @@
       });
     }, Promise.resolve()).then(function () {
       t.remove(); lastWiki.ok = n;
+      try { renderLists(); sendPreview(); } catch (e) {}
       toast("Photos des sorties : " + n + " sur " + list.length + " dans la banque" + (n < list.length && lastWiki.why ? " (échec : " + lastWiki.why + ")" : ""), 5000);
       return n;
     });
@@ -1108,7 +1116,7 @@
     btn.disabled = true; msg.textContent = "Recherche en cours…";
     resolveWikiPhotos(true).then(function (n) {
       btn.disabled = false;
-      var rows = (lastWiki.rows || []).map(function (r) { return "• " + r.t + " : " + (r.how || "aucune photo trouvée") + (r.how ? "" : " (nom cherché dans la base : " + r.own.join(".jpg ou ") + ".jpg)"); });
+      var rows = (lastWiki.rows || []).map(function (r) { return "• " + r.t + " : " + (r.how || "aucune photo trouvée") + (r.how === "votre photo" ? "" : " (nom cherché dans la base : " + r.own.join(".jpg ou ") + ".jpg)"); });
       msg.className = n ? "msg ok" : "msg err";
       msg.style.whiteSpace = "pre-line";
       msg.textContent = (lastWiki.total ? n + " photo(s) sur " + lastWiki.total + ". Pensez à publier.\n" + rows.join("\n") : "Aucune sortie à traiter (elles ont toutes une photo du client ou aucun titre).") + (lastWiki.why ? "\nErreur : " + lastWiki.why : "");
