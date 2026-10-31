@@ -638,7 +638,7 @@
         if (!c || !c.src) return;
         var img = new Image(); img.alt = ""; img.decoding = "async";
         img.onload = function () {
-          img.className = "on"; ph.insertBefore(img, ph.firstChild);
+          img.className = "on"; ph.appendChild(img);
           var cr = document.createElement("span"); cr.className = "ph-credit";
           cr.textContent = "© " + (c.by || "Wikimedia Commons") + (c.lic ? " · " + c.lic : ""); ph.appendChild(cr);
         };
