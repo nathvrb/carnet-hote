@@ -79,6 +79,7 @@
     if (o.keepalive) init.keepalive = true;
     return fetch(BASE + path, init).then(function (res) {
       if (timer) clearTimeout(timer);
+      if (o.raw && res.ok) return res.blob();
       return res.text().then(function (txt) {
         var j = null;
         if (txt) { try { j = JSON.parse(txt); } catch (e) { j = { message: txt.slice(0, 200) }; } }
@@ -215,6 +216,11 @@
       return authed("POST", "/storage/v1/object/" + BUCKET + "/" + encPath(path), {
         blob: blob, timeout: 60000, headers: { "x-upsert": "false", "cache-control": "max-age=31536000" }
       }).then(function () { return BASE + "/storage/v1/object/public/" + BUCKET + "/" + encPath(path); });
+    },
+    /* Photo déposée par le client avec le questionnaire (dossier privé « depots », lecture réservée à l'administrateur) */
+    photoDepot: function (path) {
+      return authed("GET", "/storage/v1/object/authenticated/depots/" + encPath(String(path || "").replace(/^\/+/, "")), { raw: true, timeout: 60000 })
+        .then(function (b) { return b && b.type && /^image\//.test(b.type) ? b : new Blob([b], { type: "image/jpeg" }); });
     },
     estPhotoCloud: function (src) { return !!src && ON && String(src).indexOf(BASE + "/storage/v1/object/public/") === 0; },
 

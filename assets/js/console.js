@@ -676,26 +676,40 @@
   document.getElementById("conflict-force").addEventListener("click", function () { hideConflict(); publierCompte(true); });
   document.getElementById("conflict-load").addEventListener("click", function () { hideConflict(); dropDraft(doc.id); loadCompte(doc.id); toast("Version en ligne chargée"); });
 
-  /* Photos importées en mode démo (intégrées au livret) : envoyées dans la base avant publication */
-  function photoSlots(d) {
-    var out = [], isData = function (s) { return /^data:image\//.test(s || ""); };
-    if (d.theme && isData(d.theme.couverture)) out.push([d.theme, "couverture"]);
-    (d.rubriques || []).forEach(function (r) { (r.photos || []).forEach(function (p) { if (isData(p.src)) out.push([p, "src"]); }); });
-    ((d.arrivee || {}).blocs || []).forEach(function (b) { if (isData(b.photo)) out.push([b, "photo"]); });
-    (d.activites || []).forEach(function (a) { if (isData(a.photo)) out.push([a, "photo"]); });
+  /* Photos à envoyer dans la base avant publication :
+     - importées en mode démo (intégrées au livret, « data: ») ;
+     - déposées par le client avec le questionnaire, référencées « depot:<dossier>/<fichier>.jpg » dans le livret importé.
+     Chaque emplacement : [objet, clé, vider()] ; vider() retire une photo introuvable sans laisser de cadre vide. */
+  function isDepot(s) { return /^depot:/i.test(String(s || "").trim()); }
+  function depotPath(s) {
+    var p = String(s || "").trim().replace(/^depot:/i, "").replace(/^\/+/, "").replace(/^depots\//, "");
+    if (p.indexOf("/") < 0 && doc && doc.depot) p = String(doc.depot).replace(/^depots\//, "").replace(/\/+$/, "") + "/" + p;
+    return p;
+  }
+  function photoSlots(d, onlyDepot) {
+    var out = [], want = function (s) { return onlyDepot ? isDepot(s) : (isDepot(s) || /^data:image\//.test(s || "")); };
+    if (d.theme && want(d.theme.couverture)) out.push([d.theme, "couverture", function () { d.theme.couverture = ""; }]);
+    (d.rubriques || []).forEach(function (r) { (r.photos || []).forEach(function (p) { if (want(p.src)) out.push([p, "src", function () { var i = r.photos.indexOf(p); if (i > -1) r.photos.splice(i, 1); }]); }); });
+    ((d.arrivee || {}).blocs || []).forEach(function (b) { if (want(b.photo)) out.push([b, "photo", function () { b.photo = ""; }]); });
+    (d.activites || []).forEach(function (a) { if (want(a.photo)) out.push([a, "photo", function () { a.photo = ""; }]); });
     return out;
   }
-  function uploadInlinePhotos(id) {
-    var slots = photoSlots(doc);
-    if (!slots.length) return Promise.resolve();
+  function uploadInlinePhotos(id, onlyDepot) {
+    var slots = photoSlots(doc, onlyDepot), res = { ok: 0, ko: 0 };
+    if (!slots.length) return Promise.resolve(res);
     var t = toast("Envoi de " + slots.length + " photo" + (slots.length > 1 ? "s" : "") + "…", 120000);
     return slots.reduce(function (p, s) {
       return p.then(function () {
-        return fetch(s[0][s[1]]).then(function (r) { return r.blob(); })
-          .then(function (b) { return K.envoyerPhoto(id, b, s[1]); })
-          .then(function (url) { s[0][s[1]] = url; writeDraft(); });
+        var v = s[0][s[1]], dep = isDepot(v), path = dep ? depotPath(v) : "";
+        var get = dep ? K.photoDepot(path) : fetch(v).then(function (r) { return r.blob(); });
+        return get.then(function (b) { return K.envoyerPhoto(id, b, dep ? path.split("/").pop().replace(/\.[a-z0-9]+$/i, "") : s[1]); })
+          .then(function (url) { s[0][s[1]] = url; res.ok++; writeDraft(); }, function (e) {
+            /* Photo du client introuvable dans le dossier : on retire l'emplacement plutôt que de bloquer */
+            if (dep && e && (e.status === 400 || e.status === 404)) { s[2](); res.ko++; writeDraft(); return; }
+            throw e;
+          });
       });
-    }, Promise.resolve()).then(function () { t.remove(); }, function (e) { t.remove(); throw e; });
+    }, Promise.resolve()).then(function () { t.remove(); return res; }, function (e) { t.remove(); throw e; });
   }
   function publierCompte(force) {
     if (!doc || pubBtn.disabled) return;
@@ -980,8 +994,8 @@
     document.getElementById("export").value = 'window.CDH_LIVRETS["' + doc.id + '"] = ' + JSON.stringify(cleaned(), null, 2) + ";\n";
   }
   bindCopy("copy-export", "export", "Livret copié");
-  document.getElementById("do-import").addEventListener("click", function () {
-    var raw = document.getElementById("import").value, msg = document.getElementById("import-msg");
+  function importText(raw) {
+    var msg = document.getElementById("import-msg");
     msg.hidden = false;
     try {
       var a = raw.indexOf("{"), b = raw.lastIndexOf("}");
@@ -995,7 +1009,36 @@
       msg.className = "msg ok"; msg.textContent = "« " + d.nom + " » importé. Vérifiez puis publiez.";
     } catch (e) {
       msg.className = "msg err"; msg.textContent = "Ce texte n'est pas un livret exporté. Copiez tout le contenu de la zone Exporter, accolades comprises.";
+      return;
     }
+    placerPhotosClient(msg);
+  }
+  /* Photos du client (« depot:… ») : copiées tout de suite dans les photos du livret, sans téléchargement */
+  function placerPhotosClient(msg) {
+    var n = photoSlots(doc, true).length, nom = doc.nom, id0 = doc.id;
+    if (!n) return;
+    if (!COMPTE || !acct || !acct.admin) {
+      msg.textContent = "« " + nom + " » importé. Connectez-vous avec le compte administrateur pour que les " + n + " photos du client se placent toutes seules.";
+      return;
+    }
+    msg.textContent = "« " + nom + " » importé. Placement des " + n + " photos du client…";
+    uploadInlinePhotos(id0, true).then(function (r) {
+      if (!doc || doc.id !== id0) return;
+      afterLoad(true);
+      msg.className = "msg ok";
+      msg.textContent = "« " + nom + " » importé, " + r.ok + " photo" + (r.ok > 1 ? "s" : "") + " du client en place" +
+        (r.ko ? " (" + r.ko + " introuvable" + (r.ko > 1 ? "s" : "") + " dans le dossier, emplacement retiré)" : "") + ". Vérifiez puis publiez.";
+    }, function (er) {
+      msg.className = "msg err";
+      msg.textContent = "Livret importé, mais les photos du client n'ont pas pu être copiées (" + (er && er.message || "erreur") + "). Elles le seront à la publication.";
+    });
+  }
+  document.getElementById("do-import").addEventListener("click", function () { importText(document.getElementById("import").value); });
+  document.getElementById("import-file").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { document.getElementById("import").value = String(r.result || ""); e.target.value = ""; importText(String(r.result || "")); };
+    r.readAsText(f);
   });
   function arm(btn, label, ms) {
     if (btn.classList.contains("armed")) { btn.classList.remove("armed"); if (btn.dataset.old) btn.textContent = btn.dataset.old; return true; }

@@ -349,8 +349,9 @@
     ul.innerHTML = "";
     photos.forEach(function (p, i) {
       var li = document.createElement("li"); li.className = "q-photo" + (p.ok ? " ok" : "");
-      li.innerHTML = '<img alt="" src="' + p.url + '"><div><label class="q-col"><span>Ce que montre la photo</span><select>' + SUJETS.map(function (s) { return "<option" + (s === p.sujet ? " selected" : "") + ">" + esc(s) + "</option>"; }).join("") + '</select></label><button type="button" class="q-rm">Retirer</button></div>';
+      li.innerHTML = '<img alt="" src="' + p.url + '"><div><label class="q-col"><span>Ce que montre la photo</span><select>' + SUJETS.map(function (s) { return "<option" + (s === p.sujet ? " selected" : "") + ">" + esc(s) + "</option>"; }).join("") + '</select></label><label class="q-col"><span>Précision <small>(facultatif)</small></span><input type="text" class="q-prec" maxlength="80" placeholder="Ex. : lave-linge, terrasse, vue du balcon" value="' + esc(p.prec || "") + '"></label><button type="button" class="q-rm">Retirer</button></div>';
       $("select", li).addEventListener("change", function (e) { p.sujet = e.target.value; });
+      $(".q-prec", li).addEventListener("input", function (e) { p.prec = e.target.value; });
       $(".q-rm", li).addEventListener("click", function () { URL.revokeObjectURL(p.url); photos.splice(i, 1); dessinerPhotos(); });
       ul.appendChild(li);
     });
@@ -381,6 +382,7 @@
         if (p.ok) return;
         btn.textContent = "Photos " + (photos.filter(function (x) { return x.ok; }).length + 1) + " sur " + photos.length + "…";
         var nom = (i < 9 ? "0" : "") + (i + 1) + "-" + slug(p.sujet) + ".jpg";
+        p.nom = nom;
         return fetch(C.supabaseUrl.replace(/\/$/, "") + "/storage/v1/object/depots/" + dossier + "/" + nom, { method: "POST", headers: { apikey: C.supabaseCle, Authorization: "Bearer " + C.supabaseCle, "Content-Type": "image/jpeg", "x-upsert": "false" }, body: p.blob })
           .then(function (r) { if (!r.ok && r.status !== 409) throw new Error("photo " + r.status); p.ok = true; });
       });
@@ -425,7 +427,13 @@
     body.set("_subject", "Questionnaire · " + (val("logement") || val("nom")));
     body.set("email", val("email")); body.set("nom", val("nom")); body.set("logement", val("logement")); body.set("formule", formule());
     lire().forEach(function (b) { body.set(b.titre, b.lignes.join("\n")); });
-    if (nbPhotos) body.set("Photos déposées", nbPhotos + " photo" + (nbPhotos > 1 ? "s" : "") + ", dossier « depots/" + dossier + " » (Supabase → Storage)");
+    if (nbPhotos) {
+      body.set("Photos déposées", nbPhotos + " photo" + (nbPhotos > 1 ? "s" : "") + ", dossier « depots/" + dossier + " » (Supabase → Storage)");
+      /* Liste lisible par la création automatique du livret : fichier, sujet choisi, précision du client */
+      body.set("Fichiers photos", photos.filter(function (p) { return p.ok && p.nom; }).map(function (p) {
+        return "depot:" + dossier + "/" + p.nom + " | " + p.sujet + (p.prec && p.prec.trim() ? " | " + p.prec.trim() : "");
+      }).join("\n"));
+    }
     return fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: body.toString() })
       .then(function (r) {
         if (!r.ok) throw new Error("http");

@@ -273,7 +273,9 @@
       </div>
       <div class="grp admin-only">
         <h3>Importer</h3>
-        <textarea class="code" id="import" aria-label="Livret à importer" placeholder="Collez ici un livret exporté"></textarea>
+        <p class="hint">Choisissez le fichier .json du livret, ou collez son contenu. Les photos du client se placent toutes seules.</p>
+        <div class="row"><label class="btn" for="import-file">Choisir le fichier du livret</label><input type="file" id="import-file" class="sr" accept=".json,.txt,application/json,text/plain"></div>
+        <textarea class="code" id="import" aria-label="Livret à importer" placeholder="…ou collez ici le contenu du livret"></textarea>
         <div class="row"><button class="btn" type="button" id="do-import">Importer dans la console</button></div>
         <p class="msg" id="import-msg" hidden></p>
       </div>
