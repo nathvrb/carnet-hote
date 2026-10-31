@@ -718,11 +718,11 @@
   function txt(h) { var d = document.createElement("div"); d.innerHTML = String(h || ""); return (d.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80); }
   function jget(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }, function () { return null; }); }
   function commonsFile(file) {
-    return jget("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata|mime|size&iiurlwidth=960&format=json&origin=*&titles=" + encodeURIComponent("File:" + file)).then(function (q) {
+    return jget("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata|mime|size|url&iiurlwidth=960&format=json&origin=*&titles=" + encodeURIComponent("File:" + file)).then(function (q) {
       var pg = q && q.query && q.query.pages, k = pg && Object.keys(pg)[0], ii = k && pg[k].imageinfo && pg[k].imageinfo[0], md = ii && ii.extmetadata;
       var lic = md && md.LicenseShortName && md.LicenseShortName.value;
       if (!ii || !ii.thumburl || !lic || !FREE_LIC.test(lic) || !/^image\/(jpeg|png)$/.test(ii.mime || "")) return null;
-      return { file: file, src: ii.thumburl, by: txt(md.Artist && md.Artist.value), lic: lic };
+      return { file: file, src: ii.thumburl, orig: ii.url || "", by: txt(md.Artist && md.Artist.value), lic: lic };
     });
   }
   function wikiPhoto(wiki) {
@@ -730,12 +730,12 @@
     String(wiki || "").split("|").forEach(function (t) { t = t.trim(); if (t) { tries.push(["fr", t]); tries.push(["en", t]); } });
     function search() {
       if (!tries.length) return Promise.resolve(null);
-      return jget("https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=10&format=json&origin=*&prop=imageinfo&iiprop=extmetadata|mime|size&iiurlwidth=960&gsrsearch=" + encodeURIComponent(tries[0][1] + " filetype:bitmap")).then(function (q) {
+      return jget("https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=10&format=json&origin=*&prop=imageinfo&iiprop=extmetadata|mime|size|url&iiurlwidth=960&gsrsearch=" + encodeURIComponent(tries[0][1] + " filetype:bitmap")).then(function (q) {
         var pg = q && q.query && q.query.pages, L = pg ? Object.keys(pg).map(function (k) { return pg[k]; }).sort(function (a, b) { return a.index - b.index; }) : [];
         for (var i = 0; i < L.length; i++) {
           var ii = L[i].imageinfo && L[i].imageinfo[0], md = ii && ii.extmetadata, lic = md && md.LicenseShortName && md.LicenseShortName.value;
           if (ii && ii.thumburl && /^image\/jpeg$/.test(ii.mime) && ii.width >= 1000 && ii.width > ii.height && lic && FREE_LIC.test(lic))
-            return { file: String(L[i].title || "").replace(/^File:/, ""), src: ii.thumburl, by: txt(md.Artist && md.Artist.value), lic: lic };
+            return { file: String(L[i].title || "").replace(/^File:/, ""), src: ii.thumburl, orig: ii.url || "", by: txt(md.Artist && md.Artist.value), lic: lic };
         }
         return null;
       });
@@ -750,26 +750,54 @@
     }
     return one(0).catch(function () { return null; });
   }
+  /* Image Wikimedia → JPEG de 1600 px au plus. La miniature d'abord ; si le navigateur la refuse, l'original. */
+  function reduceBlob(b) {
+    if (!window.createImageBitmap) return Promise.resolve(b);
+    return createImageBitmap(b).then(function (bm) {
+      var k = Math.min(1, 1600 / Math.max(bm.width, bm.height)), c = document.createElement("canvas");
+      c.width = Math.round(bm.width * k); c.height = Math.round(bm.height * k);
+      var g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bm, 0, 0, c.width, c.height);
+      if (bm.close) bm.close();
+      return new Promise(function (ok) { c.toBlob(function (x) { ok(x || b); }, "image/jpeg", 0.85); });
+    }, function () { return b; });
+  }
+  function wikiImage(info) {
+    function get(u) { return fetch(u, { mode: "cors", credentials: "omit" }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.blob(); }); }
+    return get(info.src).catch(function (e) {
+      console.info("[cdh banque] miniature refusée", info.src, e && e.message);
+      if (!info.orig) throw e;
+      return get(info.orig);
+    }).then(function (b) { return b.size > 2500000 || !/^image\/jpeg$/.test(b.type) ? reduceBlob(b) : b; });
+  }
+  var lastWiki = { ok: 0, total: 0, why: "" };
   function resolveWikiPhotos() {
     if (!COMPTE || !acct || !acct.admin || !doc) return Promise.resolve(0);
     var list = (doc.activites || []).filter(function (a) { return a.wiki && !String(a.photo || "").trim(); }), n = 0;
+    lastWiki = { ok: 0, total: list.length, why: "" };
     if (!list.length) return Promise.resolve(0);
     var t = toast("Photos des sorties : copie dans la banque…", 120000);
     return list.reduce(function (p, a) {
       return p.then(function () {
         return wikiPhoto(a.wiki).then(function (info) {
-          if (!info) return;
+          if (!info) { console.info("[cdh banque] pas de photo libre pour", a.wiki); return; }
           var h = 5381; for (var i = 0; i < info.file.length; i++) h = ((h * 33) ^ info.file.charCodeAt(i)) >>> 0;
           var key = slug(info.file.replace(/\.[a-z0-9]+$/i, "")) + "-" + h.toString(36);
           return fetch(K.urlLieu(key), { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok; }, function () { return false; }).then(function (deja) {
             if (deja) return K.urlLieu(key);
-            return fetch(info.src).then(function (r) { if (!r.ok) throw new Error("image"); return r.blob(); }).then(function (b) { return K.envoyerPhotoLieu(key, b); });
+            return wikiImage(info).then(function (b) { return K.envoyerPhotoLieu(key, b); });
           }).then(function (url) {
             a.photo = url; a.photoCredit = "© " + (info.by || "Wikimedia Commons") + " · " + info.lic; n++; writeDraft();
           });
-        }).catch(function () {});
+        }).catch(function (e) {
+          lastWiki.why = (e && e.message) || "erreur";
+          console.info("[cdh banque] échec pour", a.wiki, lastWiki.why);
+        });
       });
-    }, Promise.resolve()).then(function () { t.remove(); return n; });
+    }, Promise.resolve()).then(function () {
+      t.remove(); lastWiki.ok = n;
+      toast("Photos des sorties : " + n + " sur " + list.length + " dans la banque" + (n < list.length && lastWiki.why ? " (échec : " + lastWiki.why + ")" : ""), 5000);
+      return n;
+    });
   }
   function publierCompte(force) {
     if (!doc || pubBtn.disabled) return;
