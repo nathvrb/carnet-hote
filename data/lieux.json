@@ -1,0 +1,200 @@
+{
+  "_lisezmoi": "Banque de lieux Carnet d'Hôte. Une entrée par lieu déjà vérifié : coordonnées (geo), précision (exacte|village), wiki (titre Wikipédia pour la photo libre automatique) ou photo + credit. Avant de créer un livret, réutiliser ces entrées ; après, y ajouter les nouveaux lieux vérifiés. Clé = slug du lieu.",
+  "lieux": {
+    "grand-ballon": {
+      "nom": "Le Grand Ballon",
+      "type": "activite",
+      "categorie": "balade",
+      "ville": "Haut-Rhin (Vosges)",
+      "geo": [
+        47.9017,
+        7.0983
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "wiki": "Grand Ballon",
+      "requete": "Grand Ballon"
+    },
+    "colmar-petite-venise": {
+      "nom": "Colmar (Petite Venise)",
+      "type": "activite",
+      "categorie": "culture",
+      "ville": "Colmar",
+      "geo": [
+        48.0742,
+        7.3598
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Little_Venice_in_Colmar_01.jpg?width=800",
+      "credit": "Krzysztof Golik, CC BY-SA 4.0",
+      "requete": "Colmar"
+    },
+    "thann-collegiale": {
+      "nom": "Collégiale Saint-Thiébaut de Thann",
+      "type": "activite",
+      "categorie": "culture",
+      "ville": "Thann",
+      "geo": [
+        47.8065,
+        7.101
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "wiki": "Collégiale Saint-Thiébaut de Thann",
+      "requete": "Collégiale Saint-Thiébaut Thann"
+    },
+    "lac-alfeld": {
+      "nom": "Lac d'Alfeld",
+      "type": "activite",
+      "categorie": "nature",
+      "ville": "Sewen",
+      "geo": [
+        47.817,
+        6.8732
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "wiki": "Lac d'Alfeld",
+      "requete": "Lac d'Alfeld"
+    },
+    "ecomusee-alsace": {
+      "nom": "Écomusée d'Alsace",
+      "type": "activite",
+      "categorie": "famille",
+      "ville": "Ungersheim",
+      "geo": [
+        47.8525,
+        7.2873
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Écomusée_d’Alsace_06.jpg?width=800",
+      "credit": "Llez, GFDL",
+      "requete": "Écomusée d'Alsace Ungersheim"
+    },
+    "cite-automobile-mulhouse": {
+      "nom": "Cité de l'Automobile",
+      "type": "activite",
+      "categorie": "sortie",
+      "ville": "Mulhouse",
+      "geo": [
+        47.761,
+        7.3284
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "wiki": "",
+      "requete": "Cité de l'Automobile Mulhouse",
+      "note": "Pas de photo libre trouvée sur Wikipédia/Commons (31/10/2026) : photo à ajouter à la main."
+    },
+    "zoo-mulhouse": {
+      "nom": "Parc zoologique et botanique de Mulhouse",
+      "type": "activite",
+      "categorie": "famille",
+      "ville": "Mulhouse",
+      "geo": [
+        47.7345,
+        7.3507
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "wiki": "Parc zoologique et botanique de Mulhouse",
+      "requete": "Parc zoologique et botanique Mulhouse"
+    },
+    "trattoria-fancello-masevaux": {
+      "nom": "Trattoria Fancello",
+      "type": "adresse",
+      "categorie": "restaurant",
+      "ville": "Masevaux",
+      "geo": [
+        47.7743,
+        6.9954
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "requete": "Trattoria Fancello Masevaux"
+    },
+    "restaurant-de-la-gare-guewenheim": {
+      "nom": "Restaurant de la Gare",
+      "type": "adresse",
+      "categorie": "restaurant",
+      "ville": "Guewenheim",
+      "geo": [
+        47.7492,
+        7.0924
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "requete": "Restaurant de la Gare Guewenheim"
+    },
+    "hyper-u-burnhaupt-le-haut": {
+      "nom": "Hyper U Burnhaupt-le-Haut (Pont d'Aspach)",
+      "type": "adresse",
+      "categorie": "courses",
+      "ville": "Burnhaupt-le-Haut",
+      "geo": [
+        47.7402,
+        7.1477
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "requete": "Hyper U Burnhaupt-le-Haut"
+    },
+    "pharmacie-burnhaupt": {
+      "nom": "Pharmacie de Burnhaupt (galerie Hyper U)",
+      "type": "adresse",
+      "categorie": "pharmacie",
+      "ville": "Burnhaupt-le-Haut",
+      "geo": [
+        47.7402,
+        7.1477
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "requete": "Pharmacie de Burnhaupt"
+    },
+    "marche-thann": {
+      "nom": "Marché de Thann",
+      "type": "adresse",
+      "categorie": "marche",
+      "ville": "Thann",
+      "geo": [
+        47.8065,
+        7.101
+      ],
+      "precision": "exacte",
+      "verifie": "2026-10-31",
+      "requete": "Marché Thann",
+      "note": "Samedi 7 h–12 h 30, centre-ville au pied de la collégiale."
+    },
+    "la-grange-a-pain-burnhaupt": {
+      "nom": "La Grange à Pain",
+      "type": "adresse",
+      "categorie": "boulangerie",
+      "ville": "Burnhaupt-le-Haut",
+      "geo": [
+        47.7308,
+        7.1461
+      ],
+      "precision": "village",
+      "verifie": "2026-10-31",
+      "requete": "La Grange à Pain Burnhaupt-le-Haut",
+      "note": "1 A rue Basse ; coordonnées du centre du village, à affiner."
+    },
+    "gerthoffer-burnhaupt": {
+      "nom": "Biscuiterie Gerthoffer",
+      "type": "adresse",
+      "categorie": "boulangerie",
+      "ville": "Burnhaupt-le-Haut",
+      "geo": [
+        47.7308,
+        7.1461
+      ],
+      "precision": "village",
+      "verifie": "2026-10-31",
+      "requete": "Biscuiterie Gerthoffer Burnhaupt-le-Haut",
+      "note": "39 rue de la Gare ; coordonnées du centre du village, à affiner."
+    }
+  }
+}
