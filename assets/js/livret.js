@@ -650,7 +650,20 @@
       /* « wiki » peut lister plusieurs titres séparés par | ; chacun est tenté sur fr.wikipedia puis en.wikipedia */
       var tries = []; title.split("|").forEach(function (t) { t = t.trim(); if (t) { tries.push(["fr", t]); tries.push(["en", t]); } });
       function one(i) {
-        if (i >= tries.length) return Promise.resolve(null);
+        if (i >= tries.length) {
+          /* dernier recours : recherche directe de photos libres sur Commons */
+          return fetch("https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=10&format=json&origin=*&prop=imageinfo&iiprop=extmetadata|mime|size&iiurlwidth=960&gsrsearch=" + encodeURIComponent(title.split("|")[0] + " filetype:bitmap"))
+            .then(function (r) { return r.json(); })
+            .then(function (q) {
+              var pg = q && q.query && q.query.pages, L = pg ? Object.keys(pg).map(function (k) { return pg[k]; }).sort(function (a, b) { return a.index - b.index; }) : [];
+              for (var k = 0; k < L.length; k++) {
+                var ii = L[k].imageinfo && L[k].imageinfo[0], md = ii && ii.extmetadata, lic = md && md.LicenseShortName && md.LicenseShortName.value;
+                if (ii && /^image\/jpeg$/.test(ii.mime) && ii.width >= 1000 && ii.width > ii.height && lic && FREE.test(lic) && ii.thumburl)
+                  return { src: ii.thumburl, by: strip(md.Artist && md.Artist.value), lic: lic, t: Date.now() };
+              }
+              console.info("[cdh photo] aucune photo libre trouvée pour", title); return null;
+            });
+        }
         var lg = tries[i][0], tt = tries[i][1];
         return fetch("https://" + lg + ".wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(tt))
           .then(function (r) { return r.ok ? r.json() : null; })
