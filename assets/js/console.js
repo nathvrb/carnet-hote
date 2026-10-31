@@ -778,7 +778,20 @@
     var t = toast("Photos des sorties : copie dans la banque…", 120000);
     return list.reduce(function (p, a) {
       return p.then(function () {
-        return wikiPhoto(a.wiki).then(function (info) {
+        /* 1. Vos propres photos : photos/_lieux/<titre-wikipedia-en-minuscules-avec-tirets>.jpg (ex. grand-ballon.jpg) */
+        var own = [], first = String(a.wiki).split("|")[0].trim();
+        [first, a.titre].forEach(function (s) { var k = s && slug(s); if (k && own.indexOf(k) < 0) own.push(k); });
+        return own.reduce(function (q, k) {
+          return q.then(function (found) {
+            if (found) return found;
+            return fetch(K.urlLieu(k), { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok ? K.urlLieu(k) : ""; }, function () { return ""; });
+          });
+        }, Promise.resolve("")).then(function (mine) {
+          if (mine) { a.photo = mine; a.photoCredit = ""; n++; writeDraft(); console.info("[cdh banque] photo à vous :", mine); return null; }
+          /* 2. Sinon Wikimedia Commons (licences libres), copiée dans la banque */
+          return wikiPhoto(a.wiki);
+        }).then(function (info) {
+          if (!info) return;
           if (!info) { console.info("[cdh banque] pas de photo libre pour", a.wiki); return; }
           var h = 5381; for (var i = 0; i < info.file.length; i++) h = ((h * 33) ^ info.file.charCodeAt(i)) >>> 0;
           var key = slug(info.file.replace(/\.[a-z0-9]+$/i, "")) + "-" + h.toString(36);
