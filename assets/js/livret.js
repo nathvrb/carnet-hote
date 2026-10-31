@@ -647,23 +647,31 @@
       }
       var c0 = null; try { c0 = JSON.parse(localStorage.getItem(key)); } catch (e) {}
       if (c0 && c0.t > Date.now() - 2592e6) return show(c0);
-      fetch("https://fr.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title))
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) {
-          var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
-          if (!m) { console.info("[cdh photo] pas d'image Commons pour", title, th); return null; }
-          var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/960px-");
-          return fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles=" + encodeURIComponent("File:" + file))
-            .then(function (r) { return r.json(); })
-            .then(function (q) {
-              var pg = q && q.query && q.query.pages, id = pg && Object.keys(pg)[0], md = id && pg[id].imageinfo && pg[id].imageinfo[0].extmetadata;
-              var lic = md && md.LicenseShortName && md.LicenseShortName.value;
-              if (!lic || !FREE.test(lic)) { console.info("[cdh photo] licence refusée pour", title, lic); return null; }
-              return { src: src, by: strip(md.Artist && md.Artist.value), lic: lic, t: Date.now() };
-            });
-        })
+      /* « wiki » peut lister plusieurs titres séparés par | ; chacun est tenté sur fr.wikipedia puis en.wikipedia */
+      var tries = []; title.split("|").forEach(function (t) { t = t.trim(); if (t) { tries.push(["fr", t]); tries.push(["en", t]); } });
+      function one(i) {
+        if (i >= tries.length) return Promise.resolve(null);
+        var lg = tries[i][0], tt = tries[i][1];
+        return fetch("https://" + lg + ".wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(tt))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
+            if (!m || /\.svg$/i.test(decodeURIComponent(m[1]))) { console.info("[cdh photo] pas d'image Commons pour", lg, tt); return one(i + 1); }
+            var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/960px-");
+            return fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles=" + encodeURIComponent("File:" + file))
+              .then(function (r) { return r.json(); })
+              .then(function (q) {
+                var pg = q && q.query && q.query.pages, id = pg && Object.keys(pg)[0], md = id && pg[id].imageinfo && pg[id].imageinfo[0].extmetadata;
+                var lic = md && md.LicenseShortName && md.LicenseShortName.value;
+                if (!lic || !FREE.test(lic)) { console.info("[cdh photo] licence refusée pour", tt, lic); return one(i + 1); }
+                return { src: src, by: strip(md.Artist && md.Artist.value), lic: lic, t: Date.now() };
+              });
+          })
+          .catch(function (e) { console.info("[cdh photo] erreur", tt, e && e.message); return one(i + 1); });
+      }
+      one(0)
         .then(function (c) { if (c) { try { localStorage.setItem(key, JSON.stringify(c)); } catch (e) {} show(c); } })
-        .catch(function (e) { console.info("[cdh photo] erreur", title, e && e.message); });
+        .catch(function () {});
     });
   }
   function photos() {
