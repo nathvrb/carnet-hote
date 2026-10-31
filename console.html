@@ -271,6 +271,12 @@
         <textarea class="code" id="export" readonly aria-label="Livret exporté"></textarea>
         <div class="row"><button class="btn" type="button" id="copy-export">Copier</button></div>
       </div>
+      <div class="grp admin-only compte-only">
+        <h3>Photos des sorties</h3>
+        <p class="hint">Cherche une photo pour chaque sortie : d'abord la vôtre dans la base (photos/_lieux), sinon Wikimedia. Les photos déposées par le client ne sont pas touchées.</p>
+        <div class="row"><button class="btn" type="button" id="do-refresh-photos">Rafraîchir les photos des sorties</button></div>
+        <p class="msg" id="refresh-msg" hidden></p>
+      </div>
       <div class="grp admin-only">
         <h3>Importer</h3>
         <p class="hint">Choisissez le fichier .json du livret, ou collez son contenu. Les photos du client se placent toutes seules.</p>

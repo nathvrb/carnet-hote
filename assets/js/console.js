@@ -770,16 +770,20 @@
     }).then(function (b) { return b.size > 2500000 || !/^image\/jpeg$/.test(b.type) ? reduceBlob(b) : b; });
   }
   var lastWiki = { ok: 0, total: 0, why: "" };
-  function resolveWikiPhotos() {
+  function resolveWikiPhotos(force) {
     if (!COMPTE || !acct || !acct.admin || !doc) return Promise.resolve(0);
-    var list = (doc.activites || []).filter(function (a) { return a.wiki && !String(a.photo || "").trim(); }), n = 0;
-    lastWiki = { ok: 0, total: list.length, why: "" };
+    force = force === true;
+    var list = (doc.activites || []).filter(function (a) {
+      var ph = String(a.photo || "").trim();
+      return force ? (a.wiki || a.titre) && (!ph || /\/_lieux\//.test(ph)) : a.wiki && !ph;
+    }), n = 0;
+    lastWiki = { ok: 0, total: list.length, why: "", rows: [] };
     if (!list.length) return Promise.resolve(0);
     var t = toast("Photos des sorties : copie dans la banque…", 120000);
     return list.reduce(function (p, a) {
       return p.then(function () {
         /* 1. Vos propres photos : photos/_lieux/<titre-wikipedia-en-minuscules-avec-tirets>.jpg (ex. grand-ballon.jpg) */
-        var own = [], first = String(a.wiki).split("|")[0].trim();
+        var own = [], first = String(a.wiki || "").split("|")[0].trim();
         [first, a.titre].forEach(function (s) { var k = s && slug(s); if (k && own.indexOf(k) < 0) own.push(k); });
         return own.reduce(function (q, k) {
           return q.then(function (found) {
@@ -787,7 +791,8 @@
             return fetch(K.urlLieu(k), { method: "HEAD", cache: "no-store" }).then(function (r) { return r.ok ? K.urlLieu(k) : ""; }, function () { return ""; });
           });
         }, Promise.resolve("")).then(function (mine) {
-          if (mine) { a.photo = mine; a.photoCredit = ""; n++; writeDraft(); console.info("[cdh banque] photo à vous :", mine); return null; }
+          lastWiki.rows.push({ t: a.titre, own: own });
+          if (mine) { a.photo = mine; a.photoCredit = ""; n++; writeDraft(); lastWiki.rows[lastWiki.rows.length - 1].how = "votre photo"; console.info("[cdh banque] photo à vous :", mine); return null; }
           /* 2. Sinon Wikimedia Commons (licences libres), copiée dans la banque */
           return wikiPhoto(a.wiki);
         }).then(function (info) {
@@ -800,6 +805,7 @@
             return wikiImage(info).then(function (b) { return K.envoyerPhotoLieu(key, b); });
           }).then(function (url) {
             a.photo = url; a.photoCredit = "© " + (info.by || "Wikimedia Commons") + " · " + info.lic; n++; writeDraft();
+            lastWiki.rows[lastWiki.rows.length - 1].how = "Wikimedia";
           });
         }).catch(function (e) {
           lastWiki.why = (e && e.message) || "erreur";
@@ -1095,6 +1101,19 @@
     document.getElementById("export").value = 'window.CDH_LIVRETS["' + doc.id + '"] = ' + JSON.stringify(cleaned(), null, 2) + ";\n";
   }
   bindCopy("copy-export", "export", "Livret copié");
+  document.getElementById("do-refresh-photos").addEventListener("click", function () {
+    var msg = document.getElementById("refresh-msg"), btn = this;
+    msg.hidden = false; msg.className = "msg";
+    if (!COMPTE || !acct || !acct.admin || !doc) { msg.className = "msg err"; msg.textContent = "Connectez-vous en administrateur sur un livret en ligne (console avec ?compte)."; return; }
+    btn.disabled = true; msg.textContent = "Recherche en cours…";
+    resolveWikiPhotos(true).then(function (n) {
+      btn.disabled = false;
+      var rows = (lastWiki.rows || []).map(function (r) { return "• " + r.t + " : " + (r.how || "aucune photo trouvée") + (r.how ? "" : " (nom cherché dans la base : " + r.own.join(".jpg ou ") + ".jpg)"); });
+      msg.className = n ? "msg ok" : "msg err";
+      msg.style.whiteSpace = "pre-line";
+      msg.textContent = (lastWiki.total ? n + " photo(s) sur " + lastWiki.total + ". Pensez à publier.\n" + rows.join("\n") : "Aucune sortie à traiter (elles ont toutes une photo du client ou aucun titre).") + (lastWiki.why ? "\nErreur : " + lastWiki.why : "");
+    }, function (e) { btn.disabled = false; msg.className = "msg err"; msg.textContent = "Échec : " + ((e && e.message) || e); });
+  });
   function importText(raw) {
     var msg = document.getElementById("import-msg");
     msg.hidden = false;

@@ -4,7 +4,7 @@
    - livrets des clients (base Supabase, adresse passée par « sw.js?api=… ») : réseau d'abord,
      dernière version enregistrée si hors ligne ; photos de la base : copie enregistrée d'abord
    Pour forcer la mise à jour de tous les téléphones, changez le numéro de VERSION. */
-var VERSION = "cdh-v47";
+var VERSION = "cdh-v48";
 var CORE = ["livret.html", "assets/css/livret.css", "assets/js/config.js", "assets/js/icons.js", "assets/js/store.js", "assets/js/cloud.js", "assets/js/livret.js", "data/livrets.js"];
 var API = "";
 try { API = new URL(new URL(self.location.href).searchParams.get("api") || "").origin; } catch (e) {}
