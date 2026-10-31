@@ -547,7 +547,7 @@
       h.push('<section class="section" id="s-activites" data-sec>' + head("montagne", t.activitesTitre, t.activitesSub) + '<div class="acts">');
       d.activites.forEach(function (a) {
         var m = CT[a.categorie] || CT.culture;
-        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it].join(" "))) + '">' +
+        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it].join(" "))) + '"' + (a.wiki && !safeImg(a.photo) ? ' data-wiki="' + esc(a.wiki) + '"' : "") + ">" +
           photo(a.photo, a.titre, m.icone, "act-ph") +
           '<div class="act-body"><span class="act-top">' + I(m.icone, "ico-s") + esc(catLabel(CT, a.categorie, lang) || "") + "</span><h3>" + esc(a.titre) + "</h3>" +
           (a.description ? "<p>" + esc(a.description) + "</p>" : "") +
@@ -618,6 +618,7 @@
     app.innerHTML = h.join("");
     bind(d, t, lang);
     photos();
+    wikiPhotos();
     if (d.geo) meteo(d, t, lang);
     if (hasMap) prepareMap(d, t, lang);
     offline();
@@ -625,6 +626,45 @@
   }
 
   /* ---------- photos : affichage progressif, repli si absente ---------- */
+  /* Photos libres des activités : si l'activité n'a pas de photo mais un titre d'article Wikipédia (champ « wiki »),
+     on prend l'image de l'article sur Wikimedia Commons, uniquement sous licence libre, avec crédit visible. */
+  function wikiPhotos() {
+    var FREE = /^(cc0|cc[ -]by|public domain|pd\b|gfdl|licence ouverte|attribution)/i;
+    function strip(h) { var d = document.createElement("div"); d.innerHTML = String(h || ""); return (d.textContent || "").trim().slice(0, 80); }
+    app.querySelectorAll(".act[data-wiki]").forEach(function (art) {
+      var ph = art.querySelector(".ph"); if (!ph || ph.querySelector("img")) return;
+      var title = art.getAttribute("data-wiki"), key = "cdh:wp:" + title;
+      function show(c) {
+        if (!c || !c.src) return;
+        var img = new Image(); img.alt = ""; img.decoding = "async";
+        img.onload = function () {
+          img.className = "on"; ph.insertBefore(img, ph.firstChild);
+          var cr = document.createElement("span"); cr.className = "ph-credit";
+          cr.textContent = "© " + (c.by || "Wikimedia Commons") + (c.lic ? " · " + c.lic : ""); ph.appendChild(cr);
+        };
+        img.src = c.src;
+      }
+      var c0 = null; try { c0 = JSON.parse(localStorage.getItem(key)); } catch (e) {}
+      if (c0 && c0.t > Date.now() - 2592e6) return show(c0);
+      fetch("https://fr.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
+          if (!m) return null;
+          var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/800px-");
+          return fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles=" + encodeURIComponent("File:" + file))
+            .then(function (r) { return r.json(); })
+            .then(function (q) {
+              var pg = q && q.query && q.query.pages, id = pg && Object.keys(pg)[0], md = id && pg[id].imageinfo && pg[id].imageinfo[0].extmetadata;
+              var lic = md && md.LicenseShortName && md.LicenseShortName.value;
+              if (!lic || !FREE.test(lic)) return null;
+              return { src: src, by: strip(md.Artist && md.Artist.value), lic: lic, t: Date.now() };
+            });
+        })
+        .then(function (c) { if (c) { try { localStorage.setItem(key, JSON.stringify(c)); } catch (e) {} show(c); } })
+        .catch(function () {});
+    });
+  }
   function photos() {
     app.querySelectorAll("img[data-ph]").forEach(function (img) {
       function ok() {

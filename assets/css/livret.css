@@ -657,3 +657,5 @@ button.lg { cursor: pointer; }
 .ld-dot { width: 26px; height: 26px; border-radius: 50%; border: 3px solid color-mix(in oklab, var(--accent, #1D5C7A) 22%, transparent); border-top-color: var(--accent, #1D5C7A); animation: ld 0.8s linear infinite; }
 @keyframes ld { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .ld-dot { animation: ld 2.4s linear infinite !important; } }
+
+.ph-credit { position: absolute; right: 8px; bottom: 6px; max-width: calc(100% - 16px); padding: 2px 8px; border-radius: 99px; background: rgba(0,0,0,.55); color: #fff; font-size: 10.5px; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
