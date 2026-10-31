@@ -642,6 +642,7 @@
           var cr = document.createElement("span"); cr.className = "ph-credit";
           cr.textContent = "© " + (c.by || "Wikimedia Commons") + (c.lic ? " · " + c.lic : ""); ph.appendChild(cr);
         };
+        img.onerror = function () { console.info("[cdh photo] image non chargée", c.src); };
         img.src = c.src;
       }
       var c0 = null; try { c0 = JSON.parse(localStorage.getItem(key)); } catch (e) {}
@@ -650,19 +651,19 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           var th = j && j.thumbnail && j.thumbnail.source, m = th && /\/wikipedia\/commons\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^\/]+)\//.exec(th);
-          if (!m) return null;
+          if (!m) { console.info("[cdh photo] pas d'image Commons pour", title, th); return null; }
           var file = decodeURIComponent(m[1]), src = th.replace(/\/\d+px-/, "/960px-");
           return fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles=" + encodeURIComponent("File:" + file))
             .then(function (r) { return r.json(); })
             .then(function (q) {
               var pg = q && q.query && q.query.pages, id = pg && Object.keys(pg)[0], md = id && pg[id].imageinfo && pg[id].imageinfo[0].extmetadata;
               var lic = md && md.LicenseShortName && md.LicenseShortName.value;
-              if (!lic || !FREE.test(lic)) return null;
+              if (!lic || !FREE.test(lic)) { console.info("[cdh photo] licence refusée pour", title, lic); return null; }
               return { src: src, by: strip(md.Artist && md.Artist.value), lic: lic, t: Date.now() };
             });
         })
         .then(function (c) { if (c) { try { localStorage.setItem(key, JSON.stringify(c)); } catch (e) {} show(c); } })
-        .catch(function () {});
+        .catch(function (e) { console.info("[cdh photo] erreur", title, e && e.message); });
     });
   }
   function photos() {
