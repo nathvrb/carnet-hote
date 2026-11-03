@@ -10,30 +10,39 @@
   function plural(n, s, p) { return n > 1 ? p : s; }
 
   /* ---------- calcul ---------- */
+  /* Prix du n-ième livret (1 = premier) : prix de base, puis prixSuivants (le dernier vaut pour tous les suivants) */
+  function prixLivret(F, n) {
+    if (n <= 1 || !F.prixSuivants || !F.prixSuivants.length) return F.prix;
+    var ps = F.prixSuivants;
+    return ps[Math.min(n - 2, ps.length - 1)];
+  }
+  function ordinal(n) { return n === 1 ? "1er" : n + "e"; }
   function compute(s) {
     var F = T.formules[s.formule], FF = T.forfaits[s.forfait], TY = T.types[s.type];
     var isLoc = s.type === "location";
     var livrets = isLoc ? s.qty : 1;
     var lines = [];
-    var remise = 0;
-    if (isLoc) T.remises.forEach(function (r) { if (livrets >= r.min) remise = r.taux; });
 
     lines.push({ sec: "Création · paiement unique" });
-    var base = F.prix * livrets;
-    lines.push({ l: "Livret " + F.nom + (isLoc && livrets > 1 ? " × " + livrets : ""), small: isLoc ? livrets + " " + plural(livrets, "logement", "logements") + " × " + eur(F.prix) : TY.label + " · " + s.qty + " " + plural(s.qty, "chambre", "chambres"), a: base });
-
-    var maj = 0;
-    if (s.type === "hotel") {
-      for (var i = 0; i < T.majorationHotel.length; i++) {
-        if (s.qty <= T.majorationHotel[i].jusqua) { maj = T.majorationHotel[i].prix; if (maj) lines.push({ l: "Hôtel " + T.majorationHotel[i].label, small: "Contenu plus dense : services, restaurant, spa", a: maj }); break; }
-      }
+    var base = 0, detail = [];
+    for (var n = 1; n <= livrets; n++) base += prixLivret(F, n);
+    base = r2(base);
+    if (isLoc && livrets > 1) {
+      var paliers = [];
+      for (var k = 1; k <= Math.min(livrets, (F.prixSuivants || []).length + 1); k++) paliers.push(ordinal(k) + (k === (F.prixSuivants || []).length + 1 && livrets > k ? " et suivants" : "") + " à " + eur(prixLivret(F, k)));
+      detail = paliers.join(", ");
     }
+    lines.push({ l: "Livret " + F.nom + (isLoc && livrets > 1 ? " × " + livrets : ""), small: isLoc ? (livrets > 1 ? livrets + " livrets différents : " + detail : "1 logement") : TY.label + " · un livret pour les " + s.qty + " " + plural(s.qty, "chambre", "chambres"), a: base });
+
+    var variantes = isLoc ? 0 : (s.variantes || 0), varCost = 0;
+    if (variantes) {
+      varCost = variantes * T.variante.prix;
+      lines.push({ l: variantes + " " + plural(variantes, "variante", "variantes") + " par type de chambre", small: "Consignes propres à un type de chambre · " + eur(T.variante.prix) + " l'unité", a: varCost });
+    }
+
     var langSup = Math.max(0, s.langues - F.langues);
     var langCost = langSup * T.options.langue.prix * livrets;
     if (langSup) lines.push({ l: langSup + " " + plural(langSup, "langue supplémentaire", "langues supplémentaires"), small: s.langues + " langues au total, " + F.langues + " " + plural(F.langues, "incluse", "incluses") + (livrets > 1 ? " · × " + livrets + " livrets" : ""), a: langCost });
-
-    var remiseMt = r2((base + maj + langCost) * remise);
-    if (remiseMt) lines.push({ l: "Remise multi-logements −" + Math.round(remise * 100) + " %", a: -remiseMt, minus: true });
 
     var incl = {}, inclTotal = 0;
     Object.keys(F.supportsInclus || {}).forEach(function (k) { incl[k] = F.supportsInclus[k] * livrets; inclTotal += incl[k]; });
@@ -52,18 +61,18 @@
       supportsCost += c;
       lines.push({ l: T.supports[k].label + " × " + n, small: incl[k] ? "En plus des " + T.supports[k].court[1] + " inclus" : "", a: c });
     });
-    var creation = r2(base + maj + langCost - remiseMt + supportsCost);
+    var creation = r2(base + varCost + langCost + supportsCost);
+    var acompte = r2(creation * T.acompte), solde = r2(creation - acompte);
 
-    var mensuel = r2(FF.mensuel * livrets * (1 - remise));
+    var mensuel = r2(FF.mensuel * livrets);
     var moisPayesAn = 12 - T.moisOffertsAnnuel;
     var annuel = r2(mensuel * moisPayesAn);
-    var offerts = F.moisOfferts || 0;
-    var forfaitAn1 = s.facturation === "annuel" ? r2(mensuel * Math.max(0, moisPayesAn - offerts)) : r2(mensuel * (12 - offerts));
+    var forfaitAn1 = s.facturation === "annuel" ? annuel : r2(mensuel * 12);
 
     return {
-      lines: lines, creation: creation, mensuel: mensuel, annuel: annuel, offerts: offerts,
+      lines: lines, creation: creation, acompte: acompte, solde: solde, mensuel: mensuel, annuel: annuel,
       forfaitAn1: forfaitAn1, premiereAnnee: r2(creation + forfaitAn1),
-      livrets: livrets, remise: remise, delai: F.delai,
+      livrets: livrets, delai: F.delai,
       formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal, couleur: coul
     };
   }
@@ -106,6 +115,7 @@
       '<div class="stepper"><button type="button" data-step="-1" data-for="sup-' + k + '" aria-label="Retirer un">−</button><input id="sup-' + k + '" name="sup-' + k + '" type="number" inputmode="numeric" min="0" max="500" value="0"><button type="button" data-step="1" data-for="sup-' + k + '" aria-label="Ajouter un">+</button></div></div>';
   }).join("");
   document.getElementById("langues-p").textContent = "+" + eur(T.options.langue.prix) + " / langue en plus";
+  document.getElementById("variantes-p").textContent = eur(T.variante.prix) + " / variante";
 
   function state() {
     var fd = new FormData(form);
@@ -114,8 +124,9 @@
     return {
       type: fd.get("type") || "location",
       qty: clampInt(fd.get("qty"), 1, 200),
+      variantes: clampInt(fd.get("variantes"), 0, 50),
       formule: fd.get("formule") || "confort",
-      langues: clampInt(fd.get("langues"), 1, 4),
+      langues: clampInt(fd.get("langues"), 1, T.languesDispo.length),
       supports: sup,
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
       forfait: fd.get("forfait") || "autonomie",
@@ -137,7 +148,8 @@
     var unit = isLoc ? "logement" : "chambre";
     document.getElementById("qty-legend").textContent = isLoc ? "Nombre de logements" : "Nombre de chambres";
     document.getElementById("qty-label").textContent = isLoc ? "Logements équipés d'un livret" : (s.type === "hotel" ? "Chambres de l'hôtel" : "Chambres de la maison");
-    document.getElementById("qty-hint").textContent = isLoc ? "Un livret par logement, remise dès le 2e" : (s.type === "hotel" ? "Un seul livret ; tarif selon la taille de l'hôtel" : "Un seul livret, un QR code par chambre");
+    document.getElementById("qty-hint").textContent = isLoc ? "Un livret par logement, prix réduit dès le 2e" : "Un seul livret pour toutes les chambres, au prix d'un seul";
+    document.getElementById("variantes-row").hidden = isLoc;
     document.getElementById("one-each-u").textContent = unit;
     var F = T.formules[s.formule];
     /* prix des forfaits : par mois, ou à l'année (12 mois barrés, puis le prix avec les mois offerts retirés) */
@@ -148,26 +160,26 @@
         ? '<s class="barre" title="' + esc(eur(m, true) + " × 12") + '">' + eur(r2(m * 12)) + "</s> " + eur(r2(m * (12 - T.moisOffertsAnnuel))) + " / an"
         : eur(m) + " / mois";
     });
-    document.getElementById("langues-hint").textContent = F.langues + " " + plural(F.langues, "incluse", "incluses") + " dans la formule " + F.nom;
+    document.getElementById("langues-hint").textContent = F.langues >= T.languesDispo.length ? "Langues illimitées dans la formule " + F.nom : F.langues + " au choix incluses dans la formule " + F.nom + " (" + T.languesDispo.join(", ").toLowerCase() + ")";
     var parts = Object.keys(q.inclus).map(function (k) { var n = q.inclus[k], SI = T.supports[k]; return n + " " + plural(n, SI.court[0], SI.court[1]); });
     document.getElementById("supports-inclus").textContent = parts.length ? "Inclus dans votre formule : " + parts.join(" et ") + (q.livrets > 1 ? " par livret" : "") + "." : "";
-    var oneK = s.type === "location" ? "porteCles" : "chevalet";
-    document.getElementById("one-each-what").textContent = T.supports[oneK].court[0];
+    document.getElementById("one-each-what").textContent = T.supports.porteCles.court[0];
 
     var today = new Date(), until = new Date(today.getTime() + (C.validiteDevisJours || 30) * 864e5);
     var fd = function (d) { return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }); };
     var forfLine = s.facturation === "annuel"
       ? { l: "Forfait " + q.forfait.nom + " · annuel", small: (q.livrets > 1 ? q.livrets + " livrets · " : "") + T.moisOffertsAnnuel + " mois offerts", a: q.annuel, suffix: "/an" }
-      : { l: "Forfait " + q.forfait.nom + " · mensuel", small: q.livrets > 1 ? q.livrets + " livrets" + (q.remise ? ", remise incluse" : "") : "Sans engagement", a: q.mensuel, suffix: "/mois" };
+      : { l: "Forfait " + q.forfait.nom + " · mensuel", small: (q.livrets > 1 ? q.livrets + " livrets · " : "") + "Sans engagement", a: q.mensuel, suffix: "/mois" };
 
     var h = '<div class="folio-head"><span class="brand">' + esc(C.marque) + "</span><small>Devis · livret d'accueil digital</small></div>" +
       '<dl class="folio-meta"><dt>N°</dt><dd>' + numero + "</dd><dt>Date</dt><dd>" + fd(today) + "</dd><dt>Valable jusqu'au</dt><dd>" + fd(until) + "</dd><dt>Établissement</dt><dd>" + esc(q.type.label) + "</dd></dl>" +
       '<ul class="folio-lines">' + q.lines.map(lineHtml).join("") +
       '<li class="fl sec">Forfait</li><li class="fl"><span class="l">' + esc(forfLine.l) + "<small>" + esc(forfLine.small) + '</small></span><span class="d"></span><span class="a">' + eur(forfLine.a, true) + forfLine.suffix + "</span></li>" +
-      (q.offerts ? '<li class="fl minus"><span class="l">' + q.offerts + ' mois de forfait offerts<small>Inclus dans la formule Premium</small></span><span class="d"></span><span class="a">offerts</span></li>' : "") +
       "</ul>" +
       '<div class="folio-tot"><div class="fl big"><span class="l">Création</span><span class="d"></span><span class="a">' + eur(q.creation, true) + '</span></div>' +
-      '<div class="fl"><span class="l">Puis</span><span class="d"></span><span class="a">' + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + "</span></div>" +
+      '<div class="fl"><span class="l">Acompte à la commande (' + Math.round(T.acompte * 100) + ' %)</span><span class="d"></span><span class="a">' + eur(q.acompte, true) + "</span></div>" +
+      '<div class="fl"><span class="l">Après ' + T.essaiJours + " jours d'essai : solde</span><span class=\"d\"></span><span class=\"a\">" + eur(q.solde, true) + "</span></div>" +
+      '<div class="fl"><span class="l">Puis, dès le ' + (T.essaiJours + 1) + 'e jour</span><span class="d"></span><span class="a">' + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + "</span></div>" +
       '<div class="fl"><span class="l">Total 1re année</span><span class="d"></span><span class="a">' + eur(q.premiereAnnee, true) + "</span></div></div>" +
       '<p class="folio-note">Livraison : ' + esc(q.delai) + "*, à compter de la réception de vos informations. " + esc(C.conditions) + " " + esc(C.mentionTVA) + '.</p><p class="folio-note">' + esc(T.noteSupports) + "</p>";
     document.getElementById("folio").innerHTML = h;
@@ -178,13 +190,13 @@
   }
 
   function textSummary(s, q, num) {
-    var out = ["Devis " + num + " (" + C.marque + ")", "Établissement : " + q.type.label + ", " + s.qty + " " + (s.type === "location" ? plural(s.qty, "logement", "logements") : plural(s.qty, "chambre", "chambres")), ""];
+    var out = ["Devis " + num + " (" + C.marque + ")", "Établissement : " + q.type.label + ", " + s.qty + " " + (s.type === "location" ? plural(s.qty, "logement", "logements") : plural(s.qty, "chambre", "chambres")) + (s.type !== "location" && s.variantes ? ", " + s.variantes + " " + plural(s.variantes, "variante", "variantes") : ""), "Langues : " + s.langues, ""];
     q.lines.forEach(function (x) {
       if (x.sec) { out.push("— " + x.sec); return; }
       out.push("  " + x.l + (x.small ? " (" + x.small + ")" : "") + " : " + (x.a ? (x.a < 0 ? "-" : "") + eur(Math.abs(x.a), true) : "inclus"));
     });
-    out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + (q.offerts ? " (" + q.offerts + " mois offerts)" : ""));
-    out.push("", "Création : " + eur(q.creation, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai + "*", T.noteSupports);
+    out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an (" + T.moisOffertsAnnuel + " mois offerts)" : eur(q.mensuel, true) + "/mois"));
+    out.push("", "Création : " + eur(q.creation, true), "Acompte à la commande : " + eur(q.acompte, true), "Solde après " + T.essaiJours + " jours d'essai : " + eur(q.solde, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai + "*", T.noteSupports);
     return out.join("\n");
   }
 
@@ -224,7 +236,7 @@
 
   document.getElementById("one-each").addEventListener("click", function () {
     var s = state(), F = T.formules[s.formule];
-    var k = s.type === "location" ? "porteCles" : "chevalet";
+    var k = "porteCles";
     var inc = ((F.supportsInclus || {})[k] || 0) * (s.type === "location" ? s.qty : 1);
     document.getElementById("sup-" + k).value = Math.max(0, s.qty - inc);
     update();
@@ -245,6 +257,7 @@
       setRadio("type", saved.type); setRadio("formule", saved.formule); setRadio("forfait", saved.forfait); setRadio("facturation", saved.facturation);
       document.getElementById("qty").value = saved.qty; lastQty[saved.type] = saved.qty;
       document.getElementById("langues").value = saved.langues;
+      if (saved.variantes != null) document.getElementById("variantes").value = saved.variantes;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
       if (saved.couleur) setRadio("couleur", saved.couleur);
     }
@@ -291,7 +304,12 @@
     var mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mv);
     setErr(mail, mailOk ? "" : (mv ? "Cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr)." : "Indiquez votre e-mail pour recevoir le devis."));
     if (!mailOk) ok = false;
-    if (!ok) { (nom.value.trim() ? mail : nom).focus(); return; }
+    var exec = document.getElementById("r-exec"), statutOk = !!rf.querySelector('input[name="statut"]:checked');
+    var statutBox = rf.querySelector(".statut"), oldS = statutBox.querySelector(".err"); if (oldS) oldS.remove();
+    if (!statutOk) { var es = document.createElement("span"); es.className = "err"; es.textContent = "Indiquez si vous commandez en tant que particulier ou professionnel."; statutBox.appendChild(es); if (ok) rf.querySelector('input[name="statut"]').focus(); ok = false; }
+    setErr(exec, exec.checked ? "" : "Cochez cette case pour que nous puissions démarrer votre livret.");
+    if (!exec.checked) { if (ok) exec.focus(); ok = false; }
+    if (!ok) { if (!nom.value.trim()) nom.focus(); else if (!mailOk) mail.focus(); return; }
 
     update();
     var btn = document.getElementById("r-submit");

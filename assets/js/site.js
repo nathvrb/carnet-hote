@@ -19,10 +19,16 @@
   each("[data-mois-offerts]", function (el) { el.textContent = T.moisOffertsAnnuel; });
   var minPrix = Math.min.apply(null, Object.keys(T.formules).map(function (k) { return T.formules[k].prix; }));
   each("[data-prix-min]", function (el) { el.textContent = eur(minPrix); });
-  var rem = T.remises.filter(function (r) { return r.taux; });
-  each("[data-remises]", function (el) {
-    el.textContent = rem.map(function (r) { return "-" + Math.round(r.taux * 100) + " % dès " + r.min; }).join(", ");
-  });
+  /* plusieurs logements : 2e, 3e, puis suivants (prixSuivants de chaque formule) */
+  function paliers(f) {
+    var ps = f.prixSuivants || [];
+    return ps.map(function (p, i) { return (i === ps.length - 1 ? eur(p) + " chacun à partir du " + (i + 2) + "e" : eur(p) + " le " + (i + 2) + "e"); }).join(", ");
+  }
+  var multiTxt = Object.keys(T.formules).map(function (k) { var f = T.formules[k]; return "en " + f.nom + ", " + paliers(f); }).join(" ; ");
+  each("[data-multi]", function (el) { el.textContent = "Plusieurs logements, chaque livret différent : " + multiTxt + "."; });
+  each("[data-multi-detail]", function (el) { el.textContent = multiTxt; });
+  each("[data-hotel-regle]", function (el) { el.textContent = "Hôtels et maisons d'hôtes : un livret pour toutes les chambres, au prix d'un seul, et " + eur(T.variante.prix) + " par variante si un type de chambre a ses propres consignes."; });
+  each("[data-variante-prix]", function (el) { el.textContent = eur(T.variante.prix); });
   var y = document.getElementById("year"); if (y) y.textContent = new Date().getFullYear();
 
   /* ---------- héros : téléphone + porte-clés ---------- */
@@ -135,7 +141,7 @@
     ["En arrivant", [
       ["Avant votre arrivée", "Un lien à envoyer la veille : adresse, itinéraire, accès et boîte à clés. Le voyageur arrive sans vous appeler."],
       ["Le Wi-Fi en un geste", "Nom du réseau et mot de passe en tête du livret, avec un bouton pour copier."],
-      ["Français, anglais, allemand, italien", "Le livret s'ouvre dans la langue du téléphone, avec un bouton pour changer de langue en haut de page."],
+      ["Six langues possibles", "Français, anglais, allemand, italien, espagnol, néerlandais : le livret s'ouvre dans la langue du téléphone, avec un bouton pour changer en haut de page."],
       ["Recherche intégrée", "Le voyageur tape « poubelles » ou « parking » et tombe directement sur la bonne réponse."]
     ]],
     ["Dans le logement", [
@@ -181,7 +187,8 @@
     var o = T.options;
     var row = function (label, small, price) { return '<div class="row"><dt>' + esc(label) + (small ? "<small>" + esc(small) + "</small>" : "") + '</dt><span class="dots"></span><dd>' + price + "</dd></div>"; };
     extras.innerHTML = '<div><h4>Options</h4><dl>' +
-      row(o.langue.label, "L'italien pour le Confort (le Premium l'inclut) ; autres langues, nous consulter", "+" + eur(o.langue.prix)) +
+      row(o.langue.label, "Au-delà des 4 langues du Confort (le Premium les inclut toutes)", "+" + eur(o.langue.prix)) +
+      row(T.variante.label, "Hôtels et maisons d'hôtes : " + T.variante.detail, eur(T.variante.prix)) +
       row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +
       row("Affiche A5 à imprimer", "QR du livret et du Wi-Fi, en PDF · toutes formules", "incluse") +

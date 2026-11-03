@@ -30,10 +30,17 @@
     });
     h.innerHTML = '<table><thead><tr><th>Forfait</th><th>Contenu</th><th>Prix par livret</th></tr></thead><tbody>' + r.join("") + "</tbody></table>";
   }
+  var mc = document.getElementById("multi-cgv");
+  if (mc && T) mc.textContent = Object.keys(T.formules).map(function (k) {
+    var f = T.formules[k], ps = f.prixSuivants || [];
+    return "en " + f.nom + ", " + eur(f.prix) + " le 1er, " + ps.map(function (p, i) { return eur(p) + (i === ps.length - 1 ? " pour le " + (i + 2) + "e et chacun des suivants" : " le " + (i + 2) + "e"); }).join(", ");
+  }).join(" ; ");
+  var vc = document.getElementById("variante-cgv"); if (vc && T) vc.textContent = eur(T.variante.prix);
   var o = document.getElementById("grille-options");
   if (o && T) {
     var ls = [
-      ["Langue supplémentaire", eur(T.options.langue.prix) + " par livret"],
+      [T.options.langue.label, eur(T.options.langue.prix) + " par livret"],
+      [T.variante.label + " (hôtels et maisons d'hôtes)", eur(T.variante.prix) + " par type de chambre"],
       ["Modification faite par nos soins, à l'unité (forfait Autonomie)", eur(T.modificationPonctuelle)]
     ].concat(Object.keys(T.supports).map(function (k) { return [T.supports[k].label + " en plus", eur(T.supports[k].prix) + " l'unité"]; }));
     o.innerHTML = "<table><tbody>" + ls.map(function (x) { return "<tr><td>" + esc(x[0]) + '</td><td class="p">' + esc(x[1]) + "</td></tr>"; }).join("") + "</tbody></table>";

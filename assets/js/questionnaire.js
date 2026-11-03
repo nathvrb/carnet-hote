@@ -109,7 +109,7 @@
       ] },
     { id: "style", titre: "Langues, style et supports QR", intro: "Le dernier tour : l'allure du livret et l'objet que vos voyageurs scanneront.",
       q: [
-        { k: "langues", l: "Langues du livret", h: "Confort : français, anglais et allemand. Premium : en plus, l'italien. L'italien en Confort : 29 €.", multi: ["Français", "Anglais", "Allemand", "Italien"] },
+        { k: "langues", l: "Langues du livret", h: "Confort : 4 langues au choix (29 € par langue en plus). Premium : toutes les langues.", multi: ["Français", "Anglais", "Allemand", "Italien", "Espagnol", "Néerlandais"] },
         { k: "ambiance", l: "Couleur préférée, ou une ambiance", h: "Par exemple « bord de lac », « Provence »." },
         { k: "logo", l: "Logo à intégrer", min: "premium", h: "Vous l'enverrez avec vos photos." },
         { k: "videos", l: "Vidéos tutos à intégrer", min: "premium", h: "Un lien, ou dites-nous que vous les envoyez." },
@@ -120,7 +120,7 @@
         { k: "autre", l: "Autre chose à nous dire ?", zone: 3 }
       ] },
     { id: "photos", titre: "Photos à nous envoyer", depot: 1, introAlt: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Envoyez-les par WhatsApp, par e-mail ou par un lien de partage (Google Drive, WeTransfer).", intro: "Des photos prises au téléphone suffisent, en lumière du jour et à l'horizontale. Ajoutez-les ci-dessous : elles sont réduites automatiquement et envoyées en même temps que vos réponses.",
-      liste: ["Une belle photo du logement ou de la vue, pour la couverture", "La façade ou l'entrée, pour que le voyageur la reconnaisse", "La boîte à clés ou la serrure à code", "Le parking ou l'emplacement de stationnement", "Chaque appareil de la partie 5 : en entier, puis ses boutons de face", "Le tableau électrique et l'arrivée d'eau", "Les poubelles et les bacs de tri", "Vos photos des environs, si vous voulez qu'on les utilise pour les sorties", "Votre logo (formule Premium)"],
+      liste: ["Une belle photo du logement ou de la vue, pour la couverture", "La façade ou l'entrée, pour que le voyageur la reconnaisse", "La boîte à clés ou la serrure à code", "Le parking ou l'emplacement de stationnement", "Chaque appareil de la partie 5 : en entier, puis ses boutons de face", "Le tableau électrique et l'arrivée d'eau", "Les poubelles et les bacs de tri", "Vos photos des environs, si vous voulez qu'on les utilise pour les sorties", "Votre logo et, si vous le souhaitez, une photo pour la couverture (formule Premium)"],
       q: [
         { k: "photos", l: "Autre moyen d'envoi (facultatif)", h: "Un lien de partage (Google Drive, WeTransfer), ou « je les envoie par WhatsApp / par e-mail ».", zone: 2 }
       ] }

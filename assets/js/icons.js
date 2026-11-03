@@ -106,24 +106,24 @@
   window.cdhIcon = icon;
 
   window.CDH_CAT_ADRESSES = {
-    boulangerie: { label: "Boulangerie", icone: "pain" , en: "Bakery", de: "Bäckerei", it: "Panetteria" },
-    courses: { label: "Courses", icone: "panier" , en: "Groceries", de: "Lebensmittel", it: "Alimentari" },
-    marche: { label: "Marché", icone: "marche" , en: "Market", de: "Markt", it: "Mercato" },
-    pharmacie: { label: "Pharmacie", icone: "pharmacie" , en: "Pharmacy", de: "Apotheke", it: "Farmacia" },
-    sante: { label: "Santé", icone: "hopital" , en: "Health", de: "Gesundheit", it: "Salute" },
-    restaurant: { label: "Restaurant", icone: "couverts" , en: "Restaurant", de: "Restaurant", it: "Ristorante" },
-    bar: { label: "Bar & cave", icone: "vin" , en: "Bar & wine", de: "Bar & Weinhandlung", it: "Bar ed enoteca" },
-    transport: { label: "Transport", icone: "tram" , en: "Transport", de: "Verkehr", it: "Trasporti" },
-    parking: { label: "Parking", icone: "voiture" , en: "Parking", de: "Parkplatz", it: "Parcheggio" },
-    services: { label: "Services", icone: "info" , en: "Services", de: "Dienstleistungen", it: "Servizi" }
+    boulangerie: { label: "Boulangerie", icone: "pain" , en: "Bakery", de: "Bäckerei", it: "Panetteria", es: "Panadería", nl: "Bakker" },
+    courses: { label: "Courses", icone: "panier" , en: "Groceries", de: "Lebensmittel", it: "Alimentari", es: "Supermercado", nl: "Boodschappen" },
+    marche: { label: "Marché", icone: "marche" , en: "Market", de: "Markt", it: "Mercato", es: "Mercado", nl: "Markt" },
+    pharmacie: { label: "Pharmacie", icone: "pharmacie" , en: "Pharmacy", de: "Apotheke", it: "Farmacia", es: "Farmacia", nl: "Apotheek" },
+    sante: { label: "Santé", icone: "hopital" , en: "Health", de: "Gesundheit", it: "Salute", es: "Salud", nl: "Gezondheid" },
+    restaurant: { label: "Restaurant", icone: "couverts" , en: "Restaurant", de: "Restaurant", it: "Ristorante", es: "Restaurante", nl: "Restaurant" },
+    bar: { label: "Bar & cave", icone: "vin" , en: "Bar & wine", de: "Bar & Weinhandlung", it: "Bar ed enoteca", es: "Bar y vinoteca", nl: "Bar & wijn" },
+    transport: { label: "Transport", icone: "tram" , en: "Transport", de: "Verkehr", it: "Trasporti", es: "Transporte", nl: "Vervoer" },
+    parking: { label: "Parking", icone: "voiture" , en: "Parking", de: "Parkplatz", it: "Parcheggio", es: "Aparcamiento", nl: "Parkeren" },
+    services: { label: "Services", icone: "info" , en: "Services", de: "Dienstleistungen", it: "Servizi", es: "Servicios", nl: "Diensten" }
   };
 
   window.CDH_CAT_ACTIVITES = {
-    culture: { label: "Culture", icone: "musee" , en: "Culture", de: "Kultur", it: "Cultura" },
-    nature: { label: "Nature", icone: "montagne" , en: "Nature", de: "Natur", it: "Natura" },
-    balade: { label: "Balade", icone: "velo" , en: "Outdoors", de: "Draußen", it: "All'aperto" },
-    sortie: { label: "Sortie", icone: "bateau" , en: "Outing", de: "Ausflug", it: "Gita" },
-    gastronomie: { label: "Gastronomie", icone: "vin" , en: "Food & wine", de: "Essen & Wein", it: "Gastronomia" },
-    famille: { label: "En famille", icone: "bebe" , en: "Family", de: "Familie", it: "Famiglia" }
+    culture: { label: "Culture", icone: "musee" , en: "Culture", de: "Kultur", it: "Cultura", es: "Cultura", nl: "Cultuur" },
+    nature: { label: "Nature", icone: "montagne" , en: "Nature", de: "Natur", it: "Natura", es: "Naturaleza", nl: "Natuur" },
+    balade: { label: "Balade", icone: "velo" , en: "Outdoors", de: "Draußen", it: "All'aperto", es: "Al aire libre", nl: "Buiten" },
+    sortie: { label: "Sortie", icone: "bateau" , en: "Outing", de: "Ausflug", it: "Gita", es: "Excursión", nl: "Uitstapje" },
+    gastronomie: { label: "Gastronomie", icone: "vin" , en: "Food & wine", de: "Essen & Wein", it: "Gastronomia", es: "Gastronomía", nl: "Eten & drinken" },
+    famille: { label: "En famille", icone: "bebe" , en: "Family", de: "Familie", it: "Famiglia", es: "En familia", nl: "Met het gezin" }
   };
 })();

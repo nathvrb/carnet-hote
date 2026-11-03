@@ -197,6 +197,78 @@
       introuvable: "Guida non trovata", introuvableTxt: "Il link potrebbe essere incompleto. Scansionate di nuovo il codice QR o contattate il vostro host.", retour: "Torna alla home",
       chargement: "Apertura della guida…", horsLigne: "Nessuna connessione", horsLigneTxt: "Questa guida si aprirà appena il telefono sarà connesso a internet (Wi-Fi o dati mobili).", reessayer: "Riprova",
       locale: "it-IT"
+    },
+    es: {
+      lieu: { location: "El alojamiento", maison: "La casa", hotel: "El hotel" },
+      toc: { arrivee: "Llegada", services: "Extras", adresses: "Direcciones", carte: "Mapa", activites: "Qué hacer", depart: "Salida", urgences: "Urgencias" },
+      demo: "Ejemplo de guía de bienvenida realizada por {m}. Alojamiento, anfitriones y comercios ficticios.", demoCta: "Crear la mía",
+      bienvenue: { defaut: "¡Bienvenidos!", hotel: "Bienvenidos" },
+      annonce: { info: "Para saber", alerte: "Importante", bonplan: "Oferta" },
+      wifi: "Wi-Fi", reseau: "Red", mdp: "Contraseña", copier: "Copiar", copie: "Copiado", mdpCopie: "Contraseña copiada", mdpSel: "Contraseña seleccionada: cópiela",
+      arrivee: "Llegada", depart: "Salida", contacter: "Contactar", hote: "al anfitrión", appeler: "Llamar", email: "Correo", urgence: "Urgencia",
+      recherche: "Buscar: calefacción, basura, aparcamiento…", rechercheLabel: "Buscar en la guía", effacer: "Borrar la búsqueda",
+      resultats: function (n, q) { return n + (n > 1 ? " resultados" : " resultado") + " para «" + q + "»"; }, aucun: "Ningún resultado. Pruebe otra palabra o contacte con su anfitrión.",
+      arriveeTitre: "Antes de su llegada", arriveeSub: "Cómo llegar y entrar, sin estrés.",
+      hubTitre: "¿Qué busca?",
+      hub: { arrivee: "Dirección, acceso, llaves", logement: function (n) { return n + (n > 1 ? " temas" : " tema"); }, services: function (n) { return n + (n > 1 ? " servicios a pedir" : " servicio a pedir"); }, adresses: function (n) { return n + (n > 1 ? " direcciones" : " dirección"); }, carte: "Todo en un mapa", activites: function (n) { return n + (n > 1 ? " ideas" : " idea"); }, depart: "Lista antes de salir", urgences: "112, 15, 17, 18" },
+      bientot: "¡Su estancia se acerca! Aquí tiene todo lo necesario para llegar.",
+      adresse: "Dirección", itineraire: "Cómo llegar", copierAdresse: "Copiar la dirección", adresseCopiee: "Dirección copiada",
+      prevenir: "Avisar de mi hora de llegada", msgArrivee: function (n) { return "Hola, llegaremos a " + n + " hacia las … ¡Hasta pronto!"; },
+      ouvrir: "Toque un tema para abrirlo.",
+      servicesTitre: "Servicios extra", servicesSub: "Para una estancia aún más agradable, bajo petición.", demander: "Pedir",
+      msgService: function (t, p) { return "Hola, nos gustaría reservar: " + t + (p ? " (" + p + ")" : "") + ". ¡Gracias!"; },
+      adressesTitre: "Direcciones útiles", adressesSub: "Tiendas, salud y buenos sitios para comer cerca.", tout: "Todo", aucuneAdresse: "Ninguna dirección coincide.",
+      carteTitre: "En el mapa", carteSub: "El alojamiento, las direcciones útiles y las salidas.", carteLogement: "El alojamiento", carteAdresses: "Direcciones", carteActivites: "Qué hacer",
+      carteToucher: "Toque el mapa para moverlo", carteHors: "El mapa no está disponible sin conexión.",
+      activitesTitre: "Qué hacer cerca", activitesSub: "Nuestras ideas de salidas, probadas y aprobadas.", voirCarte: "Ver en el mapa", aucuneActivite: "Ninguna actividad coincide.",
+      aucuneRubrique: "Ningún tema coincide.",
+      departTitre: "Antes de irse", departSub: function (h) { return (h ? "Salida " + h.charAt(0).toLowerCase() + h.slice(1) + ". " : "") + "Marque a medida que avanza."; },
+      fait: function (n, t) { return n + " de " + t + (n > 1 ? " hechos" : " hecho"); }, pret: "¡Todo listo, buen viaje!",
+      urgencesTitre: "Urgencias", urgencesSub: "Llamadas gratuitas desde cualquier teléfono.",
+      u112: "Urgencias, en toda Europa", u15: "Urgencia médica (SAMU)", u18: "Bomberos", u17: "Policía", u114: "Urgencias por SMS (personas sordas o con dificultades auditivas)",
+      u3237: "Farmacia de guardia (servicio de pago)", antipoison: "Centro de toxicología", hopital: "Hospital más cercano",
+      avis: "Dejar una opinión", avisDemo: "En una guía real, este botón abre la página de opiniones del anfitrión (Google, Airbnb, Booking…).",
+      maj: "Actualizado el", fait_avec: "Guía de bienvenida creada con", horsLigneOk: "Esta guía también funciona sin conexión.",
+      meteo: "El tiempo", meteoSource: "Datos: MET Norway",
+      introuvable: "Guía no encontrada", introuvableTxt: "Puede que el enlace esté incompleto. Escanee de nuevo el código QR o contacte con su anfitrión.", retour: "Volver al inicio",
+      chargement: "Abriendo la guía…", horsLigne: "Sin conexión", horsLigneTxt: "Esta guía se abrirá en cuanto el teléfono tenga conexión (Wi-Fi o datos móviles).", reessayer: "Reintentar",
+      locale: "es-ES"
+    },
+    nl: {
+      lieu: { location: "De accommodatie", maison: "Het huis", hotel: "Het hotel" },
+      toc: { arrivee: "Aankomst", services: "Extra's", adresses: "Adressen", carte: "Kaart", activites: "Te doen", depart: "Vertrek", urgences: "Noodgevallen" },
+      demo: "Voorbeeld van een welkomstboek gemaakt door {m}. Accommodatie, gastheren en winkels zijn fictief.", demoCta: "Maak het mijne",
+      bienvenue: { defaut: "Welkom!", hotel: "Welkom" },
+      annonce: { info: "Goed om te weten", alerte: "Belangrijk", bonplan: "Aanbieding" },
+      wifi: "Wifi", reseau: "Netwerk", mdp: "Wachtwoord", copier: "Kopiëren", copie: "Gekopieerd", mdpCopie: "Wachtwoord gekopieerd", mdpSel: "Wachtwoord geselecteerd: kopieer het",
+      arrivee: "Inchecken", depart: "Uitchecken", contacter: "Contact met", hote: "uw gastheer", appeler: "Bellen", email: "E-mail", urgence: "Noodgeval",
+      recherche: "Zoeken: verwarming, afval, parkeren…", rechercheLabel: "Zoeken in het welkomstboek", effacer: "Zoekopdracht wissen",
+      resultats: function (n, q) { return n + (n > 1 ? " resultaten" : " resultaat") + " voor ‘" + q + "’"; }, aucun: "Geen resultaten. Probeer een ander woord of neem contact op met uw gastheer.",
+      arriveeTitre: "Voor uw aankomst", arriveeSub: "Hoe u er komt en binnenkomt, zonder stress.",
+      hubTitre: "Wat zoekt u?",
+      hub: { arrivee: "Adres, toegang, sleutels", logement: function (n) { return n + (n > 1 ? " onderwerpen" : " onderwerp"); }, services: function (n) { return n + (n > 1 ? " extra's op aanvraag" : " extra op aanvraag"); }, adresses: function (n) { return n + (n > 1 ? " adressen" : " adres"); }, carte: "Alles op één kaart", activites: function (n) { return n + (n > 1 ? " ideeën" : " idee"); }, depart: "Checklist voor vertrek", urgences: "112, 15, 17, 18" },
+      bientot: "Uw verblijf komt eraan! Hier vindt u alles om aan te komen.",
+      adresse: "Adres", itineraire: "Route", copierAdresse: "Adres kopiëren", adresseCopiee: "Adres gekopieerd",
+      prevenir: "Mijn aankomsttijd doorgeven", msgArrivee: function (n) { return "Hallo, we komen rond … uur aan bij " + n + ". Tot snel!"; },
+      ouvrir: "Tik op een onderwerp om het te openen.",
+      servicesTitre: "Extra's", servicesSub: "Voor een nog fijner verblijf, op aanvraag.", demander: "Aanvragen",
+      msgService: function (t, p) { return "Hallo, we willen graag reserveren: " + t + (p ? " (" + p + ")" : "") + ". Dank u!"; },
+      adressesTitre: "Handige adressen", adressesSub: "Winkels, gezondheid en goede eetadresjes in de buurt.", tout: "Alles", aucuneAdresse: "Geen overeenkomend adres.",
+      carteTitre: "Op de kaart", carteSub: "De accommodatie, handige adressen en uitstapjes.", carteLogement: "De accommodatie", carteAdresses: "Adressen", carteActivites: "Te doen",
+      carteToucher: "Tik op de kaart om hem te verplaatsen", carteHors: "De kaart is offline niet beschikbaar.",
+      activitesTitre: "Te doen in de buurt", activitesSub: "Onze favoriete uitstapjes, getest en goedgekeurd.", voirCarte: "Bekijk op de kaart", aucuneActivite: "Geen overeenkomende activiteit.",
+      aucuneRubrique: "Geen overeenkomend onderwerp.",
+      departTitre: "Voor vertrek", departSub: function (h) { return (h ? "Uitchecken " + h.charAt(0).toLowerCase() + h.slice(1) + ". " : "") + "Vink af terwijl u bezig bent."; },
+      fait: function (n, t) { return n + " van " + t + " gedaan"; }, pret: "Alles klaar, goede reis!",
+      urgencesTitre: "Noodgevallen", urgencesSub: "Gratis bellen, met elke telefoon.",
+      u112: "Noodnummer, in heel Europa", u15: "Medisch noodgeval (SAMU)", u18: "Brandweer", u17: "Politie", u114: "Noodgeval via sms (doven en slechthorenden)",
+      u3237: "Dienstdoende apotheek (betaalde dienst)", antipoison: "Antigifcentrum", hopital: "Dichtstbijzijnde ziekenhuis",
+      avis: "Laat een beoordeling achter", avisDemo: "In een echt welkomstboek opent deze knop de beoordelingspagina van de gastheer (Google, Airbnb, Booking…).",
+      maj: "Bijgewerkt op", fait_avec: "Welkomstboek gemaakt met", horsLigneOk: "Dit welkomstboek werkt ook offline.",
+      meteo: "Weer", meteoSource: "Gegevens: MET Norway",
+      introuvable: "Welkomstboek niet gevonden", introuvableTxt: "De link is misschien onvolledig. Scan de QR-code opnieuw of neem contact op met uw gastheer.", retour: "Terug naar de startpagina",
+      chargement: "Welkomstboek wordt geopend…", horsLigne: "Geen verbinding", horsLigneTxt: "Dit welkomstboek opent zodra uw telefoon online is (wifi of mobiele data).", reessayer: "Opnieuw proberen",
+      locale: "nl-NL"
     }
   };
 
@@ -214,10 +286,10 @@
   }
 
   /* ---------- langue ---------- */
-  var LANGS = ["fr", "en", "de", "it"];
+  var LANGS = ["fr", "en", "de", "it", "es", "nl"];
   function langsOf(d) {
     var a = ["fr"];
-    ["en", "de", "it"].forEach(function (l) { if (d && d[l] && typeof d[l] === "object" && Object.keys(d[l]).length) a.push(l); });
+    ["en", "de", "it", "es", "nl"].forEach(function (l) { if (d && d[l] && typeof d[l] === "object" && Object.keys(d[l]).length) a.push(l); });
     return a;
   }
   function hasEn(d) { return langsOf(d).length > 1; }   /* « a plusieurs langues » */
@@ -355,12 +427,14 @@
 
   /* ---------- rendu ---------- */
   /* Menu des langues : petit bouton « FR ▾ » qui ouvre la liste */
-  var LANG_NAMES = { fr: "Français", en: "English", de: "Deutsch", it: "Italiano" };
+  var LANG_NAMES = { fr: "Français", en: "English", de: "Deutsch", it: "Italiano", es: "Español", nl: "Nederlands" };
   var X = {
     fr: { titre: " · Livret d'accueil", bienvenue: "BIENVENUE", deuxPoints: " : ", essentiel: "L'essentiel", auj: "Auj.", credits: "Photos d'illustration" },
     en: { titre: " · Welcome book", bienvenue: "WELCOME", deuxPoints: ": ", essentiel: "Essentials", auj: "Today", credits: "Illustration photos" },
     de: { titre: " · Willkommensbuch", bienvenue: "WILLKOMMEN", deuxPoints: ": ", essentiel: "Das Wichtigste", auj: "Heute", credits: "Illustrationsfotos" },
-    it: { titre: " · Guida di benvenuto", bienvenue: "BENVENUTI", deuxPoints: ": ", essentiel: "L'essenziale", auj: "Oggi", credits: "Foto illustrative" }
+    it: { titre: " · Guida di benvenuto", bienvenue: "BENVENUTI", deuxPoints: ": ", essentiel: "L'essenziale", auj: "Oggi", credits: "Foto illustrative" },
+    es: { titre: " · Guía de bienvenida", bienvenue: "BIENVENIDOS", deuxPoints: ": ", essentiel: "Lo esencial", auj: "Hoy", credits: "Fotos ilustrativas" },
+    nl: { titre: " · Welkomstboek", bienvenue: "WELKOM", deuxPoints: ": ", essentiel: "Het belangrijkste", auj: "Vandaag", credits: "Illustratiefoto's" }
   };
   function langMenu(lang, av) {
     return '<div class="lang" id="lang">' +
@@ -524,7 +598,7 @@
       d.adresses.forEach(function (a) {
         var m = CA[a.categorie] || CA.services;
         var q = a.requete || (a.nom + " " + (d.carte || d.ville || ""));
-        h.push('<article class="place" data-cat="' + esc(a.categorie) + '" data-q="' + esc(norm([a.nom, m.label, m.en, m.de, m.it, a.note, a.horaires].join(" "))) + '"><span class="place-ico">' + I(m.icone) + '</span><div class="place-main"><div class="place-top"><b>' + esc(a.nom) + '</b><span class="place-cat">' + esc(catLabel(CA, a.categorie, lang) || "") + '</span></div><div class="place-meta">' +
+        h.push('<article class="place" data-cat="' + esc(a.categorie) + '" data-q="' + esc(norm([a.nom, m.label, m.en, m.de, m.it, m.es, m.nl, a.note, a.horaires].join(" "))) + '"><span class="place-ico">' + I(m.icone) + '</span><div class="place-main"><div class="place-top"><b>' + esc(a.nom) + '</b><span class="place-cat">' + esc(catLabel(CA, a.categorie, lang) || "") + '</span></div><div class="place-meta">' +
           (a.distance ? "<span>" + I("pin", "ico-s") + esc(a.distance) + "</span>" : "") + (a.horaires ? "<span>" + I("horloge", "ico-s") + esc(a.horaires) + "</span>" : "") + "</div>" +
           (a.note ? "<p>" + esc(a.note) + "</p>" : "") +
           '<a class="lien-act" href="' + esc(window.cdhMapsUrl(q)) + '" target="_blank" rel="noopener">' + I("itineraire", "ico-s") + esc(t.itineraire) + "</a></div></article>");
@@ -547,7 +621,7 @@
       h.push('<section class="section" id="s-activites" data-sec>' + head("montagne", t.activitesTitre, t.activitesSub) + '<div class="acts">');
       d.activites.forEach(function (a) {
         var m = CT[a.categorie] || CT.culture;
-        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it].join(" "))) + '"' + (a.wiki && !safeImg(a.photo) ? ' data-wiki="' + esc(a.wiki) + '"' : "") + ">" +
+        h.push('<article class="act" data-q="' + esc(norm([a.titre, a.description, m.label, m.en, m.de, m.it, m.es, m.nl].join(" "))) + '"' + (a.wiki && !safeImg(a.photo) ? ' data-wiki="' + esc(a.wiki) + '"' : "") + ">" +
           (safeImg(a.photo) && a.photoCredit ? photo(a.photo, a.titre, m.icone, "act-ph").replace(/<\/div>$/, '<span class="ph-credit">' + esc(a.photoCredit) + "</span></div>") : photo(a.photo, a.titre, m.icone, "act-ph")) +
           '<div class="act-body"><span class="act-top">' + I(m.icone, "ico-s") + esc(catLabel(CT, a.categorie, lang) || "") + "</span><h3>" + esc(a.titre) + "</h3>" +
           (a.description ? "<p>" + esc(a.description) + "</p>" : "") +
@@ -716,7 +790,9 @@
     fr: { clearsky: "Ensoleillé", clearsky_night: "Ciel dégagé", fair: "Belles éclaircies", partlycloudy: "Partiellement nuageux", cloudy: "Nuageux", fog: "Brouillard", rain: "Pluie", lightrain: "Pluie faible", heavyrain: "Forte pluie", showers: "Averses", sleet: "Neige fondue", snow: "Neige", thunder: "Orage" },
     en: { clearsky: "Sunny", clearsky_night: "Clear", fair: "Mostly sunny", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", rain: "Rain", lightrain: "Light rain", heavyrain: "Heavy rain", showers: "Showers", sleet: "Sleet", snow: "Snow", thunder: "Thunderstorm" },
     de: { clearsky: "Sonnig", clearsky_night: "Klar", fair: "Überwiegend sonnig", partlycloudy: "Teils bewölkt", cloudy: "Bewölkt", fog: "Nebel", rain: "Regen", lightrain: "Leichter Regen", heavyrain: "Starker Regen", showers: "Schauer", sleet: "Schneeregen", snow: "Schnee", thunder: "Gewitter" },
-    it: { clearsky: "Soleggiato", clearsky_night: "Sereno", fair: "Prevalentemente soleggiato", partlycloudy: "Parzialmente nuvoloso", cloudy: "Nuvoloso", fog: "Nebbia", rain: "Pioggia", lightrain: "Pioggia debole", heavyrain: "Pioggia forte", showers: "Rovesci", sleet: "Nevischio", snow: "Neve", thunder: "Temporale" }
+    it: { clearsky: "Soleggiato", clearsky_night: "Sereno", fair: "Prevalentemente soleggiato", partlycloudy: "Parzialmente nuvoloso", cloudy: "Nuvoloso", fog: "Nebbia", rain: "Pioggia", lightrain: "Pioggia debole", heavyrain: "Pioggia forte", showers: "Rovesci", sleet: "Nevischio", snow: "Neve", thunder: "Temporale" },
+    es: { clearsky: "Soleado", clearsky_night: "Despejado", fair: "Mayormente soleado", partlycloudy: "Parcialmente nublado", cloudy: "Nublado", fog: "Niebla", rain: "Lluvia", lightrain: "Lluvia débil", heavyrain: "Lluvia fuerte", showers: "Chubascos", sleet: "Aguanieve", snow: "Nieve", thunder: "Tormenta" },
+    nl: { clearsky: "Zonnig", clearsky_night: "Helder", fair: "Overwegend zonnig", partlycloudy: "Halfbewolkt", cloudy: "Bewolkt", fog: "Mist", rain: "Regen", lightrain: "Lichte regen", heavyrain: "Zware regen", showers: "Buien", sleet: "Natte sneeuw", snow: "Sneeuw", thunder: "Onweer" }
   };
   function symInfo(code, lang) {
     code = String(code || "cloudy"); var night = /_night/.test(code); var base = code.replace(/_(day|night|polartwilight)$/, "");

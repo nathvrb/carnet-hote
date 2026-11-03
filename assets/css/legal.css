@@ -28,3 +28,4 @@
 .legal-nav [aria-current] { font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 560px) { .legal dl { grid-template-columns: 1fr; gap: 2px; } .legal dt { margin-top: 10px; } .legal td.p { white-space: normal; } }
 @media print { .top, .foot, .legal-nav { display: none !important; } .legal { padding: 0; } .a-completer { background: none; } }
+blockquote { margin: 12px 0 18px; padding: 12px 16px; border-left: 3px solid var(--taupe, #9C8B76); background: rgba(0,0,0,.03); font-size: .95em; }

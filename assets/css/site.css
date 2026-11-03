@@ -384,6 +384,8 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 /* ---------- offres : une carte de prix ---------- */
 .offres-tete { margin-bottom: clamp(56px, 7vw, 96px); }
 .offres-tete .h2 { max-width: 20em; }
+.offres-essai { margin: 18px 0 0; max-width: 40em; color: var(--gris); font-size: 16px; }
+.offres-essai b { color: var(--bleu); }
 .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--col) * 2); max-width: 1040px; }
 .plan { padding: 22px 0 0; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 16px; min-width: 0; border-top: 1px solid var(--bleu); }
 .plan-nom { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -563,6 +565,14 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .form input:focus, .form textarea:focus { outline: none; border-color: var(--bleu); box-shadow: 0 0 0 1px var(--bleu); }
 .form input[aria-invalid="true"] { border-color: var(--danger); }
 .form .err { color: var(--danger); font-size: 13px; font-weight: 500; }
+.form .statut { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; }
+.form .statut legend { font-size: 14px; font-weight: 600; padding: 0; margin-bottom: 8px; width: 100%; }
+.form .statut label { display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: 15px; }
+.form .statut input, .form .check input { width: 20px; height: 20px; min-height: 0; padding: 0; accent-color: var(--bleu); flex: none; }
+.form .statut .err { width: 100%; }
+.form .check { grid-template-columns: 20px 1fr; align-items: start; gap: 6px 12px; font-weight: 400; font-size: 14px; line-height: 1.5; }
+.form .check input { margin-top: 2px; }
+.form .check .err { grid-column: 2; }
 .form-status { grid-column: 1 / -1; padding: 16px 18px; font-size: 15px; display: grid; gap: 10px; background: var(--papier); border-left: 3px solid var(--taupe); }
 .form-status.ok { border-left-color: var(--ok); }
 .form-status pre { margin: 0; white-space: pre-wrap; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; max-height: 220px; overflow: auto; background: var(--ivoire); padding: 10px 12px; }

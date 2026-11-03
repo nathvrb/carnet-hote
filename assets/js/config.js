@@ -40,5 +40,5 @@ window.CDH_CONFIG = {
   siret: "SIRET en cours d'immatriculation",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",
   validiteDevisJours: 30,
-  conditions: "Acompte de 50 % à la commande, solde à la livraison. Forfait mensuel sans engagement, résiliable à tout moment avec 30 jours de préavis."
+  conditions: "Acompte de 50 % à la commande, non remboursable une fois le travail commencé. Essai de 14 jours après la mise en ligne, puis solde de la création et forfait (sans engagement, résiliable avec 30 jours de préavis). PDF du livret remis à l'arrêt du forfait après au moins 3 mois d'abonnement."
 };

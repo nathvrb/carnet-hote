@@ -1,5 +1,5 @@
 /* Console d'édition des livrets.
-   - Boutons FR / EN / DE / IT : en mode traduction, les textes saisis vont dans doc.en, doc.de ou doc.it.
+   - Boutons FR / EN / DE / IT / ES / NL : en mode traduction, les textes saisis vont dans doc.en, doc.de, doc.it, doc.es ou doc.nl.
      Un champ anglais vide reprend le texte français.
    - La structure (ajout, ordre, suppression, photos) se modifie en FR ;
      les traductions suivent automatiquement. */
@@ -67,8 +67,8 @@
 
   /* ---------- accès aux listes (FR et EN) ---------- */
   function arr(list) { return list === "blocs" ? doc.arrivee.blocs : doc[list]; }
-  var TRL = ["en", "de", "it"];   /* langues de traduction : la saisie va dans doc.en, doc.de ou doc.it */
-  var LANG_LABEL = { en: "anglaise", de: "allemande", it: "italienne" };
+  var TRL = ["en", "de", "it", "es", "nl"];   /* langues de traduction : la saisie va dans doc.en, doc.de ou doc.it */
+  var LANG_LABEL = { en: "anglaise", de: "allemande", it: "italienne", es: "espagnole", nl: "néerlandaise" };
   function trArr(lang, list, create) {
     if (!doc[lang]) { if (!create) return null; doc[lang] = {}; }
     var host = doc[lang], key = list;
@@ -998,6 +998,8 @@
     if (edLang === "en") return "Hello! Your stay at " + doc.nom + " is coming up. Here's how to get here and pick up the keys: " + url + "\nSee you tomorrow!" + sig;
     if (edLang === "de") return "Guten Tag! Ihr Aufenthalt in „" + doc.nom + "“ steht bevor. So kommen Sie an und erhalten die Schlüssel: " + url + "\nBis morgen!" + sig;
     if (edLang === "it") return "Buongiorno! Il vostro soggiorno a " + doc.nom + " si avvicina. Ecco come arrivare e ritirare le chiavi: " + url + "\nA domani!" + sig;
+    if (edLang === "es") return "¡Hola! Su estancia en " + doc.nom + " se acerca. Así se llega y se recogen las llaves: " + url + "\n¡Hasta mañana!" + sig;
+    if (edLang === "nl") return "Hallo! Uw verblijf in " + doc.nom + " komt eraan. Zo komt u er en haalt u de sleutels op: " + url + "\nTot morgen!" + sig;
     return "Bonjour ! Votre séjour au " + doc.nom + " approche. Voici comment venir et récupérer les clés : " + url + "\nÀ demain !" + (who ? "\n" + who : "");
   }
   function renderArrLink() {
@@ -1047,7 +1049,7 @@
     var disp = FONT_CSS[doc.theme.police] || FONT_CSS.Gloock;
     var body = '"Schibsted Grotesk", system-ui, sans-serif';
     var trs = TRL.filter(function (l) { return doc[l] && Object.keys(doc[l]).length; }), bi = trs.length > 0;
-    var WEL = { en: "WELCOME", de: "WILLKOMMEN", it: "BENVENUTI" };
+    var WEL = { en: "WELCOME", de: "WILLKOMMEN", it: "BENVENUTI", es: "BIENVENIDOS", nl: "WELKOM" };
     var go = function () {
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = accent; ctx.fillRect(0, 0, W, 470);
