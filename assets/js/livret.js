@@ -502,6 +502,7 @@
       '<path d="M78 26 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 M78 38 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 M78 50 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>' +
       '<h2 class="pc-title">' + esc(titreAcc) + "</h2>" +
       (d.bienvenue ? '<div class="pc-msg">' + paras(d.bienvenue) + "</div>" : "") +
+      (safeImg(theme.logo) ? '<img class="pc-logo" src="' + esc(safeImg(theme.logo)) + '" alt="' + esc(d.nom || "") + '">' : "") +
       '<p class="pc-sign"><span class="pc-script">' + esc(hote.signature || hote.nom || "") + "</span>" + (hote.role ? "<small>" + esc(hote.role) + "</small>" : "") + "</p></section>");
 
     /* Message du moment */

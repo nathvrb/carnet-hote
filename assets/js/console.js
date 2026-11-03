@@ -689,6 +689,7 @@
   function photoSlots(d, onlyDepot) {
     var out = [], want = function (s) { return onlyDepot ? isDepot(s) : (isDepot(s) || /^data:image\//.test(s || "")); };
     if (d.theme && want(d.theme.couverture)) out.push([d.theme, "couverture", function () { d.theme.couverture = ""; }]);
+    if (d.theme && want(d.theme.logo)) out.push([d.theme, "logo", function () { d.theme.logo = ""; }]);
     (d.rubriques || []).forEach(function (r) { (r.photos || []).forEach(function (p) { if (want(p.src)) out.push([p, "src", function () { var i = r.photos.indexOf(p); if (i > -1) r.photos.splice(i, 1); }]); }); });
     ((d.arrivee || {}).blocs || []).forEach(function (b) { if (want(b.photo)) out.push([b, "photo", function () { b.photo = ""; }]); });
     (d.activites || []).forEach(function (a) { if (want(a.photo)) out.push([a, "photo", function () { a.photo = ""; }]); });

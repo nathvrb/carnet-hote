@@ -159,6 +159,7 @@ p, li { text-wrap: pretty; }
 }
 .pc-msg { display: grid; gap: 10px; font-size: 17px; line-height: 1.65; position: relative; }
 .pc-msg p { margin: 0; }
+.pc-logo { display: block; max-width: 140px; max-height: 64px; width: auto; height: auto; object-fit: contain; margin: 18px 0 0 auto; }
 .pc-sign { margin: 16px 0 0; display: grid; justify-items: end; gap: 0; text-align: right; }
 .pc-script { font-family: var(--script); font-weight: 600; font-size: 2.15rem; line-height: 1; color: var(--ac); transform: rotate(-3deg); }
 .pc-sign small { color: var(--ink-soft); font-size: 13.5px; margin-top: 6px; }
