@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /console.html
+Disallow: /espace.html
+Disallow: /livret.html
+Disallow: /l/
+Disallow: /questionnaire.html
+
+Sitemap: https://carnetdhote.fr/sitemap.xml
