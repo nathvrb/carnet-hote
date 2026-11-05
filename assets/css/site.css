@@ -520,6 +520,40 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .sup-line .coul .dot { width: 28px; height: 28px; border-color: var(--papier); }
 .sup-line .sup-line .sup-line .qty-row .en-plus { font-size: 12.5px; font-style: italic; font-family: var(--display); color: var(--taupe-texte); margin-left: 4px; }
 
+/* catégories d'établissement : deux colonnes dès qu'il y a la place */
+@media (min-width: 640px) { .cards.rangs.types { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* langues illimitées (Premium) */
+.illim { font-family: var(--display); font-size: 1.15rem; color: var(--bleu); }
+.illim small { font-family: var(--body); font-size: 13px; color: var(--gris); margin-left: 4px; }
+/* couleur personnalisée (Premium) */
+.coul.perso .dot { background: conic-gradient(#d33, #e9b13b, #4caf50, #2aa7c9, #3b4fd1, #a23ec9, #d33); position: relative; }
+.coul.perso .dot::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--c, #fff); box-shadow: 0 0 0 2px #fff; }
+.perso-row { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 16px; padding: 12px 0 16px; border-bottom: 1px solid var(--filet); }
+.perso-row label { display: grid; gap: 4px; font-size: 13px; font-weight: 600; color: var(--gris); }
+.perso-row input[type=color] { width: 56px; height: 40px; padding: 2px; border: 1px solid var(--taupe-texte); background: #fff; cursor: pointer; }
+.perso-row input:not([type=color]) { width: 110px; height: 40px; padding: 0 10px; border: 1px solid var(--taupe-texte); background: #fff; font: 500 15px var(--body); text-transform: uppercase; }
+.perso-row small { flex-basis: 100%; color: var(--gris); font-size: 13px; }
+/* maquette du devis : porte-clés + livret */
+.maquette { display: grid; gap: 18px; padding: 20px 0 6px; border-top: 1px solid var(--filet); }
+.maq-vue { display: flex; align-items: center; justify-content: center; gap: clamp(10px, 3vw, 28px); background: var(--pierre); padding: 22px 12px; }
+.maq-cle { display: grid; justify-items: center; gap: 6px; }
+.maq-cle-svg { width: clamp(96px, 22vw, 128px); height: auto; filter: drop-shadow(0 8px 14px rgba(24, 43, 64, .14)); }
+.maq-fleche { font-family: var(--display); font-style: italic; font-size: 14px; color: var(--taupe-texte); }
+.maq-tel { width: 195px; height: 390px; flex: none; background: var(--bleu-nuit); border-radius: 26px; padding: 8px; box-shadow: 0 14px 30px rgba(24, 43, 64, .22); }
+.maq-ecran { width: 100%; height: 100%; overflow: hidden; border-radius: 19px; background: var(--ivoire); position: relative; }
+.maq-ecran iframe { width: 358px; height: 748px; border: 0; transform: scale(.5); transform-origin: 0 0; display: block; }
+.maq-reglages { display: grid; gap: 4px; }
+.maq-t { margin: 0 0 4px; font-weight: 600; }
+.maq-t small { display: block; font-weight: 400; color: var(--gris); font-size: 14px; }
+.maq-nom { display: grid; gap: 6px; padding: 14px 0; border-bottom: 1px solid var(--filet); font-weight: 500; }
+.maq-nom small { color: var(--gris); font-weight: 400; font-size: 13px; }
+.maq-nom input { height: 44px; padding: 0 12px; border: 1px solid var(--taupe-texte); background: #fff; font: 500 16px var(--body); color: var(--texte); }
+.maq-photo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 14px 0 4px; }
+.maq-photo small { flex-basis: 100%; color: var(--gris); font-size: 13px; }
+.sup-inclus { padding: 14px 0; border-top: 1px solid var(--filet); margin: 0; }
+.sup-box #supports .qty-row:first-of-type { border-top: 1px solid var(--filet); }
+@media (max-width: 380px) { .maq-tel { width: 170px; height: 340px; } .maq-ecran iframe { transform: scale(.4357); } }
+
 /* la note de devis */
 .folio-col { position: sticky; top: 100px; display: grid; gap: 14px; min-width: 0; }
 .folio {

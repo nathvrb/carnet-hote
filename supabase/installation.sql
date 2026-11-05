@@ -412,15 +412,15 @@ create policy "cdh photos suppression" on storage.objects for delete to authenti
   using (bucket_id = 'photos' and cdh.peut_modifier((storage.foldername(name))[1]));
 
 -- ---------------------------------------------------------------------
---  Photos des futurs clients (questionnaire en ligne) : dossier PRIVÉ
---  « depots/<dossier-du-client>/NN-sujet.jpg ».
---  Tout visiteur peut déposer des images (3 Mo maximum chacune, 40 par
---  dossier, noms contrôlés) mais personne ne peut les relire ni les
---  supprimer depuis le site : vous les consultez dans Supabase
---  (Storage → depots) ou, connecté en administrateur, depuis la console.
+--  Photos et fichiers des futurs clients (questionnaire en ligne) : dossier
+--  PRIVÉ « depots/<dossier-du-client>/NN-sujet.ext ».
+--  Tout visiteur peut déposer photos, logo, notices (PDF) et vidéos
+--  (50 Mo maximum chacun, 60 par dossier, noms contrôlés) mais personne ne
+--  peut les relire ni les supprimer depuis le site : vous les consultez dans
+--  Supabase (Storage → depots) ou, connecté en administrateur, depuis la console.
 -- ---------------------------------------------------------------------
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('depots', 'depots', false, 3145728, array['image/jpeg', 'image/png', 'image/webp'])
+values ('depots', 'depots', false, 52428800, array['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'video/mp4', 'video/quicktime', 'video/webm'])
 on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
@@ -435,8 +435,8 @@ grant execute on function cdh.nb_depots(text) to anon, authenticated;
 drop policy if exists "cdh depots envoi" on storage.objects;
 create policy "cdh depots envoi" on storage.objects for insert to anon, authenticated
   with check (bucket_id = 'depots'
-    and name ~ '^[a-z0-9-]{8,80}/[0-9]{2}-[a-z0-9-]{1,60}\.(jpg|png|webp)$'
-    and cdh.nb_depots((storage.foldername(name))[1]) < 40);
+    and name ~ '^[a-z0-9-]{8,80}/[0-9]{2}-[a-z0-9-]{1,60}\.(jpg|png|webp|pdf|mp4|mov|webm)$'
+    and cdh.nb_depots((storage.foldername(name))[1]) < 60);
 
 drop policy if exists "cdh depots lecture admin" on storage.objects;
 create policy "cdh depots lecture admin" on storage.objects for select to authenticated

@@ -45,7 +45,9 @@ window.CDH_TARIFS = {
       accroche: "Un livret entièrement à votre image, pour les hôtes exigeants et les établissements.",
       delai: "3 à 5 jours ouvrés, en priorité",
       langues: 6,
+      languesIllimitees: true,
       languesTexte: "langues illimitées",
+      couleurPerso: true,
       supportsInclus: { porteCles: 2 },
       corrections: 3,
       guide: 30,
@@ -64,14 +66,18 @@ window.CDH_TARIFS = {
     }
   },
 
-  // Les langues proposées (le Confort en comprend 4 au choix, le Premium toutes)
+  // Les langues proposées d'office (le Confort en comprend 4 au choix, sans limite au-delà
+  // à 29 € la langue ; le Premium : langues illimitées)
   languesDispo: ["Français", "Anglais", "Allemand", "Italien", "Espagnol", "Néerlandais"],
 
-  // Type d'établissement
+  // Catégories d'établissement (devis). mode « logement » = un livret par logement,
+  // mode « chambres » = un seul livret pour toutes les chambres (hôtels, chambres d'hôtes).
   types: {
-    location: { label: "Location courte durée", detail: "Airbnb, Booking, gîte, meublé", unite: "logement", unitePluriel: "logements" },
-    maison:   { label: "Maison / chambres d'hôtes", detail: "1 livret pour la maison, un QR par chambre", unite: "chambre", unitePluriel: "chambres" },
-    hotel:    { label: "Hôtel", detail: "Room directory digital, un QR par chambre", unite: "chambre", unitePluriel: "chambres" }
+    appartement: { label: "Appartement", detail: "Studio, T2, loft… en location courte durée", mode: "logement" },
+    maison:      { label: "Maison ou villa", detail: "Location courte durée : Airbnb, Abritel, Booking", mode: "logement" },
+    gite:        { label: "Gîte ou meublé de tourisme", detail: "Gîtes de France, Clévacances, gîte rural", mode: "logement" },
+    chambres:    { label: "Chambres d'hôtes", detail: "1 livret pour la maison, un QR par chambre", mode: "chambres" },
+    hotel:       { label: "Hôtel", detail: "Room directory digital, un QR par chambre", mode: "chambres" }
   },
 
   // Hôtels et maisons d'hôtes : un livret pour toutes les chambres, au prix d'un seul.
@@ -112,7 +118,7 @@ window.CDH_TARIFS = {
   supports: {
     porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés" }
   },
-  // Couleur du bandeau du visuel imprimé (porte-clés, affiche)
+  // Couleur du bandeau du visuel imprimé (porte-clés, affiche) ; le Premium ajoute une couleur personnalisée
   couleurs: [
     { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
     { id: "sapin",      nom: "Vert sapin", hex: "#1F5B4C" },

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=51">
+<link rel="stylesheet" href="assets/css/site.css?v=52">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -306,13 +306,13 @@
         <form class="config" id="config" novalidate>
           <fieldset class="field" id="f-type">
             <legend><span class="step">1</span> Votre établissement</legend>
-            <div class="cards rangs" id="types"></div>
+            <div class="cards rangs types" id="types"></div>
           </fieldset>
 
           <fieldset class="field" id="f-qty">
             <legend><span class="step">2</span> <span id="qty-legend">Nombre de logements</span></legend>
             <div class="qty-row">
-              <label for="qty"><span id="qty-label">Logements équipés d'un livret</span><small id="qty-hint">Un livret par logement, prix réduit dès le 2e</small></label>
+              <label for="qty"><span id="qty-label">Nombre de logements à équiper</span><small id="qty-hint">Un livret par logement, prix réduit dès le 2e</small></label>
               <div class="stepper"><button type="button" data-step="-1" data-for="qty" aria-label="Retirer un">−</button><input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="200" value="1"><button type="button" data-step="1" data-for="qty" aria-label="Ajouter un">+</button></div>
             </div>
             <div class="qty-row" id="variantes-row" hidden>
@@ -329,16 +329,59 @@
 
           <fieldset class="field" id="f-options">
             <legend><span class="step">4</span> Langues, supports et options</legend>
-            <div class="qty-row">
-              <label for="langues">Langues du livret<small id="langues-hint">1 incluse dans la formule</small></label>
+            <div class="qty-row" id="langues-row">
+              <label for="langues">Langues du livret<small id="langues-hint">4 au choix incluses</small></label>
               <span class="p" id="langues-p"></span>
-              <div class="stepper"><button type="button" data-step="-1" data-for="langues" aria-label="Retirer une langue">−</button><input id="langues" name="langues" type="number" inputmode="numeric" min="1" max="6" value="4"><button type="button" data-step="1" data-for="langues" aria-label="Ajouter une langue">+</button></div>
+              <div class="stepper" id="langues-stepper"><button type="button" data-step="-1" data-for="langues" aria-label="Retirer une langue">−</button><input id="langues" name="langues" type="number" inputmode="numeric" min="1" max="30" value="4"><button type="button" data-step="1" data-for="langues" aria-label="Ajouter une langue">+</button></div>
+              <span class="illim" id="langues-illim" hidden>Illimitées <small>incluses</small></span>
             </div>
+
+            <!-- Maquette : le porte-clés, dont le QR ouvre le livret ; le visiteur essaie sa photo et sa couleur -->
+            <div class="maquette" id="maquette">
+              <div class="maq-vue">
+                <div class="maq-cle" id="maq-cle-box">
+                  <svg class="maq-cle-svg" viewBox="30 40 132 290" role="img" aria-labelledby="maq-cle-t">
+                    <title id="maq-cle-t">Maquette du porte-clés avec votre couleur et votre nom</title>
+                    <defs><linearGradient id="maq-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".5" stop-color="#fff" stop-opacity=".28"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity=".18"/></linearGradient></defs>
+                    <circle cx="94" cy="68" r="22" fill="none" stroke="#9C8B76" stroke-width="6"/>
+                    <path d="M54 100H134L146 112V306L134 318H54L42 306V112Z" fill="#fff" fill-opacity=".38" stroke="#B9AE9C" stroke-width="1.4"/>
+                    <circle cx="94" cy="110" r="6" fill="var(--pierre)" stroke="#B9AE9C" stroke-width="1.2"/>
+                    <rect x="54" y="128" width="80" height="168" fill="#fff" stroke="#E2D8C8"/>
+                    <rect id="maq-band" x="54" y="128" width="80" height="46" fill="#1F3A5F"/>
+                    <text x="94" y="142" text-anchor="middle" fill="#fff" fill-opacity=".85" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="4.6" font-weight="700" letter-spacing="1.2">BIENVENUE</text>
+                    <text id="maq-name" x="94" y="160" text-anchor="middle" fill="#fff" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="8" font-weight="700" letter-spacing="1.4">LE NID DES TANNEURS</text>
+                    <g id="maq-qr" transform="translate(61 180)"></g>
+                    <text x="94" y="268" text-anchor="middle" fill="#182B40" font-family="'Brygada 1918', Georgia, serif" font-style="italic" font-size="11">livret d'accueil</text>
+                    <text x="94" y="282" text-anchor="middle" fill="#615C54" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="6" letter-spacing=".4">Scannez pour ouvrir</text>
+                    <path d="M54 100H134L146 112V306L134 318H54L42 306V112Z" fill="url(#maq-glass)" stroke="#fff" stroke-opacity=".9" stroke-width="1"/>
+                  </svg>
+                  <span class="maq-fleche" aria-hidden="true">scannez&nbsp;→</span>
+                </div>
+                <div class="maq-tel" aria-label="Aperçu du livret d'exemple, avec votre photo et votre couleur">
+                  <div class="maq-ecran"><iframe id="maq-frame" name="cdh-apercu" title="Aperçu du livret d'exemple" tabindex="-1" loading="lazy"></iframe></div>
+                </div>
+              </div>
+              <div class="maq-reglages">
+                <p class="maq-t">Votre maquette<small>Le QR du porte-clés ouvre le livret. Essayez votre photo et votre couleur : le livret d'exemple les prend aussitôt.</small></p>
+                <div class="sup-line" id="couleurs-row"><span class="lbl">Couleur du bandeau et du livret</span><div class="couleurs" id="couleurs" role="radiogroup" aria-label="Couleur du bandeau"></div></div>
+                <div class="perso-row" id="perso-row" hidden>
+                  <label for="perso-color"><span>Spectre</span><input type="color" id="perso-color" value="#2e5e4e"></label>
+                  <label for="perso-hex"><span>Code couleur</span><input id="perso-hex" value="#2E5E4E" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#2E5E4E"></label>
+                  <small>Couleur personnalisée, incluse dans le Premium.</small>
+                </div>
+                <label class="maq-nom" for="maq-nom"><span>Nom imprimé <small>(25 caractères maximum)</small></span><input id="maq-nom" maxlength="25" value="Le Nid des Tanneurs" autocomplete="off" spellcheck="false"></label>
+                <div class="maq-photo">
+                  <label class="btn trait small"><input type="file" id="maq-photo" accept="image/*" hidden>Ajouter une photo</label>
+                  <button type="button" class="linkbtn" id="maq-photo-rm" hidden>Retirer la photo</button>
+                  <small>Votre photo reste sur votre appareil : elle n'est envoyée nulle part.</small>
+                </div>
+              </div>
+            </div>
+
             <div class="sup-box" id="sup-box">
-              <div class="sup-line" id="couleurs-row"><span class="lbl">Couleur du bandeau <a href="#supports-qr">voir la maquette</a></span><div class="couleurs" id="couleurs" role="radiogroup" aria-label="Couleur du bandeau"></div></div>
+              <p class="hint sup-inclus"><span id="supports-inclus"></span> <button type="button" class="linkbtn" id="one-each">Un <span id="one-each-what">porte-clés</span> par <span id="one-each-u">logement</span></button></p>
               <div id="supports"></div>
             </div>
-            <p class="hint"><span id="supports-inclus"></span> <button type="button" class="linkbtn" id="one-each">Un <span id="one-each-what">porte-clés</span> par <span id="one-each-u">logement</span></button></p>
           </fieldset>
 
           <fieldset class="field" id="f-forfait">
@@ -496,14 +539,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">89,99 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=51"></script>
-<script src="assets/js/tarifs.js?v=51"></script>
-<script src="assets/js/icons.js?v=51"></script>
+<script src="assets/js/config.js?v=52"></script>
+<script src="assets/js/tarifs.js?v=52"></script>
+<script src="assets/js/icons.js?v=52"></script>
 <script src="data/livrets.js"></script>
-<script src="assets/js/store.js?v=51"></script>
+<script src="assets/js/store.js?v=52"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
-<script src="assets/js/qr.js?v=51"></script>
-<script src="assets/js/devis.js?v=51"></script>
-<script src="assets/js/site.js?v=51"></script>
+<script src="assets/js/qr.js?v=52"></script>
+<script src="assets/js/devis.js?v=52"></script>
+<script src="assets/js/site.js?v=52"></script>
 </body>
 </html>

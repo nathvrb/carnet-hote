@@ -19,7 +19,7 @@
   function ordinal(n) { return n === 1 ? "1er" : n + "e"; }
   function compute(s) {
     var F = T.formules[s.formule], FF = T.forfaits[s.forfait], TY = T.types[s.type];
-    var isLoc = s.type === "location";
+    var isLoc = TY.mode !== "chambres";
     var livrets = isLoc ? s.qty : 1;
     var lines = [];
 
@@ -40,18 +40,18 @@
       lines.push({ l: variantes + " " + plural(variantes, "variante", "variantes") + " par type de chambre", small: "Consignes propres à un type de chambre · " + eur(T.variante.prix) + " l'unité", a: varCost });
     }
 
-    var langSup = Math.max(0, s.langues - F.langues);
+    var langSup = F.languesIllimitees ? 0 : Math.max(0, s.langues - F.langues);
     var langCost = langSup * T.options.langue.prix * livrets;
     if (langSup) lines.push({ l: langSup + " " + plural(langSup, "langue supplémentaire", "langues supplémentaires"), small: s.langues + " langues au total, " + F.langues + " " + plural(F.langues, "incluse", "incluses") + (livrets > 1 ? " · × " + livrets + " livrets" : ""), a: langCost });
 
     var incl = {}, inclTotal = 0;
     Object.keys(F.supportsInclus || {}).forEach(function (k) { incl[k] = F.supportsInclus[k] * livrets; inclTotal += incl[k]; });
     var sup = s.supports || {};
-    var coul = couleur(s.couleur);
+    var coul = couleur(s.couleur, s.couleurPerso);
     Object.keys(T.supports).forEach(function (k) {
       if (!incl[k]) return;
       var SI = T.supports[k];
-      lines.push({ l: incl[k] + " " + plural(incl[k], SI.court[0], SI.court[1]) + " inclus", small: SI.label + (k === "porteCles" ? " · bandeau " + coul.nom.toLowerCase() : ""), a: 0 });
+      lines.push({ l: incl[k] + " " + plural(incl[k], SI.court[0], SI.court[1]) + " inclus", small: SI.label + (k === "porteCles" ? " · bandeau " + (coul.id === "perso" ? "couleur personnalisée " + coul.hex.toUpperCase() : coul.nom.toLowerCase()) : ""), a: 0 });
     });
     var supportsCost = 0;
     Object.keys(T.supports).forEach(function (k) {
@@ -76,7 +76,8 @@
       formule: F, forfait: FF, type: TY, inclus: incl, inclusTotal: inclTotal, couleur: coul
     };
   }
-  function couleur(id) {
+  function couleur(id, hex) {
+    if (id === "perso" && /^#[0-9a-f]{6}$/i.test(hex || "")) return { id: "perso", nom: "Couleur personnalisée " + hex.toUpperCase(), hex: hex };
     var c = (T.couleurs || []).filter(function (x) { return x.id === id; })[0];
     return c || (T.couleurs || [{ id: "", nom: "", hex: "#1F3A5F" }])[0];
   }
@@ -86,7 +87,9 @@
   var form = document.getElementById("config");
   if (!form) return;
   var I = window.cdhIcon, esc = window.cdhEsc;
-  var lastQty = { location: 1, maison: 5, hotel: 24 };
+  var lastQty = { appartement: 1, maison: 1, gite: 1, chambres: 5, hotel: 24 };
+  var KEY_DEVIS = "cdh:devis:v2";
+  function modeLoc(type) { return ((T.types[type] || {}).mode || "logement") !== "chambres"; }
   var now0 = new Date();
   var numero = "CDH-" + String(now0.getFullYear()).slice(2) + String(now0.getMonth() + 1).padStart(2, "0") + String(now0.getDate()).padStart(2, "0") + "-" + String(Math.floor(100 + Math.random() * 900));
 
@@ -108,7 +111,9 @@
   }).join("");
   document.getElementById("couleurs").innerHTML = (T.couleurs || []).map(function (c, i) {
     return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="couleur" value="' + c.id + '" id="couleur-' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span>' + esc(c.nom) + "</span></label>";
-  }).join("");
+  }).join("") +
+    /* Premium : couleur personnalisée (spectre + code) */
+    '<label class="coul perso" id="coul-perso" title="Couleur personnalisée (Premium)" hidden><input type="radio" name="couleur" value="perso" id="couleur-perso"><span class="dot" aria-hidden="true"></span><span>Couleur personnalisée</span></label>';
   document.getElementById("supports").innerHTML = Object.keys(T.supports).map(function (k) {
     var s = T.supports[k];
     return '<div class="qty-row"><label for="sup-' + k + '">' + esc(s.label) + ' <span class="en-plus">en plus</span><small>' + esc(s.detail) + '</small></label><span class="p">' + eur(s.prix) + " l'unité</span>" +
@@ -121,18 +126,22 @@
     var fd = new FormData(form);
     var sup = {};
     Object.keys(T.supports).forEach(function (k) { sup[k] = clampInt(fd.get("sup-" + k), 0, 500); });
+    var hexP = (document.getElementById("perso-hex").value || "").trim();
     return {
-      type: fd.get("type") || "location",
+      type: T.types[fd.get("type")] ? fd.get("type") : Object.keys(T.types)[0],
       qty: clampInt(fd.get("qty"), 1, 200),
       variantes: clampInt(fd.get("variantes"), 0, 50),
       formule: fd.get("formule") || "confort",
-      langues: clampInt(fd.get("langues"), 1, T.languesDispo.length),
+      langues: clampInt(fd.get("langues"), 1, LANGUES_MAX),
       supports: sup,
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
+      couleurPerso: /^#[0-9a-f]{6}$/i.test(hexP) ? hexP.toUpperCase() : "",
+      nomMaquette: (document.getElementById("maq-nom").value || "").trim(),
       forfait: fd.get("forfait") || "autonomie",
       facturation: fd.get("facturation") || "mensuel"
     };
   }
+  var LANGUES_MAX = 30; /* « illimité » : pas de plafond réel, seulement une borne de saisie */
   function clampInt(v, a, b) { v = parseInt(v, 10); if (isNaN(v)) v = a; return Math.min(b, Math.max(a, v)); }
 
   function lineHtml(x) {
@@ -144,10 +153,10 @@
   function update() {
     var s = state(), q = compute(s);
     lastQuote = q; lastState = s;
-    var isLoc = s.type === "location";
+    var isLoc = modeLoc(s.type);
     var unit = isLoc ? "logement" : "chambre";
     document.getElementById("qty-legend").textContent = isLoc ? "Nombre de logements" : "Nombre de chambres";
-    document.getElementById("qty-label").textContent = isLoc ? "Logements équipés d'un livret" : (s.type === "hotel" ? "Chambres de l'hôtel" : "Chambres de la maison");
+    document.getElementById("qty-label").textContent = isLoc ? "Nombre de logements à équiper" : (s.type === "hotel" ? "Chambres de l'hôtel" : "Chambres de la maison");
     document.getElementById("qty-hint").textContent = isLoc ? "Un livret par logement, prix réduit dès le 2e" : "Un seul livret pour toutes les chambres, au prix d'un seul";
     document.getElementById("variantes-row").hidden = isLoc;
     document.getElementById("one-each-u").textContent = unit;
@@ -160,7 +169,19 @@
         ? '<s class="barre" title="' + esc(eur(m, true) + " × 12") + '">' + eur(r2(m * 12)) + "</s> " + eur(r2(m * (12 - T.moisOffertsAnnuel))) + " / an"
         : eur(m) + " / mois";
     });
-    document.getElementById("langues-hint").textContent = F.langues >= T.languesDispo.length ? "Langues illimitées dans la formule " + F.nom : F.langues + " au choix incluses dans la formule " + F.nom + " (" + T.languesDispo.join(", ").toLowerCase() + ")";
+    /* Langues : illimitées. Premium : toutes incluses (pas de compteur) ; Confort : 4 incluses, puis 29 € la langue, sans limite */
+    var illim = !!F.languesIllimitees;
+    document.getElementById("langues-stepper").hidden = illim;
+    document.getElementById("langues-p").hidden = illim;
+    document.getElementById("langues-illim").hidden = !illim;
+    document.getElementById("langues-hint").textContent = illim
+      ? "Langues illimitées, toutes incluses dans la formule " + F.nom
+      : F.langues + " au choix incluses dans la formule " + F.nom + ", puis autant de langues que vous voulez";
+    /* Couleur personnalisée : formule Premium seulement */
+    var persoOk = !!F.couleurPerso, persoLab = document.getElementById("coul-perso");
+    persoLab.hidden = !persoOk;
+    if (!persoOk && s.couleur === "perso") { setRadio("couleur", ((T.couleurs || [])[0] || {}).id); s = state(); q = compute(s); lastQuote = q; lastState = s; }
+    document.getElementById("perso-row").hidden = !(persoOk && s.couleur === "perso");
     var parts = Object.keys(q.inclus).map(function (k) { var n = q.inclus[k], SI = T.supports[k]; return n + " " + plural(n, SI.court[0], SI.court[1]); });
     document.getElementById("supports-inclus").textContent = parts.length ? "Inclus dans votre formule : " + parts.join(" et ") + (q.livrets > 1 ? " par livret" : "") + "." : "";
     document.getElementById("one-each-what").textContent = T.supports.porteCles.court[0];
@@ -170,32 +191,35 @@
     var forfLine = s.facturation === "annuel"
       ? { l: "Forfait " + q.forfait.nom + " · annuel", small: (q.livrets > 1 ? q.livrets + " livrets · " : "") + T.moisOffertsAnnuel + " mois offerts", a: q.annuel, suffix: "/an" }
       : { l: "Forfait " + q.forfait.nom + " · mensuel", small: (q.livrets > 1 ? q.livrets + " livrets · " : "") + "Sans engagement", a: q.mensuel, suffix: "/mois" };
+    var langLine = '<dt>Langues</dt><dd>' + (q.formule.languesIllimitees ? "Illimitées" : s.langues) + "</dd>";
 
     var h = '<div class="folio-head"><span class="brand">' + esc(C.marque) + "</span><small>Devis · livret d'accueil digital</small></div>" +
-      '<dl class="folio-meta"><dt>N°</dt><dd>' + numero + "</dd><dt>Date</dt><dd>" + fd(today) + "</dd><dt>Valable jusqu'au</dt><dd>" + fd(until) + "</dd><dt>Établissement</dt><dd>" + esc(q.type.label) + "</dd></dl>" +
+      '<dl class="folio-meta"><dt>N°</dt><dd>' + numero + "</dd><dt>Date</dt><dd>" + fd(today) + "</dd><dt>Valable jusqu'au</dt><dd>" + fd(until) + "</dd><dt>Établissement</dt><dd>" + esc(q.type.label) + "</dd>" + langLine + "</dl>" +
       '<ul class="folio-lines">' + q.lines.map(lineHtml).join("") +
       '<li class="fl sec">Forfait</li><li class="fl"><span class="l">' + esc(forfLine.l) + "<small>" + esc(forfLine.small) + '</small></span><span class="d"></span><span class="a">' + eur(forfLine.a, true) + forfLine.suffix + "</span></li>" +
+      '<li class="fl"><span class="l">Console de modification incluse<small>Vous modifiez votre livret vous-même, quand vous voulez</small></span><span class="d"></span><span class="a">incluse</span></li>' +
       "</ul>" +
       '<div class="folio-tot"><div class="fl big"><span class="l">Création</span><span class="d"></span><span class="a">' + eur(q.creation, true) + '</span></div>' +
       '<div class="fl"><span class="l">Acompte à la commande (' + Math.round(T.acompte * 100) + ' %)</span><span class="d"></span><span class="a">' + eur(q.acompte, true) + "</span></div>" +
       '<div class="fl"><span class="l">Après ' + T.essaiJours + " jours d'essai : solde</span><span class=\"d\"></span><span class=\"a\">" + eur(q.solde, true) + "</span></div>" +
-      '<div class="fl"><span class="l">Puis, dès le ' + (T.essaiJours + 1) + 'e jour</span><span class="d"></span><span class="a">' + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an" : eur(q.mensuel, true) + "/mois") + "</span></div>" +
       '<div class="fl"><span class="l">Total 1re année</span><span class="d"></span><span class="a">' + eur(q.premiereAnnee, true) + "</span></div></div>" +
       '<p class="folio-note">Livraison : ' + esc(q.delai) + "*, à compter de la réception de vos informations. " + esc(C.conditions) + " " + esc(C.mentionTVA) + '.</p><p class="folio-note">' + esc(T.noteSupports) + "</p>";
     document.getElementById("folio").innerHTML = h;
     document.getElementById("bar-total").textContent = eur(q.creation);
     document.getElementById("bar-sub").textContent = "puis " + (s.facturation === "annuel" ? eur(q.annuel) + "/an" : eur(q.mensuel) + "/mois");
     document.getElementById("devis-texte").value = textSummary(s, q, numero);
-    try { localStorage.setItem("cdh:devis", JSON.stringify(s)); } catch (e) {}
+    try { localStorage.setItem(KEY_DEVIS, JSON.stringify(s)); } catch (e) {}
+    maquette(s, q);
   }
 
   function textSummary(s, q, num) {
-    var out = ["Devis " + num + " (" + C.marque + ")", "Établissement : " + q.type.label + ", " + s.qty + " " + (s.type === "location" ? plural(s.qty, "logement", "logements") : plural(s.qty, "chambre", "chambres")) + (s.type !== "location" && s.variantes ? ", " + s.variantes + " " + plural(s.variantes, "variante", "variantes") : ""), "Langues : " + s.langues, ""];
+    var loc = modeLoc(s.type);
+    var out = ["Devis " + num + " (" + C.marque + ")", "Établissement : " + q.type.label + ", " + s.qty + " " + (loc ? plural(s.qty, "logement", "logements") : plural(s.qty, "chambre", "chambres")) + (!loc && s.variantes ? ", " + s.variantes + " " + plural(s.variantes, "variante", "variantes") : ""), "Langues : " + (q.formule.languesIllimitees ? "illimitées" : s.langues), "Maquette : nom imprimé « " + (s.nomMaquette || "—") + " », " + (q.couleur.id === "perso" ? "couleur personnalisée " + q.couleur.hex.toUpperCase() : "bandeau " + q.couleur.nom.toLowerCase()), ""];
     q.lines.forEach(function (x) {
       if (x.sec) { out.push("— " + x.sec); return; }
       out.push("  " + x.l + (x.small ? " (" + x.small + ")" : "") + " : " + (x.a ? (x.a < 0 ? "-" : "") + eur(Math.abs(x.a), true) : "inclus"));
     });
-    out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an (" + T.moisOffertsAnnuel + " mois offerts)" : eur(q.mensuel, true) + "/mois"));
+    out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an (" + T.moisOffertsAnnuel + " mois offerts)" : eur(q.mensuel, true) + "/mois") + ", console de modification incluse");
     out.push("", "Création : " + eur(q.creation, true), "Acompte à la commande : " + eur(q.acompte, true), "Solde après " + T.essaiJours + " jours d'essai : " + eur(q.solde, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai + "*", T.noteSupports);
     return out.join("\n");
   }
@@ -237,7 +261,7 @@
   document.getElementById("one-each").addEventListener("click", function () {
     var s = state(), F = T.formules[s.formule];
     var k = "porteCles";
-    var inc = ((F.supportsInclus || {})[k] || 0) * (s.type === "location" ? s.qty : 1);
+    var inc = ((F.supportsInclus || {})[k] || 0) * (modeLoc(s.type) ? s.qty : 1);
     document.getElementById("sup-" + k).value = Math.max(0, s.qty - inc);
     update();
   });
@@ -249,16 +273,82 @@
   if (framed) printBtn.hidden = true;
   else printBtn.addEventListener("click", function () { window.print(); });
 
+  /* ---------- maquette : porte-clés + livret d'exemple, avec la photo et la couleur du visiteur ---------- */
+  var MAQ_ID = "nid-des-tanneurs", maqFrame = document.getElementById("maq-frame"), maqReady = false, maqPhoto = "", maqTimer = 0, maqLast = null;
+  try { document.getElementById("maq-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(MAQ_ID), { fg: "#182B40", margin: 1, size: 66 }); } catch (e) {}
+  function maqFit(nom) {
+    var t = document.getElementById("maq-name");
+    t.textContent = (nom || "").toUpperCase() || " ";
+    t.setAttribute("font-size", "8"); t.setAttribute("letter-spacing", "1.4");
+    try { var w = t.getComputedTextLength(), max = 72; if (w > max) { var k = max / w; t.setAttribute("font-size", (8 * k).toFixed(2)); t.setAttribute("letter-spacing", (1.4 * k).toFixed(2)); } } catch (e) {}
+  }
+  function maqEnvoyer() {
+    if (!maqReady || !maqLast || !maqFrame.contentWindow) return;
+    var base = (window.CDH_LIVRETS || {})[MAQ_ID]; if (!base) return;
+    var d = JSON.parse(JSON.stringify(base));
+    d.theme = d.theme || {};
+    d.theme.accent = maqLast.hex;
+    if (maqLast.nom) d.nom = maqLast.nom;
+    if (maqPhoto) d.theme.couverture = maqPhoto;
+    try { maqFrame.contentWindow.postMessage({ type: "cdh:render", livret: d, lang: "fr" }, "*"); } catch (e) {}
+  }
+  function maquette(s, q) {
+    document.getElementById("maq-band").setAttribute("fill", q.couleur.hex);
+    maqFit(s.nomMaquette);
+    maqLast = { hex: q.couleur.hex, nom: s.nomMaquette };
+    clearTimeout(maqTimer); maqTimer = setTimeout(maqEnvoyer, 150);
+  }
+  window.addEventListener("message", function (e) {
+    if (maqFrame && e.source === maqFrame.contentWindow && e.data && e.data.type === "cdh:ready") { maqReady = true; maqEnvoyer(); }
+  });
+  /* Le livret d'aperçu ne se charge que lorsque la maquette approche de l'écran */
+  (function () {
+    var box = document.getElementById("maquette"), go = function () { if (!maqFrame.getAttribute("src")) maqFrame.setAttribute("src", "livret.html"); };
+    if ("IntersectionObserver" in window) { var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { go(); io.disconnect(); } }, { rootMargin: "400px 0px" }); io.observe(box); }
+    else go();
+  })();
+  /* Photo : réduite sur l'appareil, jamais envoyée */
+  function photoReduite(file) {
+    return new Promise(function (ok, ko) {
+      var u = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, 1400 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k));
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        try { ok(c.toDataURL("image/jpeg", .82)); } catch (e) { ko(e); }
+      };
+      im.onerror = function () { URL.revokeObjectURL(u); ko(); };
+      im.src = u;
+    });
+  }
+  document.getElementById("maq-photo").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    photoReduite(f).then(function (url) { maqPhoto = url; document.getElementById("maq-photo-rm").hidden = false; maqEnvoyer(); }, function () {});
+  });
+  document.getElementById("maq-photo-rm").addEventListener("click", function () { maqPhoto = ""; this.hidden = true; maqEnvoyer(); });
+  /* Couleur personnalisée : le spectre et le code restent synchronisés, et la pastille se coche toute seule */
+  function persoSync(src) {
+    var col = document.getElementById("perso-color"), hex = document.getElementById("perso-hex");
+    if (src === col) hex.value = col.value.toUpperCase();
+    else { var v = hex.value.trim(); if (v && v[0] !== "#") v = "#" + v; if (/^#[0-9a-f]{6}$/i.test(v)) col.value = v.toLowerCase(); }
+    document.getElementById("coul-perso").style.setProperty("--c", col.value);
+    setRadio("couleur", "perso");
+  }
+  form.addEventListener("input", function (e) { if (e.target.id === "perso-color" || e.target.id === "perso-hex") persoSync(e.target); }, true);
+
   // Restaurer le dernier devis de ce visiteur
   var saved = null;
   try {
-    saved = JSON.parse(localStorage.getItem("cdh:devis") || "null");
+    saved = JSON.parse(localStorage.getItem(KEY_DEVIS) || "null");
     if (saved && T.types[saved.type]) {
       setRadio("type", saved.type); setRadio("formule", saved.formule); setRadio("forfait", saved.forfait); setRadio("facturation", saved.facturation);
       document.getElementById("qty").value = saved.qty; lastQty[saved.type] = saved.qty;
       document.getElementById("langues").value = saved.langues;
       if (saved.variantes != null) document.getElementById("variantes").value = saved.variantes;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
+      if (saved.couleurPerso) { document.getElementById("perso-hex").value = saved.couleurPerso; document.getElementById("perso-color").value = saved.couleurPerso.toLowerCase(); }
+      if (saved.nomMaquette) document.getElementById("maq-nom").value = saved.nomMaquette;
       if (saved.couleur) setRadio("couleur", saved.couleur);
     }
   } catch (e) {}
@@ -327,7 +417,7 @@
           '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 30 minutes et vos réponses se sauvegardent.</span>' +
           '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>';
         /* Les informations déjà données sont reprises dans le questionnaire (stockées sur l'appareil, pas dans l'adresse) */
-        try { var st = state(); localStorage.setItem("cdh:questionnaire:prefill", JSON.stringify({ nom: nom.value.trim(), email: mv, tel: document.getElementById("r-tel").value.trim(), logement: document.getElementById("r-lieu").value.trim(), formule: st.formule, type: st.type })); } catch (e) {}
+        try { var st = state(); localStorage.setItem("cdh:questionnaire:prefill", JSON.stringify({ nom: nom.value.trim(), email: mv, tel: document.getElementById("r-tel").value.trim(), logement: document.getElementById("r-lieu").value.trim(), formule: st.formule, type: st.type, couleur: st.couleur, couleurPerso: st.couleurPerso, nomMaquette: st.nomMaquette })); } catch (e) {}
       } else {
         status.className = "form-status info";
         var recap = "Nom : " + nom.value.trim() + "\nE-mail : " + mv + "\nTéléphone : " + document.getElementById("r-tel").value + "\nÉtablissement : " + document.getElementById("r-lieu").value + "\nMessage : " + document.getElementById("r-msg").value + "\n\n" + document.getElementById("devis-texte").value;
