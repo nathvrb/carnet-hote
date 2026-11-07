@@ -128,6 +128,7 @@
 .q-duo { display: flex; flex-wrap: wrap; gap: 14px 28px; }
 .q-compteur { display: grid; gap: 6px; font-size: 14.5px; color: var(--gris); }
 .q-compteur small { font-size: 13px; }
+.q-compteur .stepper { justify-self: start; }
 .q-stepper { border-color: var(--filet); background: var(--papier); }
 .q-stepper button { width: 46px; height: 46px; }
 .q-heure-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
