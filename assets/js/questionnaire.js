@@ -600,7 +600,9 @@
   }
 
   /* ---------- affichage : formule, questions conditionnelles, avancement ---------- */
-  function rangFormule() { var f = (formule() || "").toLowerCase().replace(/ .*/, ""); return ORDRE[f] || 3; /* « je ne sais pas » → tout afficher */ }
+  /* Formule pas encore choisie ou « je ne sais pas » : on affiche ce qui est commun aux deux offres ;
+     les questions réservées au Premium (logo, vidéos, couleur personnalisée) n'apparaissent que si « Premium » est coché */
+  function rangFormule() { var f = (formule() || "").toLowerCase().replace(/ .*/, ""); return ORDRE[f] || ORDRE.confort; }
   function okSi(el) {
     if (!el.dataset.si) return true;
     var inputs = $$('[name="' + el.dataset.si + '"]', form), v = "";
