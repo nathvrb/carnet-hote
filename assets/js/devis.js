@@ -62,7 +62,7 @@
       lines.push({ l: T.supports[k].label + " × " + n, small: incl[k] ? "En plus des " + T.supports[k].court[1] + " inclus" : "", a: c });
     });
     var livrCost = 0;
-    if (s.livraisonEurope && T.livraisonEurope) { livrCost = T.livraisonEurope.prix; lines.push({ l: T.livraisonEurope.label, small: "Par commande ; la livraison en France est comprise", a: livrCost }); }
+    if (s.pays && s.pays !== "France" && T.livraison.pays.indexOf(s.pays) >= 0) { livrCost = T.livraison.prix; lines.push({ l: "Livraison des porte-clés : " + s.pays, small: "Par commande ; la livraison en France est comprise", a: livrCost }); }
     var creation = r2(base + varCost + langCost + supportsCost + livrCost);
     var acompte = r2(creation * T.acompte), solde = r2(creation - acompte);
 
@@ -121,7 +121,8 @@
     return '<div class="qty-row"><label for="sup-' + k + '">' + esc(s.label) + ' <span class="en-plus">en plus</span><small>' + esc(s.detail) + '</small></label><span class="p">' + eur(s.prix) + " l'unité</span>" +
       '<div class="stepper"><button type="button" data-step="-1" data-for="sup-' + k + '" aria-label="Retirer un">−</button><input id="sup-' + k + '" name="sup-' + k + '" type="number" inputmode="numeric" min="0" max="500" value="0"><button type="button" data-step="1" data-for="sup-' + k + '" aria-label="Ajouter un">+</button></div></div>';
   }).join("");
-  document.getElementById("livr-europe-p").textContent = "(+" + eur(T.livraisonEurope.prix) + " par commande)";
+  document.getElementById("livr-pays").innerHTML = '<option value="France">France (livraison comprise)</option>' + T.livraison.pays.map(function (p) { return '<option value="' + p + '">' + p + " (+" + eur(T.livraison.prix) + " par commande)</option>"; }).join("");
+  document.getElementById("livr-pays-h").textContent = "Un autre pays ? Écrivez-nous, nous vous dirons si nous pouvons livrer.";
   document.getElementById("langues-p").textContent = "+" + eur(T.options.langue.prix) + " / langue en plus";
   document.getElementById("variantes-p").textContent = eur(T.variante.prix) + " / variante";
 
@@ -137,7 +138,7 @@
       formule: fd.get("formule") || "confort",
       langues: clampInt(fd.get("langues"), 1, LANGUES_MAX),
       supports: sup,
-      livraisonEurope: !!fd.get("livr-europe"),
+      pays: fd.get("livr-pays") || "France",
       couleur: fd.get("couleur") || ((T.couleurs || [])[0] || {}).id,
       couleurPerso: /^#[0-9a-f]{6}$/i.test(hexP) ? hexP.toUpperCase() : "",
       nomMaquette: (document.getElementById("maq-nom").value || "").trim(),
@@ -350,7 +351,7 @@
       document.getElementById("qty").value = saved.qty; lastQty[saved.type] = saved.qty;
       document.getElementById("langues").value = saved.langues;
       if (saved.variantes != null) document.getElementById("variantes").value = saved.variantes;
-      if (saved.livraisonEurope) document.getElementById("livr-europe").checked = true;
+      if (saved.pays) document.getElementById("livr-pays").value = saved.pays;
       Object.keys(saved.supports || {}).forEach(function (k) { var el = document.getElementById("sup-" + k); if (el) el.value = saved.supports[k]; });
       if (saved.couleurPerso) { document.getElementById("perso-hex").value = saved.couleurPerso; document.getElementById("perso-color").value = saved.couleurPerso.toLowerCase(); }
       if (saved.nomMaquette) document.getElementById("maq-nom").value = saved.nomMaquette;

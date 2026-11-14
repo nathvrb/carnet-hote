@@ -742,7 +742,10 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .nav .nav-espace { color: var(--bleu); font-weight: 600; }
 .nav a { white-space: nowrap; }
 @media (max-width: 1100px) { .nav { gap: 18px; } .nav a { font-size: 14.5px; } }
-/* Livraison des porte-clés hors de France (case du simulateur) */
-.livr-europe { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 15px; cursor: pointer; }
-.livr-europe input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--bleu); }
-.livr-europe small { color: var(--gris); font-size: inherit; }
+/* Livraison des porte-clés : choix du pays */
+.livr-pays { display: grid; gap: 6px; margin-top: 14px; max-width: 420px; font-weight: 600; font-size: 15px; }
+.livr-pays select { width: 100%; min-height: 46px; padding: 8px 12px; font: inherit; font-weight: 400; background: var(--papier); border: 1px solid var(--filet-pierre); border-radius: 2px; }
+.livr-pays small { font-weight: 400; color: var(--gris); font-size: 14px; }
+/* Liens « passer l'aperçu » : invisibles, ils n'apparaissent qu'au clavier (en haut de l'écran) */
+.skip-demo { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip-demo:focus { position: fixed; z-index: 100; top: 12px; left: 12px; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; background: var(--bleu); color: var(--sur-bleu); padding: 10px 14px; font-weight: 600; }

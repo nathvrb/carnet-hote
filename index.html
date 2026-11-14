@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Carnet d'Hôte","url":"https://carnetdhote.fr/","inLanguage":"fr","description":"Livrets d'accueil digitaux avec QR code pour locations courte durée, maisons d'hôtes et hôtels."}</script>
 <link rel="stylesheet" href="assets/css/fonts.css?v=56">
-<link rel="stylesheet" href="assets/css/site.css?v=61">
+<link rel="stylesheet" href="assets/css/site.css?v=62">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -74,7 +74,7 @@
         <p>Scannez avec l'appareil photo de votre téléphone&nbsp;: le livret du Nid des Tanneurs s'ouvre, comme pour un voyageur.</p>
       </div>
       <div class="couv-epreuve">
-        <a class="skip" href="#t-msgs">Passer l'aperçu du livret</a>
+        <a class="skip-demo" href="#t-msgs">Passer l'aperçu du livret</a>
         <div class="phone hero-phone">
           <div class="screen">
             <iframe id="hero-frame" name="cdh-vitrine" src="livret.html#nid-des-tanneurs" title="Aperçu d'un vrai livret d'accueil : Le Nid des Tanneurs"></iframe>
@@ -123,7 +123,7 @@
   <section class="band bleu salon" id="exemples" aria-labelledby="t-demos">
     <div class="wrap">
       <div class="salon-texte">
-        <a class="skip" href="#contenu">Passer les aperçus de livrets</a>
+        <a class="skip-demo" href="#contenu">Passer les aperçus de livrets</a>
         <h2 class="h2 grand" id="t-demos">Trois livrets à parcourir</h2>
         <p>Une location à Strasbourg, un hôtel au bord du lac d'Annecy, une maison d'hôtes dans le Luberon. Les lieux sont fictifs, les livrets sont réels&nbsp;: faites défiler l'écran, ou scannez le code avec votre téléphone.</p>
       </div>
@@ -381,7 +381,7 @@
             <div class="sup-box" id="sup-box">
               <p class="hint sup-inclus"><span id="supports-inclus"></span> <button type="button" class="linkbtn" id="one-each">Un <span id="one-each-what">porte-clés</span> par <span id="one-each-u">logement</span></button></p>
               <div id="supports"></div>
-              <label class="check livr-europe" for="livr-europe"><input id="livr-europe" name="livr-europe" type="checkbox" value="oui"><span>Livraison des porte-clés hors de France, dans un autre pays d'Europe <small id="livr-europe-p">(+5 €)</small></span></label>
+              <label class="livr-pays" for="livr-pays"><span>Pays de livraison des porte-clés</span><select id="livr-pays" name="livr-pays"></select><small id="livr-pays-h"></small></label>
             </div>
           </fieldset>
 
@@ -542,13 +542,13 @@
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">89,99 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
 <script src="assets/js/config.js?v=56"></script>
-<script src="assets/js/tarifs.js?v=61"></script>
+<script src="assets/js/tarifs.js?v=62"></script>
 <script src="assets/js/icons.js?v=52"></script>
 <script src="data/livrets.js"></script>
 <script src="assets/js/store.js?v=52"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
 <script src="assets/js/qr.js?v=52"></script>
-<script src="assets/js/devis.js?v=61"></script>
-<script src="assets/js/site.js?v=61"></script>
+<script src="assets/js/devis.js?v=62"></script>
+<script src="assets/js/site.js?v=62"></script>
 </body>
 </html>

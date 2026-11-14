@@ -118,8 +118,8 @@ window.CDH_TARIFS = {
   supports: {
     porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés. Frais d'envoi compris en France" },
   },
-  // Livraison des porte-clés : comprise en France, supplément par commande pour le reste de l'Europe
-  livraisonEurope: { prix: 5, label: "Livraison des porte-clés hors de France (Europe)", detail: "Frais d'envoi compris en France ; 5 € par commande pour une livraison dans un autre pays d'Europe" },
+  // Livraison des porte-clés : comprise en France, supplément par commande pour les pays listés
+  livraison: { prix: 5, pays: ["Allemagne", "Belgique", "Espagne", "Italie", "Luxembourg", "Portugal", "Suisse"], label: "Livraison des porte-clés hors de France", detail: "Comprise en France ; 5 € par commande vers l'Allemagne, la Belgique, l'Espagne, l'Italie, le Luxembourg, le Portugal et la Suisse" },
   // Couleur du bandeau du visuel imprimé (porte-clés, affiche) ; le Premium ajoute une couleur personnalisée
   couleurs: [
     { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },
