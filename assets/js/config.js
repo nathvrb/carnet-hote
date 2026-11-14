@@ -16,7 +16,7 @@ window.CDH_CONFIG = {
   // Créez un site sur cloud.umami.is et collez ici son « Website ID ».
   // Vide = aucune statistique.
   umamiId: "",
-  // Formulaire « Recevoir ce devis ».
+  // Formulaire « Envoyer ma demande » (devis).
   // Sur GitHub Pages : créez un formulaire gratuit sur formspree.io et collez ici
   // son adresse (ex. "https://formspree.io/f/abcdwxyz"). Les demandes arrivent par e-mail.
   // Vide : sur Netlify, Netlify Forms est utilisé ; ailleurs, le visiteur copie

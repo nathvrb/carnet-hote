@@ -392,7 +392,7 @@
     if (!nom.value.trim()) ok = false;
     var mv = mail.value.trim();
     var mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mv);
-    setErr(mail, mailOk ? "" : (mv ? "Cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr)." : "Indiquez votre e-mail pour recevoir le devis."));
+    setErr(mail, mailOk ? "" : (mv ? "Cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr)." : "Indiquez votre e-mail pour que nous puissions vous répondre."));
     if (!mailOk) ok = false;
     var exec = document.getElementById("r-exec"), statutOk = !!rf.querySelector('input[name="statut"]:checked');
     var statutBox = rf.querySelector(".statut"), oldS = statutBox.querySelector(".err"); if (oldS) oldS.remove();
@@ -413,7 +413,7 @@
       status.hidden = false;
       if (sent) {
         status.className = "form-status ok";
-        status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! On vous répond sous 24 h à " + esc(mv) + ".</span>" +
+        status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! Nous vous répondons personnellement sous 24 h à " + esc(mv) + " (aucun e-mail automatique n'est envoyé).</span>" +
           '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 30 minutes et vos réponses se sauvegardent.</span>' +
           '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>';
         /* Les informations déjà données sont reprises dans le questionnaire (stockées sur l'appareil, pas dans l'adresse) */
