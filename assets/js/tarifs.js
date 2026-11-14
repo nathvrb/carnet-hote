@@ -29,7 +29,7 @@ window.CDH_TARIFS = {
         "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
         "4 langues au choix : français, anglais, allemand, italien, espagnol, néerlandais",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
-        "Guide local sur mesure : 15 adresses et activités, sélectionnées et complétées par nos soins",
+        "Guide local : jusqu'à 15 adresses et activités, les vôtres complétées par nos soins si vous le souhaitez",
         "Carte interactive, météo, lien « avant votre arrivée »",
         "Services en plus : départ tardif, panier, ménage…",
         "1 porte-clés transparent avec votre QR code, livré chez vous",
@@ -54,7 +54,7 @@ window.CDH_TARIFS = {
       inclus: [
         "Tout le Confort",
         "Un livret entièrement à votre image : couverture, vos couleurs, votre logo, votre mot d'accueil",
-        "Guide local étendu : 30 adresses, avec des parcours prêts à suivre (en amoureux, avec des enfants, s'il pleut…)",
+        "Guide local étendu : jusqu'à 30 adresses, complétées par nos soins si vous le souhaitez, avec des parcours prêts à suivre (en amoureux, avec des enfants, s'il pleut…)",
         "Langues illimitées",
         "Vos vidéos tutos intégrées",
         "2 porte-clés transparents, avec un QR code aux couleurs de votre établissement",

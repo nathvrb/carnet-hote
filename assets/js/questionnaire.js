@@ -155,10 +155,10 @@
       q: [
         { k: "services", l: "Services", groupes: SERVICES, check: "Je le propose", cols: [{ l: "Prix" }, { l: "Conditions", h: "Délai, disponibilité, paiement." }], ajout: "Ajouter un service", ajoutNom: "Service" }
       ] },
-    { id: "adresses", titre: "Vos bonnes adresses et sorties", intro: "C'est la partie que vos voyageurs ouvrent le plus. Choisissez une catégorie, tapez le nom du lieu : les suggestions s'affichent comme sur une carte. Ajoutez votre conseil, puis « Ajouter » pour passer au suivant. Jusqu'à 15 lieux : nous complétons le reste, avec les horaires, les distances et l'itinéraire.",
+    { id: "adresses", titre: "Vos bonnes adresses et sorties", intro: "C'est la partie que vos voyageurs ouvrent le plus. Choisissez une catégorie, tapez le nom du lieu : les suggestions s'affichent comme sur une carte. Ajoutez votre conseil, puis « Ajouter » pour passer au suivant. Jusqu'à 15 lieux. Pour chaque lieu, nous ajoutons les horaires, la distance et l'itinéraire.",
       q: [
         { k: "lieux", l: "Vos adresses et sorties", rep: { cols: [{ k: "cat", l: "Catégorie", select: LIEUX_CATS }, { k: "nom", l: "Nom du lieu", lieu: 1, h: "Tapez le nom : choisissez dans la liste" }, { k: "adr", l: "Adresse" }, { k: "conseil", l: "Votre conseil", h: "Ce que vous aimez, quoi commander", wide: 1 }], add: "Ajouter", max: 15, compte: 1 } },
-        { k: "completer", l: "Si vous n'avez pas tout rempli", choix: ["Complétez pour moi avec des adresses et sorties vérifiées, je valide", "Ne complétez rien, je donne tout moi-même"], h: "Nous cherchons les bonnes adresses autour du logement (nom, distance, horaires) et vous les montrons avant la mise en ligne." },
+        { k: "completer", l: "Souhaitez-vous que nous complétions votre liste ?", choix: ["Oui, complétez ma liste jusqu'à 15 adresses et sorties (30 en Premium)", "Non, n'ajoutez aucune adresse : seulement les miennes"], h: "Nous ajoutons des adresses autour du logement (nom, distance, horaires) uniquement si vous répondez « Oui ». Sinon, rien n'est ajouté." },
         { k: "partenaire", l: "Un partenaire qui offre une réduction à vos voyageurs ?", h: "Restaurant, location, spa : on l'affiche en bon plan.", zone: 2 }
       ] },
     { id: "depart", titre: "Départ et avis", intro: "Le voyageur coche une liste avant de partir. Quand tout est coché, un bouton l'emmène vers votre page d'avis.",
