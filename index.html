@@ -16,10 +16,8 @@
 <meta property="og:url" content="https://carnetdhote.fr/">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Carnet d'Hôte","url":"https://carnetdhote.fr/","inLanguage":"fr","description":"Livrets d'accueil digitaux avec QR code pour locations courte durée, maisons d'hôtes et hôtels."}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=52">
+<link rel="stylesheet" href="assets/css/fonts.css?v=56">
+<link rel="stylesheet" href="assets/css/site.css?v=57">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -65,7 +63,7 @@
     <div class="wrap couv-grid">
       <h1 class="couv-titre" id="t-hero">Le livret d'accueil qui s'ouvre d'un scan.</h1>
       <div class="couv-texte">
-        <p class="couv-lead">Nous rédigeons le livret de votre location, de votre maison d'hôtes ou de votre hôtel&nbsp;: Wi-Fi, arrivée, modes d'emploi, adresses du quartier. Vos voyageurs scannent le QR code posé chez vous et trouvent la réponse sans vous écrire. Aucune application à installer, à partir de <span data-prix-min>89 €</span>.</p>
+        <p class="couv-lead">Nous rédigeons le livret de votre location, de votre maison d'hôtes ou de votre hôtel&nbsp;: Wi-Fi, arrivée, modes d'emploi, adresses du quartier. Vos voyageurs scannent le QR code posé chez vous et trouvent la réponse sans vous écrire. Aucune application à installer, à partir de <span data-prix-min>89,99 €</span>.</p>
         <div class="couv-actions">
           <a class="btn" href="#devis">Calculer mon devis</a>
           <a class="lien" href="#exemples">Parcourir les exemples</a>
@@ -76,6 +74,7 @@
         <p>Scannez avec l'appareil photo de votre téléphone&nbsp;: le livret du Nid des Tanneurs s'ouvre, comme pour un voyageur.</p>
       </div>
       <div class="couv-epreuve">
+        <a class="skip" href="#t-msgs">Passer l'aperçu du livret</a>
         <div class="phone hero-phone">
           <div class="screen">
             <iframe id="hero-frame" name="cdh-vitrine" src="livret.html#nid-des-tanneurs" title="Aperçu d'un vrai livret d'accueil : Le Nid des Tanneurs"></iframe>
@@ -113,8 +112,8 @@
       <h2 class="h2 parcours-titre" id="t-steps">De vos réponses au QR code posé chez vous, en deux semaines au plus.</h2>
       <ol class="parcours">
         <li><span class="quand">Jour 1</span><h3>Vous remplissez le questionnaire</h3><p><a href="questionnaire.html">Environ 30 minutes en ligne</a>, à votre rythme : vos réponses se sauvegardent. Vous ajoutez les photos de vos équipements.</p></li>
-        <li><span class="quand">Jours 2 à 4</span><h3>Nous rédigeons votre livret</h3><p>Textes clairs, modes d'emploi pas à pas, traductions et une sélection d'adresses vérifiées autour de chez vous.</p></li>
-        <li><span class="quand">Avant la livraison</span><h3>Vous relisez sur votre téléphone</h3><p>Vous recevez le lien de l'aperçu. Nous corrigeons jusqu'à ce que tout soit juste.</p></li>
+        <li><span class="quand">Jours 2 à 4</span><h3>Nous rédigeons votre livret</h3><p>Textes clairs, modes d'emploi pas à pas, traductions et une sélection d'adresses autour de chez vous.</p></li>
+        <li><span class="quand">Avant la livraison</span><h3>Vous relisez sur votre téléphone</h3><p>Vous recevez le lien de votre livret. Une série de corrections est incluse dans les 10 jours (trois en Premium).</p></li>
         <li><span class="quand">3 à 5 jours ouvrés*</span><h3>Le QR code est en place</h3><p>Livret en ligne et affiche prête à imprimer. Vos porte-clés sont livrés chez vous : ils peuvent arriver un peu après, selon la fabrication et le transporteur. Vous profitez ensuite de 14 jours d'essai avant de régler le solde.</p></li>
       </ol>
     </div>
@@ -124,6 +123,7 @@
   <section class="band bleu salon" id="exemples" aria-labelledby="t-demos">
     <div class="wrap">
       <div class="salon-texte">
+        <a class="skip" href="#contenu">Passer les aperçus de livrets</a>
         <h2 class="h2 grand" id="t-demos">Trois livrets à parcourir</h2>
         <p>Une location à Strasbourg, un hôtel au bord du lac d'Annecy, une maison d'hôtes dans le Luberon. Les lieux sont fictifs, les livrets sont réels&nbsp;: faites défiler l'écran, ou scannez le code avec votre téléphone.</p>
       </div>
@@ -185,7 +185,7 @@
     <div class="wrap">
       <div class="sup-tete">
         <h2 class="h2" id="t-sup">Le QR code, posé là où on le cherche</h2>
-        <p>Un porte-clés transparent sur le trousseau, ou une affiche au mur. Le QR code ne change jamais&nbsp;: quand le livret évolue, les supports restent bons.</p>
+        <p>Un porte-clés transparent sur le trousseau, ou une affiche au mur. Le QR code ne change pas quand le livret évolue&nbsp;: les supports restent bons tant que le forfait est actif.</p>
       </div>
       <div class="objets">
         <article class="objet objet-cle" id="sup-fob" style="--fobc:#1F3A5F">
@@ -289,7 +289,7 @@
     <div class="wrap">
       <div class="devis-tete">
         <h2 class="h2" id="t-devis">Votre devis en une minute</h2>
-        <p>Faites vos choix, le prix se calcule tout seul. Envoyez-nous la demande : on vous rappelle sous 24 h pour lancer votre livret.</p>
+        <p>Faites vos choix, le prix se calcule tout seul. Envoyez-nous la demande : on vous répond sous 24 h pour lancer votre livret.</p>
       </div>
 
       <div class="devis">
@@ -424,6 +424,7 @@
             <label><input type="radio" name="statut" value="professionnel"> Professionnel (entreprise, loueur déclaré, hôtel…)</label>
           </fieldset>
           <label class="full" for="r-msg"><span>Message <small>(facultatif)</small></span><textarea id="r-msg" name="message" placeholder="Date de mise en location, équipements particuliers, questions…"></textarea></label>
+          <label class="full check" for="r-cgv"><input id="r-cgv" name="cgv_acceptees" type="checkbox" value="oui"><span>J'ai lu les <a href="cgv.html">conditions générales de vente</a> et je les accepte.</span></label>
           <label class="full check" for="r-exec"><input id="r-exec" name="execution_immediate" type="checkbox" value="oui"><span>Je demande l'exécution immédiate de la prestation et je reconnais perdre mon droit de rétractation une fois le livret entièrement mis en ligne. J'ai noté que l'acompte de 50&nbsp;% n'est pas remboursable une fois le travail commencé (<a href="cgv.html#retractation">CGV</a>).</span></label>
           <div class="full"><button class="btn" type="submit" id="r-submit">Envoyer ma demande</button><p class="hint" style="margin:12px 0 0">Vos informations servent uniquement à répondre à votre demande (<a href="confidentialite.html">confidentialité</a>). Conditions de vente : <a href="cgv.html">CGV</a>.</p></div>
           <div class="form-status" id="r-status" hidden></div>
@@ -499,7 +500,7 @@
         <details><summary>Pour un hôtel, faut-il un livret par chambre ?</summary><p>Non. Un seul livret pour tout l'établissement, au prix d'un seul livret et avec un seul forfait, et un QR code dans chaque chambre sur un porte-clés transparent. Si un type de chambre a ses propres consignes (suite, chambre familiale…), nous créons une variante du livret : <span data-variante-prix>15 €</span> par type de chambre.</p></details>
         <details><summary>Et si j'arrête le forfait ?</summary><p>Le livret reste en ligne jusqu'à la fin du mois payé, puis le QR code est désactivé. Si vous avez gardé le forfait au moins 3 mois et que la création est entièrement réglée, vous recevez dès l'arrêt une version PDF de votre livret, à imprimer si vous le souhaitez. En dessous de 3 mois, aucun PDF n'est remis.</p></details>
         <details><summary>Collectez-vous des données sur mes voyageurs ?</summary><p>Non. Le livret ne demande ni compte ni formulaire. Seul le nombre de consultations est mesuré, de façon anonyme.</p></details>
-        <details><summary>Comment se passe l'essai gratuit de 14 jours ?</summary><p>Vous réglez un acompte de 50 % de la création à la commande. Une fois le livret en ligne, vous avez 14 jours pour l'utiliser avec vos voyageurs et la console. Au 15e jour, le solde de la création et le premier mois (ou l'année) de forfait sont réglés. Si vous arrêtez pendant l'essai, le livret est retiré, l'acompte reste acquis (le travail est fait) et aucun PDF n'est remis.</p></details>
+        <details><summary>Comment se passe l'essai de 14 jours ?</summary><p>Vous réglez un acompte de 50 % de la création à la commande. Une fois le livret en ligne, vous avez 14 jours pour l'utiliser avec vos voyageurs et la console. Au 15e jour, le solde de la création et le premier mois (ou l'année) de forfait sont réglés. Si vous arrêtez pendant l'essai, le livret est retiré, l'acompte reste acquis (le travail est fait) et aucun PDF n'est remis.</p></details>
         <details><summary>Comment se passe le paiement ?</summary><p>Par virement ou par carte : 50 % d'acompte à la commande, le solde après les 14 jours d'essai. Le forfait est ensuite réglé chaque mois, ou chaque année avec 2 mois offerts, sans engagement.</p></details>
       </div>
     </div>
@@ -527,7 +528,7 @@
       <p>Livrets d'accueil digitaux pour les locations, les maisons d'hôtes et les hôtels. Rédigés pour vous, ouverts d'un scan.</p>
     </div>
     <nav class="foot-nav" aria-label="Pied de page">
-      <a href="#exemples">Exemples</a><a href="#offres">Tarifs</a><a href="#devis">Devis</a><a href="questionnaire.html">Questionnaire</a><a href="#faq">Questions</a><a href="espace.html">Espace client</a><a href="console.html">Console</a><a href="mentions-legales.html">Mentions légales</a><a href="cgv.html">CGV</a><a href="confidentialite.html">Confidentialité</a>
+      <a href="#exemples">Exemples</a><a href="#offres">Tarifs</a><a href="#devis">Devis</a><a href="questionnaire.html">Questionnaire</a><a href="#faq">Questions</a><a href="espace.html">Espace client</a><a href="console.html">Console</a><a href="mentions-legales.html">Mentions légales</a><a href="cgv.html">CGV</a><a href="confidentialite.html">Confidentialité</a><a href="confidentialite.html#cookies">Cookies</a><a href="confidentialite.html#supprimer">Supprimer mes données</a><a href="cgv.html#remboursement">Remboursement</a>
     </nav>
     <div class="colophon">
       <h2>Colophon</h2>
@@ -539,14 +540,14 @@
 
 <div class="devis-bar" id="devis-bar"><div><b id="bar-total">89,99 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
-<script src="assets/js/config.js?v=54"></script>
-<script src="assets/js/tarifs.js?v=52"></script>
+<script src="assets/js/config.js?v=56"></script>
+<script src="assets/js/tarifs.js?v=56"></script>
 <script src="assets/js/icons.js?v=52"></script>
 <script src="data/livrets.js"></script>
 <script src="assets/js/store.js?v=52"></script>
 <script src="assets/js/vendor/qrcode.js"></script>
 <script src="assets/js/qr.js?v=52"></script>
-<script src="assets/js/devis.js?v=54"></script>
-<script src="assets/js/site.js?v=52"></script>
+<script src="assets/js/devis.js?v=56"></script>
+<script src="assets/js/site.js?v=57"></script>
 </body>
 </html>

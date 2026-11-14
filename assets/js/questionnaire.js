@@ -82,7 +82,7 @@
     { id: "logement", titre: "Vous et votre logement", intro: "Ces informations servent à créer votre livret et à vous recontacter. Si vous avez une annonce en ligne, donnez-nous son lien : nous y reprenons déjà beaucoup de choses.",
       q: [
         { k: "nom", l: "Vos nom et prénom", ac: "name", req: 1 },
-        { k: "email", l: "Votre e-mail", type: "email", ac: "email", req: 1, h: "Pour vous répondre et vous envoyer l'aperçu de votre livret." },
+        { k: "email", l: "Votre e-mail", type: "email", ac: "email", req: 1, h: "Pour vous répondre et vous envoyer le lien de votre livret." },
         { k: "tel", l: "Votre téléphone", type: "tel", ac: "tel", h: "Facultatif : utile pour un point rapide au besoin." },
         { k: "type", l: "Type de logement", choix: ["Appartement", "Maison", "Gîte", "Chambres d'hôtes", "Hôtel"], req: 1 },
         { k: "logement", l: "Nom du logement tel que vos voyageurs le connaissent", req: 1 },

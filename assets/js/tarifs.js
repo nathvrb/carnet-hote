@@ -29,7 +29,7 @@ window.CDH_TARIFS = {
         "Wi-Fi, arrivée, départ, règles, adresses utiles et urgences",
         "4 langues au choix : français, anglais, allemand, italien, espagnol, néerlandais",
         "Modes d'emploi pas à pas avec photos : lave-linge, plaques, chauffage…",
-        "Guide local sur mesure : 15 adresses et activités, vérifiées et complétées par nos soins",
+        "Guide local sur mesure : 15 adresses et activités, sélectionnées et complétées par nos soins",
         "Carte interactive, météo, lien « avant votre arrivée »",
         "Services en plus : départ tardif, panier, ménage…",
         "1 porte-clés transparent avec votre QR code, livré chez vous",
@@ -96,7 +96,7 @@ window.CDH_TARIFS = {
       mensuel: 7.9,
       populaire: true,
       accroche: "Votre console incluse : vous modifiez le livret vous-même, quand vous voulez.",
-      inclus: ["Livret en ligne 24 h/24, QR code permanent", "Console : modifications et publication en direct", "Message du moment (travaux, événement…)", "Retour à une version précédente en un clic", "Statistiques de consultation sur 30 jours", "Modification faite par nous : 15 € l'unité"]
+      inclus: ["Livret en ligne en continu, QR code permanent tant que le forfait est actif", "Console : modifications et publication en direct", "Message du moment (travaux, événement…)", "Retour à une version précédente en un clic", "Statistiques de consultation sur 30 jours", "Modification faite par nous : 15 € l'unité"]
     },
     serenite: {
       nom: "Sérénité",

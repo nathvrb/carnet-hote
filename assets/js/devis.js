@@ -397,6 +397,9 @@
     var exec = document.getElementById("r-exec"), statutOk = !!rf.querySelector('input[name="statut"]:checked');
     var statutBox = rf.querySelector(".statut"), oldS = statutBox.querySelector(".err"); if (oldS) oldS.remove();
     if (!statutOk) { var es = document.createElement("span"); es.className = "err"; es.textContent = "Indiquez si vous commandez en tant que particulier ou professionnel."; statutBox.appendChild(es); if (ok) rf.querySelector('input[name="statut"]').focus(); ok = false; }
+    var cgv = document.getElementById("r-cgv");
+    setErr(cgv, cgv.checked ? "" : "Cochez cette case pour accepter les conditions générales de vente.");
+    if (!cgv.checked) { if (ok) cgv.focus(); ok = false; }
     setErr(exec, exec.checked ? "" : "Cochez cette case pour que nous puissions démarrer votre livret.");
     if (!exec.checked) { if (ok) exec.focus(); ok = false; }
     if (!ok) { if (!nom.value.trim()) nom.focus(); else if (!mailOk) mail.focus(); return; }

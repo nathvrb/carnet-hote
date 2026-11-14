@@ -246,15 +246,15 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
   padding: 18px 0; border-bottom: 1px solid var(--filet-bleu); color: var(--sur-bleu);
 }
 .salon-choix button > span:last-child { transition: opacity .25s; }
-.salon-choix button[aria-selected="false"] > span:last-child { opacity: .6; }
-.salon-choix button[aria-selected="false"]:hover > span:last-child { opacity: .82; }
+.salon-choix button[aria-selected="false"] > span:last-child { opacity: .75; }
+.salon-choix button[aria-selected="false"]:hover > span:last-child { opacity: .9; }
 .salon-choix button[aria-selected="true"] .nom { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 7px; text-decoration-color: rgba(244, 239, 230, .55); }
 .salon-choix button:focus-visible { outline: 2px solid var(--sur-bleu); outline-offset: 4px; }
 .vign { width: 52px; aspect-ratio: 4 / 5; background: var(--c) center / cover no-repeat; opacity: .55; transition: opacity .25s; }
 .salon-choix button[aria-selected="true"] .vign, .salon-choix button:hover .vign { opacity: 1; }
-.salon-choix .t { display: block; font-size: 13.5px; opacity: .8; }
+.salon-choix .t { display: block; font-size: 13.5px; }
 .salon-choix .nom { display: block; font-family: var(--display); font-size: clamp(1.45rem, 2.2vw, 1.9rem); line-height: 1.1; margin: 2px 0 3px; }
-.salon-choix .ville { display: block; font-size: 14px; opacity: .8; }
+.salon-choix .ville { display: block; font-size: 14px; }
 .salon-detail { grid-area: detail; padding-top: 30px; display: grid; gap: 24px; }
 .salon-detail p { margin: 0; max-width: 28em; }
 .salon-qr { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 20px; align-items: end; }
@@ -436,7 +436,10 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 6vw, 88px); }
 .extras h4 { margin: 28px 0 6px; font-family: var(--display); font-style: italic; font-weight: 400; font-size: 1.35rem; color: var(--bleu); }
 .extras dl { margin: 0; }
-.extras .row { display: flex; gap: 12px; align-items: baseline; padding: 13px 0; }
+.extras .row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: baseline; padding: 13px 0; }
+.extras .row::before { content: ""; grid-column: 2; grid-row: 1; border-bottom: 1px dotted var(--taupe-texte); transform: translateY(-5px); min-width: 24px; }
+.extras .row dt { grid-column: 1; grid-row: 1; }
+.extras .row dd { grid-column: 3; grid-row: 1; }
 .extras dt { font-weight: 600; }
 .extras dt small { display: block; font-weight: 400; color: var(--gris); font-size: 14px; }
 .extras .dots { flex: 1; border-bottom: 1px dotted var(--taupe-texte); transform: translateY(-5px); min-width: 24px; }

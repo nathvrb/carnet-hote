@@ -1,0 +1,5 @@
+Polices hébergées sur ce site (plus aucun appel à Google Fonts).
+Toutes sont publiées sous licence SIL Open Font License 1.1 (usage commercial autorisé, hébergement libre) :
+Brygada 1918, Schibsted Grotesk, Caveat, Lora, Nunito Sans, Newsreader, Marcellus, Young Serif.
+Fichiers issus des paquets Fontsource (fontsource.org), sous-ensemble latin.
+Texte de la licence : https://openfontlicense.org

@@ -4,8 +4,8 @@
    - livrets des clients (base Supabase, adresse passée par « sw.js?api=… ») : réseau d'abord,
      dernière version enregistrée si hors ligne ; photos de la base : copie enregistrée d'abord
    Pour forcer la mise à jour de tous les téléphones, changez le numéro de VERSION. */
-var VERSION = "cdh-v55";
-var CORE = ["livret.html", "assets/css/livret.css", "assets/js/config.js", "assets/js/icons.js", "assets/js/store.js", "assets/js/cloud.js", "assets/js/livret.js", "data/livrets.js"];
+var VERSION = "cdh-v60";
+var CORE = ["livret.html", "assets/css/livret.css", "assets/css/fonts.css", "assets/js/config.js", "assets/js/icons.js", "assets/js/store.js", "assets/js/cloud.js", "assets/js/livret.js", "data/livrets.js"];
 var API = "";
 try { API = new URL(new URL(self.location.href).searchParams.get("api") || "").origin; } catch (e) {}
 var SCOPE = self.registration.scope;
@@ -67,7 +67,7 @@ self.addEventListener("fetch", function (e) {
     var fixed = url.pathname.replace(/\/l\/(?:[\w-]+\/){0,2}(?=(assets|data|photos)\/)/, "/");
     if (fixed !== url.pathname) { e.respondWith(networkFirst(new Request(url.origin + fixed))); return; }
     if (req.mode === "navigate" && /\/l\/[\w-]+/.test(url.pathname)) { e.respondWith(networkFirst(req, SCOPE + "livret.html")); return; }
-    if (/\/photos\//.test(url.pathname) || /\/assets\/vendor\//.test(url.pathname)) { e.respondWith(cacheFirst(req)); return; }
+    if (/\/photos\//.test(url.pathname) || /\/assets\/vendor\//.test(url.pathname) || /\/assets\/fonts\//.test(url.pathname)) { e.respondWith(cacheFirst(req)); return; }
     e.respondWith(networkFirst(req));
     return;
   }
@@ -76,5 +76,4 @@ self.addEventListener("fetch", function (e) {
     if (url.pathname === "/rest/v1/rpc/cdh_livret") { e.respondWith(cloudFirst(req)); return; }
     return;
   }
-  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") { e.respondWith(cacheFirst(req)); }
 });

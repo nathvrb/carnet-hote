@@ -166,7 +166,7 @@
   var plans = document.getElementById("plans");
   if (plans) plans.innerHTML = Object.keys(T.formules).map(function (k) {
     var f = T.formules[k];
-    return '<article class="plan"><div class="plan-nom"><h3>' + esc(f.nom) + "</h3>" + (f.populaire ? '<span class="choisi">le plus choisi</span>' : "") + "</div>" +
+    return '<article class="plan"><div class="plan-nom"><h3>' + esc(f.nom) + "</h3>" + (f.populaire ? '<span class="choisi">conseillé</span>' : "") + "</div>" +
       '<p class="acc">' + esc(f.accroche) + '</p><div class="price"><b>' + eur(f.prix) + "</b><span>par livret, payé une fois</span></div>" +
       "<ul>" + f.inclus.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
       '<div style="display:grid;gap:14px"><span class="meta">Livré en ' + esc(f.delai) + '*</span><a class="btn trait" href="#devis" data-choose="' + k + '">Choisir ' + esc(f.nom) + "</a></div></article>";
@@ -185,7 +185,7 @@
   var extras = document.getElementById("extras");
   if (extras) {
     var o = T.options;
-    var row = function (label, small, price) { return '<div class="row"><dt>' + esc(label) + (small ? "<small>" + esc(small) + "</small>" : "") + '</dt><span class="dots"></span><dd>' + price + "</dd></div>"; };
+    var row = function (label, small, price) { return '<div class="row"><dt>' + esc(label) + (small ? "<small>" + esc(small) + "</small>" : "") + '</dt><dd>' + price + "</dd></div>"; };
     extras.innerHTML = '<div><h4>Options</h4><dl>' +
       row(o.langue.label, "Au-delà des 4 langues du Confort (le Premium les inclut toutes)", "+" + eur(o.langue.prix)) +
       row(T.variante.label, "Hôtels et maisons d'hôtes : " + T.variante.detail, eur(T.variante.prix)) +

@@ -45,4 +45,37 @@
     ].concat(Object.keys(T.supports).map(function (k) { return [T.supports[k].label + " en plus", eur(T.supports[k].prix) + " l'unité"]; }));
     o.innerHTML = "<table><tbody>" + ls.map(function (x) { return "<tr><td>" + esc(x[0]) + '</td><td class="p">' + esc(x[1]) + "</td></tr>"; }).join("") + "</tbody></table>";
   }
+
+  /* Supprimer mes données : effacement local et demande de suppression */
+  var eb = document.getElementById("effacer-local");
+  if (eb) eb.addEventListener("click", function () {
+    try { localStorage.clear(); } catch (e) {}
+    try { sessionStorage.clear(); } catch (e) {}
+    try { if (window.caches) caches.keys().then(function (ks) { ks.forEach(function (k) { if (k.indexOf("cdh-") === 0) caches.delete(k); }); }); } catch (e) {}
+    var ok = document.getElementById("effacer-local-ok"); if (ok) ok.hidden = false;
+  });
+  var sf = document.getElementById("form-suppression");
+  if (sf) sf.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var st = document.getElementById("s-status"), mail = document.getElementById("s-email"), btn = document.getElementById("s-submit");
+    var mv = mail.value.trim(), okMail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mv);
+    var portee = Array.prototype.map.call(sf.querySelectorAll("input[name=portee]:checked"), function (x) { return x.value; });
+    st.hidden = false; st.className = "form-status";
+    if (!okMail) { st.textContent = "Indiquez l'adresse e-mail de votre dossier, pour que nous puissions vous répondre."; mail.focus(); return; }
+    if (!portee.length) { st.textContent = "Cochez au moins une case : que faut-il supprimer ?"; return; }
+    if (sf.querySelector("[name=_gotcha]").value) return;
+    var endpoint = C.formulaireQuestionnaire || C.formulaireDevis || "";
+    var texte = "Demande de suppression de données\nE-mail du dossier : " + mv + "\nÀ supprimer : " + portee.join(", ");
+    var repli = function () {
+      st.className = "form-status ko";
+      st.innerHTML = "L'envoi n'a pas abouti. Écrivez-nous à <a href=\"mailto:" + esc(C.email || "") + "?subject=" + encodeURIComponent("Demande de suppression de données") + "&body=" + encodeURIComponent(texte) + "\">" + esc(C.email || "") + "</a>.";
+      btn.disabled = false;
+    };
+    if (!endpoint) { repli(); return; }
+    btn.disabled = true;
+    var body = new URLSearchParams({ _subject: "Demande de suppression de données", email: mv, portee: portee.join(", "), message: texte }).toString();
+    fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json" }, body: body })
+      .then(function (r) { if (!r.ok) throw 0; st.className = "form-status ok"; st.textContent = "Demande envoyée. Nous vérifions qu'elle vient bien de l'adresse de votre dossier, puis nous supprimons les données et nous vous le confirmons par e-mail dans un délai d'un mois."; sf.reset(); btn.disabled = false; })
+      .catch(repli);
+  });
 })();
