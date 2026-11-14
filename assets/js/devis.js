@@ -280,7 +280,7 @@
 
   /* ---------- maquette : porte-clés + livret d'exemple, avec la photo et la couleur du visiteur ---------- */
   var MAQ_ID = "nid-des-tanneurs", maqFrame = document.getElementById("maq-frame"), maqReady = false, maqPhoto = "", maqTimer = 0, maqLast = null;
-  try { document.getElementById("maq-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(MAQ_ID), { fg: "#182B40", margin: 1, size: 66 }); } catch (e) {}
+  try { document.getElementById("maq-qr").innerHTML = window.cdhQrSvg(window.cdhLivretUrl(MAQ_ID), { fg: "#182B40", margin: 1, size: 56 }); } catch (e) {}
   function maqFit(nom) {
     var t = document.getElementById("maq-name");
     t.textContent = (nom || "").toUpperCase() || " ";

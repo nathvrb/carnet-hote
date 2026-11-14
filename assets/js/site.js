@@ -246,7 +246,7 @@
   }
   var fobArt = document.getElementById("sup-fob");
   if (fobArt) {
-    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 68 });
+    document.getElementById("fob-mock-qr").innerHTML = window.cdhQrSvg(mockUrl, { fg: "#182B40", margin: 1, size: 56 });
     var colEl = document.getElementById("fob-colors"), colName = document.getElementById("fob-color-name");
     colEl.innerHTML = (T.couleurs || []).map(function (c, i) {
       return '<label class="coul" style="--c:' + c.hex + '" title="' + esc(c.nom) + '"><input type="radio" name="fob-couleur" value="' + c.id + '"' + (i === 0 ? " checked" : "") + '><span class="dot" aria-hidden="true"></span><span class="sr">' + esc(c.nom) + "</span></label>";
