@@ -742,3 +742,7 @@ p, li, dd, summary, figcaption { text-wrap: pretty; }
 .nav .nav-espace { color: var(--bleu); font-weight: 600; }
 .nav a { white-space: nowrap; }
 @media (max-width: 1100px) { .nav { gap: 18px; } .nav a { font-size: 14.5px; } }
+/* Livraison des porte-clés hors de France (case du simulateur) */
+.livr-europe { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 15px; cursor: pointer; }
+.livr-europe input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--bleu); }
+.livr-europe small { color: var(--gris); font-size: inherit; }

@@ -32,7 +32,7 @@ window.CDH_TARIFS = {
         "Guide local : jusqu'à 15 adresses et activités, les vôtres complétées par nos soins si vous le souhaitez",
         "Carte interactive, météo, lien « avant votre arrivée »",
         "Services en plus : départ tardif, panier, ménage…",
-        "1 porte-clés transparent avec votre QR code, livré chez vous, frais d'envoi compris",
+        "1 porte-clés transparent avec votre QR code, livré chez vous, frais d'envoi compris en France",
         "1 série de corrections, dans les 10 jours suivant la mise en ligne",
         "Votre console pour modifier le livret quand vous voulez",
         "14 jours d'essai après la mise en ligne, avant de régler le solde"
@@ -57,7 +57,7 @@ window.CDH_TARIFS = {
         "Guide local étendu : jusqu'à 30 adresses, complétées par nos soins si vous le souhaitez, avec des parcours prêts à suivre (en amoureux, avec des enfants, s'il pleut…)",
         "Langues illimitées",
         "Vos vidéos tutos intégrées",
-        "2 porte-clés transparents, avec un QR code aux couleurs de votre établissement, frais d'envoi compris",
+        "2 porte-clés transparents, avec un QR code aux couleurs de votre établissement, frais d'envoi compris en France",
         "3 séries de corrections, dans les 10 jours suivant la mise en ligne",
         "Livraison prioritaire",
         "1re mise à jour saisonnière du guide local offerte, après 6 mois",
@@ -116,8 +116,10 @@ window.CDH_TARIFS = {
   },
   // Supports physiques. « court » = [singulier, pluriel] pour les phrases du devis.
   supports: {
-    porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés. Frais d'envoi compris" }
+    porteCles: { label: "Porte-clés transparent QR", court: ["porte-clés", "porte-clés"], prix: 9, detail: "Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés. Frais d'envoi compris en France" },
   },
+  // Livraison des porte-clés : comprise en France, supplément par commande pour le reste de l'Europe
+  livraisonEurope: { prix: 5, label: "Livraison des porte-clés hors de France (Europe)", detail: "Frais d'envoi compris en France ; 5 € par commande pour une livraison dans un autre pays d'Europe" },
   // Couleur du bandeau du visuel imprimé (porte-clés, affiche) ; le Premium ajoute une couleur personnalisée
   couleurs: [
     { id: "nuit",       nom: "Bleu nuit",  hex: "#1F3A5F" },

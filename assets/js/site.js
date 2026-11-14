@@ -190,6 +190,7 @@
       row(o.langue.label, "Au-delà des 4 langues du Confort (le Premium les inclut toutes)", "+" + eur(o.langue.prix)) +
       row(T.variante.label, "Hôtels et maisons d'hôtes : " + T.variante.detail, eur(T.variante.prix)) +
       row("Modification faite par nous", "À l'unité, avec le forfait Autonomie", eur(T.modificationPonctuelle)) +
+      row(T.livraisonEurope.label, "Livraison comprise en France ; par commande", "+" + eur(T.livraisonEurope.prix)) +
       "</dl></div><div><h4>Supports QR</h4><dl>" +
       row("Affiche A5 à imprimer", "QR du livret et du Wi-Fi, en PDF · toutes formules", "incluse") +
       Object.keys(T.supports).map(function (k) { var s = T.supports[k]; return row(s.label, s.detail + " · en plus des supports inclus", eur(s.prix)); }).join("") +
