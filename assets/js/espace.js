@@ -7,6 +7,8 @@
   document.querySelectorAll("[data-mail]").forEach(function (a) {
     a.href = "mailto:" + (C.email || "") + "?subject=" + encodeURIComponent("Mon livret d'accueil");
   });
+  document.querySelectorAll("[data-cfg-mail]").forEach(function (a) { a.textContent = C.email || ""; });
+  document.querySelectorAll("[data-ic]").forEach(function (el) { el.innerHTML = I(el.dataset.ic, "ico-s"); });
   document.querySelectorAll("[data-eye]").forEach(function (b) {
     b.innerHTML = I("oeil", "ico");
     b.addEventListener("click", function () {
@@ -18,7 +20,7 @@
   });
 
   /* ---------- outils ---------- */
-  var TITLES = { connexion: "Espace client", oubli: "Mot de passe oublié", nouveau: "Nouveau mot de passe", tableau: "Vos livrets", inactif: "Espace client", chargement: "Espace client" };
+  var TITLES = { connexion: "Espace client", oubli: "Mot de passe oublié", nouveau: "Nouveau mot de passe", tableau: "Espace client", inactif: "Espace client", chargement: "Espace client" };
   function show(v, focus) {
     document.querySelectorAll("[data-view]").forEach(function (s) { s.hidden = s.dataset.view !== v; });
     document.title = TITLES[v] + " · " + (C.marque || "");
@@ -114,6 +116,21 @@
     });
   });
 
+  /* ---------- menu de l'espace client ---------- */
+  function panneau(nom, focus) {
+    document.querySelectorAll("[data-panel]").forEach(function (p) { p.hidden = p.dataset.panel !== nom; });
+    document.querySelectorAll("#es-nav [data-sp]").forEach(function (b) {
+      if (b.dataset.sp === nom) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+    if (focus) window.scrollTo({ top: 0 });
+  }
+  $("es-nav").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-sp]"); if (b) panneau(b.dataset.sp, true);
+  });
+  document.addEventListener("click", function (e) {
+    var g = e.target.closest("[data-goto]"); if (g) panneau(g.dataset.goto, true);
+  });
+
   /* ---------- tableau de bord ---------- */
   function tableau() {
     show("chargement");
@@ -122,10 +139,14 @@
       $("acc-mail").textContent = m.email || "";
       $("t-admin").hidden = !m.admin;
       var ls = m.livrets || [];
-      $("t-titre").textContent = ls.length === 1 && !m.admin ? "Votre livret" : "Vos livrets";
+      $("t-titre").textContent = "Bonjour";
       msg($("t-msg"), "");
-      $("cards").innerHTML = ls.length ? ls.map(card).join("") :
-        '<div class="es-empty"><b>Aucun livret n\'est encore relié à ce compte.</b>' + (m.admin ? "Ouvrez la console pour mettre un livret en ligne." : "Écrivez-nous : nous l'associons à votre compte.") + "</div>";
+      var vide = '<div class="es-empty"><b>Aucun livret n\'est encore relié à ce compte.</b>' + (m.admin ? "Ouvrez la console pour mettre un livret en ligne." : "Écrivez-nous : nous l'associons à votre compte.") + "</div>";
+      $("cards").innerHTML = ls.length ? ls.map(card).join("") : vide;
+      $("stats-list").innerHTML = ls.length ? ls.map(function (l) { return statBloc(l); }).join("") : vide;
+      $("affiche-list").innerHTML = ls.length ? ls.map(afficheBloc).join("") : vide;
+      accueil(ls);
+      panneau("accueil");
       show("tableau");
       $("cards").querySelectorAll("img[data-cover]").forEach(function (img) { img.addEventListener("error", function () { img.remove(); }); });
       ls.forEach(function (l) { chargerVues(l); });
@@ -137,6 +158,30 @@
       again.addEventListener("click", tableau); $("t-msg").appendChild(again);
     });
   }
+  function dernier(ls) { return ls.slice().sort(function (a, b) { return String(b.publieLe || "").localeCompare(String(a.publieLe || "")); })[0]; }
+  function accueil(ls) {
+    var d = dernier(ls), en = ls.filter(function (l) { return l.actif; }).length;
+    var t = '<article class="tile t-a"><h2>Mes livrets</h2><p class="big">' + ls.length + '</p><p class="meta">' + (ls.length ? en + (en > 1 ? " en ligne" : " en ligne") : "Aucun livret relié") + '</p><button class="btn tiny" type="button" data-goto="livrets">Voir mes livrets</button></article>';
+    t += '<article class="tile t-b"><h2>Dernier livret</h2>' + (d ? '<p class="tname">' + esc(d.nom || d.id) + '</p><p class="meta">' + esc([d.ville, d.publieLe ? "publié le " + quand(d.publieLe) : ""].filter(Boolean).join(" · ")) + '</p><a class="btn tiny primary" href="console.html?compte#' + esc(d.id) + '">Modifier</a>' : '<p class="meta">Pas encore de livret.</p>') + "</article>";
+    t += '<article class="tile t-c"><h2>Ouvertures</h2><p class="big" id="tile-vues">' + ls.reduce(function (a, l) { return a + (+l.vues30 || 0); }, 0) + '</p><p class="meta">ces 30 derniers jours</p><button class="btn tiny" type="button" data-goto="stats">Voir les statistiques</button></article>';
+    t += '<article class="tile t-d"><h2>Besoin d\'aide ?</h2><p class="meta">Une modification à nous confier, une question&nbsp;: nous répondons sous 24 h.</p><button class="btn tiny" type="button" data-goto="aide">Aide et support</button></article>';
+    $("tiles").innerHTML = t;
+    var q = "";
+    if (d) {
+      var url = window.cdhLivretUrl(d.id);
+      q = '<a class="btn primary" href="console.html?compte#' + esc(d.id) + '">' + I("crayon", "ico-s") + "Modifier mon livret</a>" +
+        '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + I("oeil", "ico-s") + "Voir mon livret</a>" +
+        '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button>" +
+        '<a class="btn" href="console.html?compte&onglet=qr#' + esc(d.id) + '">' + I("qr", "ico-s") + "QR code et affiche</a>";
+    }
+    $("quick").innerHTML = q;
+  }
+  function statBloc(l) {
+    return '<article class="es-box"><h2>' + esc(l.nom || l.id) + '</h2><div class="vues" data-vues="' + esc(l.id) + '"><div class="vues-head"><span class="vues-num">' + (+l.vues30 || 0) + '</span><span class="vues-lab">' + (+l.vues30 > 1 ? "ouvertures" : "ouverture") + " ces 30 derniers jours</span></div></div></article>";
+  }
+  function afficheBloc(l) {
+    return '<article class="es-box"><h2>' + esc(l.nom || l.id) + '</h2><p class="meta">QR code, affiche A5 à imprimer, version avec ou sans Wi-Fi.</p><p><a class="btn primary" href="console.html?compte&onglet=qr#' + esc(l.id) + '">' + I("telecharger", "ico-s") + "Télécharger le QR code et l'affiche</a></p></article>";
+  }
   function card(l) {
     var url = window.cdhLivretUrl(l.id), cov = safeImg(l.couverture);
     return '<article class="lcard" data-id="' + esc(l.id) + '">' +
@@ -144,13 +189,13 @@
       '<span class="lcard-state status ' + (l.actif ? "ok" : "off") + '">' + (l.actif ? "En ligne" : "Hors ligne") + "</span></div>" +
       '<div class="lcard-body"><div><h2>' + esc(l.nom || l.id) + "</h2>" +
       '<p class="meta">' + esc([l.ville, l.publieLe ? "publié le " + quand(l.publieLe) : ""].filter(Boolean).join(" · ")) + "</p></div>" +
-      '<div class="vues" data-vues="' + esc(l.id) + '"><div class="vues-head"><span class="vues-num">' + (+l.vues30 || 0) + '</span><span class="vues-lab">' + (+l.vues30 > 1 ? "ouvertures" : "ouverture") + " ces 30 derniers jours</span></div></div>" +
+      '<p class="meta">' + (+l.vues30 || 0) + (+l.vues30 > 1 ? " ouvertures" : " ouverture") + " ces 30 derniers jours</p>" +
       '<div class="actions"><a class="btn primary" href="console.html?compte#' + esc(l.id) + '">' + I("crayon", "ico-s") + "Modifier</a>" +
       '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + I("oeil", "ico-s") + "Voir</a>" +
       '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button></div>" +
       "</div></article>";
   }
-  $("cards").addEventListener("click", function (e) {
+  document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-copy]"); if (!b) return;
     window.cdhCopy(b.dataset.copy).then(function (ok) { toast(ok ? "Lien copié" : "Copie impossible : " + b.dataset.copy); });
   });

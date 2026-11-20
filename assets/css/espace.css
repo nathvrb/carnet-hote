@@ -115,3 +115,40 @@
   .espace .logo .tag { display: none; } /* « Espace client » est déjà écrit au-dessus du titre */
   .espace #logout { min-height: 38px; padding: 0 14px; font-size: 14px; }
 }
+
+/* ---------- espace client : menu latéral + panneaux ---------- */
+.es-shell { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.es-nav { position: sticky; top: 84px; display: grid; gap: 4px; padding: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 2px; }
+.es-nav button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 0 14px; border: 0; border-radius: 2px; background: none; color: var(--ink-soft); font: 600 15px/1 var(--body); text-align: left; cursor: pointer; transition: background .2s, color .2s; }
+.es-nav button:hover { background: var(--stone); color: var(--ink); }
+.es-nav button[aria-current="page"] { background: var(--fob); color: var(--on-fob); }
+.es-nav .ico-s { width: 18px; height: 18px; flex: none; }
+.es-nav button:focus-visible { outline: 2px solid var(--fob-ink); outline-offset: 2px; }
+.es-content { min-width: 0; }
+.es-panel[hidden] { display: none; }
+.es-admin { margin-bottom: 18px; align-items: center; }
+.es-h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: -.01em; margin: 34px 0 14px !important; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 188px), 1fr)); gap: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--brass); border-radius: 2px; padding: 20px 20px 22px; display: grid; gap: 8px; align-content: start; }
+.tile h2 { font-family: var(--body); font-size: .8rem !important; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.tile .big { margin: 0; font-family: var(--display); font-size: 3rem; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.tile .tname { margin: 0; font-family: var(--display); font-size: 1.5rem; line-height: 1.1; overflow-wrap: anywhere; }
+.tile .meta { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+.tile .btn { justify-self: start; margin-top: 6px; }
+.t-a { border-top-color: var(--fob); } .t-b { border-top-color: var(--brass-ink); } .t-c { border-top-color: var(--ok); }
+.quick { display: flex; flex-wrap: wrap; gap: 10px; }
+.stats-list { display: grid; gap: 22px; max-width: 760px; }
+.es-box { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 22px 24px; display: grid; gap: 12px; align-content: start; }
+.es-box h2 { font-family: var(--display); font-weight: 400; font-size: 1.45rem; letter-spacing: -.01em; }
+.es-box p { margin: 0; color: var(--ink-soft); line-height: 1.55; }
+.es-box .vues { border-top: 0; padding-top: 0; }
+.help { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+.es-account { max-width: 560px; }
+
+@media (max-width: 860px) {
+  .es-shell { grid-template-columns: 1fr; gap: 18px; }
+  .es-nav { position: sticky; top: 56px; z-index: 5; display: flex; overflow-x: auto; gap: 4px; padding: 6px; scrollbar-width: none; margin: 0 -20px; border-left: 0; border-right: 0; }
+  .es-nav::-webkit-scrollbar { display: none; }
+  .es-nav button { width: auto; flex: none; white-space: nowrap; min-height: 42px; padding: 0 14px; }
+}

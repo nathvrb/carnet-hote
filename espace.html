@@ -10,7 +10,7 @@
 <meta name="description" content="Connectez-vous pour modifier votre livret d'accueil.">
 <link rel="stylesheet" href="assets/css/fonts.css?v=56">
 <link rel="stylesheet" href="assets/css/console.css?v=18">
-<link rel="stylesheet" href="assets/css/espace.css?v=18">
+<link rel="stylesheet" href="assets/css/espace.css?v=19">
 </head>
 <body class="espace">
 
@@ -91,34 +91,79 @@
   </section>
 
   <!-- Tableau de bord -->
-  <section class="es-view" data-view="tableau" hidden>
-    <div class="es-head">
-      <div>
-        <p class="es-sur">Espace client</p>
-        <h1 id="t-titre">Vos livrets</h1>
-        <p class="lead" id="t-lead">Choisissez un livret pour le modifier. Rien ne change pour vos voyageurs tant que vous n'avez pas cliqué sur « Publier ».</p>
-      </div>
-      <div class="row" id="t-admin" hidden>
+  <section class="es-view es-shell" data-view="tableau" hidden>
+    <nav class="es-nav" id="es-nav" aria-label="Espace client">
+      <button type="button" data-sp="accueil" aria-current="page"><span data-ic="maison"></span>Tableau de bord</button>
+      <button type="button" data-sp="livrets"><span data-ic="livre"></span>Mes livrets</button>
+      <button type="button" data-sp="stats"><span data-ic="globe"></span>Statistiques</button>
+      <button type="button" data-sp="affiche"><span data-ic="qr"></span>QR code et affiche</button>
+      <button type="button" data-sp="aide"><span data-ic="message"></span>Aide et support</button>
+      <button type="button" data-sp="compte"><span data-ic="porte"></span>Mon compte</button>
+    </nav>
+
+    <div class="es-content">
+      <p class="msg err" id="t-msg" role="alert" hidden></p>
+      <div class="row es-admin" id="t-admin" hidden>
         <span class="badge">Administrateur</span>
         <a class="btn" href="console.html?compte">Ouvrir la console</a>
       </div>
-    </div>
-    <p class="msg err" id="t-msg" role="alert" hidden></p>
-    <div class="cards" id="cards"></div>
 
-    <details class="grp es-account" id="account">
-      <summary><h2>Mon compte</h2><span class="hint" id="acc-mail"></span></summary>
-      <form id="f-mdp" class="stack" novalidate>
-        <h3>Changer de mot de passe</h3>
-        <div class="grid2">
-          <label class="fld" for="m-pass"><span>Nouveau mot de passe</span><input id="m-pass" type="password" autocomplete="new-password" minlength="8" required></label>
-          <label class="fld" for="m-pass2"><span>Confirmez</span><input id="m-pass2" type="password" autocomplete="new-password" minlength="8" required></label>
+      <!-- Tableau de bord -->
+      <section class="es-panel" data-panel="accueil">
+        <div class="es-head">
+          <div>
+            <p class="es-sur">Espace client</p>
+            <h1 id="t-titre">Bonjour</h1>
+            <p class="lead" id="t-lead">Voici l'essentiel de votre livret. Rien ne change pour vos voyageurs tant que vous n'avez pas cliqué sur « Publier ».</p>
+          </div>
         </div>
-        <p class="msg" id="m-msg" role="status" hidden></p>
-        <div class="row"><button class="btn primary" type="submit" id="m-go">Enregistrer</button></div>
-      </form>
-      <p class="hint">Une question, un changement que vous préférez nous confier&nbsp;? <a data-mail href="#">Écrivez-nous</a>.</p>
-    </details>
+        <div class="tiles" id="tiles"></div>
+        <h2 class="es-h2">Accès rapides</h2>
+        <div class="quick" id="quick"></div>
+      </section>
+
+      <!-- Mes livrets -->
+      <section class="es-panel" data-panel="livrets" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Mes livrets</h1><p class="lead">Choisissez un livret pour le modifier, le voir ou copier son lien.</p></div></div>
+        <div class="cards" id="cards"></div>
+      </section>
+
+      <!-- Statistiques -->
+      <section class="es-panel" data-panel="stats" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Statistiques</h1><p class="lead">Combien de fois votre livret a été ouvert, jour par jour, sur les 30 derniers jours. Nous ne collectons aucune donnée sur vos voyageurs.</p></div></div>
+        <div class="stats-list" id="stats-list"></div>
+      </section>
+
+      <!-- QR code et affiche -->
+      <section class="es-panel" data-panel="affiche" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>QR code et affiche</h1><p class="lead">Téléchargez le QR code de votre livret et l'affiche à imprimer (avec ou sans le Wi-Fi). Le QR code reste le même quand vous modifiez votre livret.</p></div></div>
+        <div class="stats-list" id="affiche-list"></div>
+      </section>
+
+      <!-- Aide et support -->
+      <section class="es-panel" data-panel="aide" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Aide et support</h1><p class="lead">Une question, un changement que vous préférez nous confier&nbsp;? Écrivez-nous&nbsp;: nous répondons personnellement, en général sous 24 h.</p></div></div>
+        <div class="help">
+          <div class="es-box"><h2>Nous écrire</h2><p>Décrivez ce que vous voulez changer ou ce qui ne marche pas, et indiquez le nom de votre logement.</p><p><a class="btn primary" data-mail href="#">Écrire à <span data-cfg-mail></span></a></p></div>
+          <div class="es-box"><h2>Questions fréquentes</h2><p>Prix, délais, modifications, résiliation&nbsp;: les réponses sont sur la page d'accueil.</p><p><a class="btn" href="index.html#faq">Voir les questions</a></p></div>
+          <div class="es-box"><h2>Conditions et données</h2><p>Conditions générales, confidentialité et suppression de vos données.</p><p><a class="btn" href="cgv.html">CGV</a> <a class="btn" href="confidentialite.html#supprimer">Supprimer mes données</a></p></div>
+        </div>
+      </section>
+
+      <!-- Mon compte -->
+      <section class="es-panel" data-panel="compte" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Mon compte</h1><p class="lead" id="acc-mail"></p></div></div>
+        <form id="f-mdp" class="stack es-box es-account" novalidate>
+          <h2>Changer de mot de passe</h2>
+          <div class="grid2">
+            <label class="fld" for="m-pass"><span>Nouveau mot de passe</span><input id="m-pass" type="password" autocomplete="new-password" minlength="8" required></label>
+            <label class="fld" for="m-pass2"><span>Confirmez</span><input id="m-pass2" type="password" autocomplete="new-password" minlength="8" required></label>
+          </div>
+          <p class="msg" id="m-msg" role="status" hidden></p>
+          <div class="row"><button class="btn primary" type="submit" id="m-go">Enregistrer</button></div>
+        </form>
+      </section>
+    </div>
   </section>
 </main>
 
@@ -126,6 +171,6 @@
 <script src="assets/js/icons.js?v=18"></script>
 <script src="assets/js/store.js?v=18"></script>
 <script src="assets/js/cloud.js?v=18"></script>
-<script src="assets/js/espace.js?v=18"></script>
+<script src="assets/js/espace.js?v=19"></script>
 </body>
 </html>

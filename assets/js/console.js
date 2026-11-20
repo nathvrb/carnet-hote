@@ -1313,7 +1313,9 @@
         try { last = localStorage.getItem("cdh:console:dernier") || ""; } catch (e) {}
         var id = ids.indexOf(want) > -1 ? want : ids.indexOf(last) > -1 ? last : ids[0];
         if (want && ids.indexOf(want) < 0 && !m.admin) toast("Ce compte n'a pas accès à ce livret.", 4000);
-        if (id) return loadCompte(id);
+        if (id) return loadCompte(id).then(function () {
+          if (new URLSearchParams(location.search).get("onglet") === "qr" && document.getElementById("tab-qr")) showTab("qr");
+        });
         if (m.admin) {
           document.body.classList.remove("loading");
           var w = want && (S.get(want) || readDraft(want)) ? want : ((S.list()[0] || {}).id || "nid-des-tanneurs");
