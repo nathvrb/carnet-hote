@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -10,7 +10,7 @@
 <meta name="description" content="Connectez-vous pour modifier votre livret d'accueil.">
 <link rel="stylesheet" href="assets/css/fonts.css?v=56">
 <link rel="stylesheet" href="assets/css/console.css?v=18">
-<link rel="stylesheet" href="assets/css/espace.css?v=19">
+<link rel="stylesheet" href="assets/css/espace.css?v=20">
 </head>
 <body class="espace">
 
@@ -97,6 +97,7 @@
       <button type="button" data-sp="livrets"><span data-ic="livre"></span>Mes livrets</button>
       <button type="button" data-sp="stats"><span data-ic="globe"></span>Statistiques</button>
       <button type="button" data-sp="affiche"><span data-ic="qr"></span>QR code et affiche</button>
+      <button type="button" data-sp="boutique"><span data-ic="cadeau"></span>Boutique</button>
       <button type="button" data-sp="aide"><span data-ic="message"></span>Aide et support</button>
       <button type="button" data-sp="compte"><span data-ic="porte"></span>Mon compte</button>
     </nav>
@@ -110,16 +111,10 @@
 
       <!-- Tableau de bord -->
       <section class="es-panel" data-panel="accueil">
-        <div class="es-head">
-          <div>
-            <p class="es-sur">Espace client</p>
-            <h1 id="t-titre">Bonjour</h1>
-            <p class="lead" id="t-lead">Voici l'essentiel de votre livret. Rien ne change pour vos voyageurs tant que vous n'avez pas cliqué sur « Publier ».</p>
-          </div>
-        </div>
+        <div id="hero"></div>
         <div class="tiles" id="tiles"></div>
-        <h2 class="es-h2">Accès rapides</h2>
-        <div class="quick" id="quick"></div>
+        <h2 class="es-h2">Pour bien démarrer</h2>
+        <div class="todo" id="todo"></div>
       </section>
 
       <!-- Mes livrets -->
@@ -140,19 +135,65 @@
         <div class="stats-list" id="affiche-list"></div>
       </section>
 
+      <!-- Boutique -->
+      <section class="es-panel" data-panel="boutique" hidden>
+        <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Boutique</h1><p class="lead">Des porte-clés transparents en plus, avec le nom de votre logement et le QR code de votre livret, pour vos voyageurs, vos co-hôtes ou vos autres logements.</p></div></div>
+        <div class="shop" id="shop">
+          <div class="shop-prev" id="shop-prev" aria-hidden="true"></div>
+          <form class="shop-form es-box" id="f-shop" novalidate>
+            <h2>Porte-clés transparent <span class="shop-price" id="shop-unit"></span></h2>
+            <p class="meta">Visuel imprimé avec le nom du logement et le QR code, glissé dans le porte-clés. Frais d'envoi compris en France. Un porte-clés est déjà inclus dans votre formule&nbsp;: ceux-ci sont en plus.</p>
+            <div class="grid2">
+              <label class="fld" for="s-livret"><span>Livret</span><select id="s-livret"></select></label>
+              <label class="fld" for="s-qte"><span>Quantité</span><input id="s-qte" type="number" min="1" max="50" value="1" inputmode="numeric"></label>
+            </div>
+            <fieldset class="swatches"><legend>Couleur du bandeau</legend><div id="s-cols"></div></fieldset>
+            <label class="fld" for="s-nom"><span>Nom imprimé</span><input id="s-nom" type="text" maxlength="30" autocomplete="off"></label>
+            <h3>Livraison</h3>
+            <div class="grid2">
+              <label class="fld" for="s-dest"><span>Nom du destinataire</span><input id="s-dest" type="text" autocomplete="name" required></label>
+              <label class="fld" for="s-tel"><span>Téléphone (facultatif)</span><input id="s-tel" type="tel" autocomplete="tel"></label>
+            </div>
+            <label class="fld" for="s-adr"><span>Adresse</span><input id="s-adr" type="text" autocomplete="street-address" required></label>
+            <div class="grid2">
+              <label class="fld" for="s-cp"><span>Code postal</span><input id="s-cp" type="text" autocomplete="postal-code" required></label>
+              <label class="fld" for="s-ville"><span>Ville</span><input id="s-ville" type="text" autocomplete="address-level2" required></label>
+            </div>
+            <label class="fld" for="s-pays"><span>Pays</span><select id="s-pays"></select></label>
+            <p class="sr"><label>Ne pas remplir <input id="s-pot" name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
+            <div class="shop-total" aria-live="polite"><span>Total</span><b id="s-total"></b><small id="s-detail"></small></div>
+            <label class="check" for="s-ok"><input type="checkbox" id="s-ok"><span>J'accepte que ces informations (nom, adresse, téléphone) soient transmises à Carnet d'Hôte, par le service d'envoi de formulaires Formspree, pour préparer et expédier ma commande (<a href="confidentialite.html">confidentialité</a>).</span></label>
+            <p class="msg" id="s-msg" role="status" hidden></p>
+            <div class="row"><button class="btn primary big" type="submit" id="s-go">Envoyer ma commande</button></div>
+            <p class="meta">Aucun paiement n'est demandé maintenant&nbsp;: nous vous répondons sous 24 h avec le lien de paiement sécurisé, puis nous fabriquons et expédions. Délais de fabrication et de livraison : nous vous les indiquons dans notre réponse.</p>
+          </form>
+        </div>
+      </section>
+
       <!-- Aide et support -->
       <section class="es-panel" data-panel="aide" hidden>
         <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Aide et support</h1><p class="lead">Une question, un changement que vous préférez nous confier&nbsp;? Écrivez-nous&nbsp;: nous répondons personnellement, en général sous 24 h.</p></div></div>
         <div class="help">
-          <div class="es-box"><h2>Nous écrire</h2><p>Décrivez ce que vous voulez changer ou ce qui ne marche pas, et indiquez le nom de votre logement.</p><p><a class="btn primary" data-mail href="#">Écrire à <span data-cfg-mail></span></a></p></div>
-          <div class="es-box"><h2>Questions fréquentes</h2><p>Prix, délais, modifications, résiliation&nbsp;: les réponses sont sur la page d'accueil.</p><p><a class="btn" href="index.html#faq">Voir les questions</a></p></div>
-          <div class="es-box"><h2>Conditions et données</h2><p>Conditions générales, confidentialité et suppression de vos données.</p><p><a class="btn" href="cgv.html">CGV</a> <a class="btn" href="confidentialite.html#supprimer">Supprimer mes données</a></p></div>
+          <div class="es-box"><h2>Nous écrire</h2><p>Décrivez ce que vous voulez changer ou ce qui ne marche pas, et indiquez le nom de votre logement.</p><p class="mail"><span data-cfg-mail></span></p><p><a class="btn primary" data-mail href="#">Nous écrire</a></p></div>
+          <div class="es-box"><h2>Conditions et données</h2><p>Conditions générales, confidentialité et suppression de vos données.</p><p class="row"><a class="btn" href="cgv.html">CGV</a><a class="btn" href="confidentialite.html#supprimer">Supprimer mes données</a></p></div>
+        </div>
+        <h2 class="es-h2">Questions fréquentes</h2>
+        <div class="faq">
+          <details><summary>Comment modifier mon livret ?</summary><p>Cliquez sur « Modifier » : l'éditeur s'ouvre. Changez le Wi-Fi, un code, une adresse ou un message, puis cliquez sur « Publier ». Vos voyageurs voient la nouvelle version tout de suite.</p></details>
+          <details><summary>Mon QR code change-t-il quand je modifie le livret ?</summary><p>Non. Le QR code et le lien restent les mêmes tant que votre forfait est actif : les porte-clés et l'affiche déjà posés continuent de fonctionner.</p></details>
+          <details><summary>Je me suis trompé, puis-je revenir en arrière ?</summary><p>Oui. L'éditeur garde les dernières versions : l'onglet « Versions » permet de revenir à une version précédente en un clic.</p></details>
+          <details><summary>Puis-je vous confier une modification ?</summary><p>Oui, écrivez-nous. Selon votre forfait, elle est comprise ou facturée à l'unité : nous vous l'indiquons avant de la faire.</p></details>
+          <details><summary>Comment arrêter mon forfait ?</summary><p>Le forfait est sans engagement et résiliable avec 30 jours de préavis : écrivez-nous. Voir aussi les <a href="cgv.html#forfait">conditions</a>.</p></details>
         </div>
       </section>
 
       <!-- Mon compte -->
       <section class="es-panel" data-panel="compte" hidden>
         <div class="es-head"><div><p class="es-sur">Espace client</p><h1>Mon compte</h1><p class="lead" id="acc-mail"></p></div></div>
+        <div class="help">
+        <div class="es-box"><h2>Vos informations</h2><p>Compte relié à <b id="acc-mail2"></b>.</p><p>Pour changer l'adresse e-mail du compte, <a data-mail href="#">écrivez-nous</a>.</p></div>
+        <div class="es-box"><h2>Vos données</h2><p>Vous pouvez demander l'accès à vos données ou leur suppression à tout moment.</p><p><a class="btn" href="confidentialite.html#supprimer">Supprimer mes données</a></p></div>
+        </div>
         <form id="f-mdp" class="stack es-box es-account" novalidate>
           <h2>Changer de mot de passe</h2>
           <div class="grid2">
@@ -169,8 +210,11 @@
 
 <script src="assets/js/config.js?v=56"></script>
 <script src="assets/js/icons.js?v=18"></script>
+<script src="assets/js/tarifs.js?v=62"></script>
+<script src="assets/js/vendor/qrcode.js"></script>
+<script src="assets/js/qr.js?v=18"></script>
 <script src="assets/js/store.js?v=18"></script>
 <script src="assets/js/cloud.js?v=18"></script>
-<script src="assets/js/espace.js?v=19"></script>
+<script src="assets/js/espace.js?v=20"></script>
 </body>
 </html>

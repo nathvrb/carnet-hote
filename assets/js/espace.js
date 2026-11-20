@@ -1,6 +1,6 @@
 /* Espace client : connexion, mot de passe oublié, tableau de bord des livrets. */
 (function () {
-  var C = window.CDH_CONFIG || {}, K = window.CDH_CLOUD, esc = window.cdhEsc, I = window.cdhIcon;
+  var C = window.CDH_CONFIG || {}, K = window.CDH_CLOUD, esc = window.cdhEsc, I = window.cdhIcon, T = window.CDH_TARIFS || {};
   var $ = function (id) { return document.getElementById(id); };
 
   document.querySelectorAll("[data-brand]").forEach(function (el) { el.textContent = C.marque; });
@@ -51,6 +51,7 @@
     var r = new URLSearchParams(location.search).get("retour") || "";
     return /^console\.html(\?[\w=&-]*)?(#[\w-]*)?$/.test(r) ? r : "";
   }
+  var EMAIL = "";
   var urlRecuperation = new URL("espace.html", location.href).href.split("#")[0].split("?")[0];
 
   /* ---------- connexion ---------- */
@@ -136,16 +137,15 @@
     show("chargement");
     K.moi().then(function (m) {
       $("who").hidden = false; $("who-mail").textContent = m.email || K.email();
-      $("acc-mail").textContent = m.email || "";
+      $("acc-mail").textContent = m.email || ""; $("acc-mail2").textContent = m.email || ""; EMAIL = m.email || K.email() || "";
       $("t-admin").hidden = !m.admin;
       var ls = m.livrets || [];
-      $("t-titre").textContent = "Bonjour";
       msg($("t-msg"), "");
       var vide = '<div class="es-empty"><b>Aucun livret n\'est encore relié à ce compte.</b>' + (m.admin ? "Ouvrez la console pour mettre un livret en ligne." : "Écrivez-nous : nous l'associons à votre compte.") + "</div>";
       $("cards").innerHTML = ls.length ? ls.map(card).join("") : vide;
       $("stats-list").innerHTML = ls.length ? ls.map(function (l) { return statBloc(l); }).join("") : vide;
       $("affiche-list").innerHTML = ls.length ? ls.map(afficheBloc).join("") : vide;
-      accueil(ls);
+      accueil(ls); boutique(ls);
       panneau("accueil");
       show("tableau");
       $("cards").querySelectorAll("img[data-cover]").forEach(function (img) { img.addEventListener("error", function () { img.remove(); }); });
@@ -160,27 +160,50 @@
   }
   function dernier(ls) { return ls.slice().sort(function (a, b) { return String(b.publieLe || "").localeCompare(String(a.publieLe || "")); })[0]; }
   function accueil(ls) {
-    var d = dernier(ls), en = ls.filter(function (l) { return l.actif; }).length;
-    var t = '<article class="tile t-a"><h2>Mes livrets</h2><p class="big">' + ls.length + '</p><p class="meta">' + (ls.length ? en + (en > 1 ? " en ligne" : " en ligne") : "Aucun livret relié") + '</p><button class="btn tiny" type="button" data-goto="livrets">Voir mes livrets</button></article>';
-    t += '<article class="tile t-b"><h2>Dernier livret</h2>' + (d ? '<p class="tname">' + esc(d.nom || d.id) + '</p><p class="meta">' + esc([d.ville, d.publieLe ? "publié le " + quand(d.publieLe) : ""].filter(Boolean).join(" · ")) + '</p><a class="btn tiny primary" href="console.html?compte#' + esc(d.id) + '">Modifier</a>' : '<p class="meta">Pas encore de livret.</p>') + "</article>";
-    t += '<article class="tile t-c"><h2>Ouvertures</h2><p class="big" id="tile-vues">' + ls.reduce(function (a, l) { return a + (+l.vues30 || 0); }, 0) + '</p><p class="meta">ces 30 derniers jours</p><button class="btn tiny" type="button" data-goto="stats">Voir les statistiques</button></article>';
-    t += '<article class="tile t-d"><h2>Besoin d\'aide ?</h2><p class="meta">Une modification à nous confier, une question&nbsp;: nous répondons sous 24 h.</p><button class="btn tiny" type="button" data-goto="aide">Aide et support</button></article>';
-    $("tiles").innerHTML = t;
-    var q = "";
+    var d = dernier(ls), en = ls.filter(function (l) { return l.actif; }).length, vues = ls.reduce(function (a, l) { return a + (+l.vues30 || 0); }, 0);
+    var hero = "";
     if (d) {
       var url = window.cdhLivretUrl(d.id);
-      q = '<a class="btn primary" href="console.html?compte#' + esc(d.id) + '">' + I("crayon", "ico-s") + "Modifier mon livret</a>" +
-        '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + I("oeil", "ico-s") + "Voir mon livret</a>" +
-        '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button>" +
-        '<a class="btn" href="console.html?compte&onglet=qr#' + esc(d.id) + '">' + I("qr", "ico-s") + "QR code et affiche</a>";
+      hero = '<div class="hero" style="--c:' + hex(d.accent) + '"><div class="hero-txt">' +
+        '<p class="es-sur">Bonjour, voici votre livret</p><h1>' + esc(d.nom || d.id) + "</h1>" +
+        '<p class="meta"><span class="status ' + (d.actif ? "ok" : "off") + '">' + (d.actif ? "En ligne" : "Hors ligne") + "</span> " + esc([d.ville, d.publieLe ? "publié le " + quand(d.publieLe) : ""].filter(Boolean).join(" · ")) + "</p>" +
+        '<p class="lead">Modifiez le Wi-Fi, un code ou un message du moment : vos voyageurs voient la nouvelle version dès que vous cliquez sur « Publier ».</p>' +
+        '<div class="quick"><a class="btn primary" href="console.html?compte#' + esc(d.id) + '">' + I("crayon", "ico-s") + "Modifier mon livret</a>" +
+        '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + I("oeil", "ico-s") + "Voir</a>" +
+        '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button></div></div>" +
+        '<div class="hero-phone" aria-hidden="true"><div class="phone"><iframe title="Aperçu de votre livret" tabindex="-1" loading="lazy" ' + (window.innerWidth > 860 ? 'src="' + esc(url) + '"' : "") + "></iframe></div></div></div>";
+    } else {
+      hero = '<div class="hero"><div class="hero-txt"><p class="es-sur">Bonjour</p><h1>Bienvenue dans votre espace</h1><p class="lead">Aucun livret n\'est encore relié à ce compte. Écrivez-nous : nous l\'associons à votre compte.</p><div class="quick"><a class="btn primary" data-mail href="#">Nous écrire</a></div></div></div>';
     }
-    $("quick").innerHTML = q;
+    $("hero").innerHTML = hero;
+    document.querySelectorAll("#hero [data-mail]").forEach(function (a) { a.href = "mailto:" + (C.email || "") + "?subject=" + encodeURIComponent("Mon livret d'accueil"); });
+    var ic = function (n) { return '<span class="tile-ic" aria-hidden="true">' + I(n, "ico-s") + "</span>"; };
+    $("tiles").innerHTML =
+      '<article class="tile">' + ic("livre") + "<h2>Mes livrets</h2><p class=\"big\">" + ls.length + '</p><p class="meta">' + (ls.length ? en + " en ligne" : "Aucun livret relié") + '</p><button class="btn tiny" type="button" data-goto="livrets">Voir mes livrets</button></article>' +
+      '<article class="tile">' + ic("globe") + "<h2>Ouvertures</h2><p class=\"big\">" + vues + '</p><p class="meta">ces 30 derniers jours</p><button class="btn tiny" type="button" data-goto="stats">Voir les statistiques</button></article>' +
+      '<article class="tile">' + ic("cadeau") + "<h2>Boutique</h2><p class=\"big\">" + T.supports.porteCles.prix + ' €</p><p class="meta">le porte-clés en plus, envoi compris en France</p><button class="btn tiny" type="button" data-goto="boutique">Commander</button></article>' +
+      '<article class="tile">' + ic("message") + "<h2>Besoin d'aide ?</h2><p class=\"meta\">Une modification à nous confier, une question : nous répondons sous 24 h.</p><button class=\"btn tiny\" type=\"button\" data-goto=\"aide\">Aide et support</button></article>";
+    var did = d ? d.id : "";
+    var todo = [
+      ["crayon", "Relisez votre livret", "Vérifiez le Wi-Fi, les codes (envoyés par message) et les adresses.", d ? '<a class="btn tiny" href="console.html?compte#' + esc(did) + '">Ouvrir l\'éditeur</a>' : ""],
+      ["photo", "Ajoutez vos photos", "Quelques photos du logement rendent le livret plus accueillant.", d ? '<a class="btn tiny" href="console.html?compte#' + esc(did) + '">Ajouter</a>' : ""],
+      ["qr", "Imprimez l'affiche", "Posez le QR code à l'entrée ou sur la table de la cuisine.", '<button class="btn tiny" type="button" data-goto="affiche">QR code et affiche</button>'],
+      ["cle", "Mettez un porte-clés avec les clés", "Le voyageur a le livret sur lui pendant tout le séjour.", '<button class="btn tiny" type="button" data-goto="boutique">Boutique</button>']
+    ];
+    $("todo").innerHTML = todo.map(function (t) {
+      return '<div class="todo-i"><span class="tile-ic" aria-hidden="true">' + I(t[0], "ico-s") + "</span><div><b>" + t[1] + "</b><p>" + t[2] + "</p></div>" + t[3] + "</div>";
+    }).join("");
   }
   function statBloc(l) {
     return '<article class="es-box"><h2>' + esc(l.nom || l.id) + '</h2><div class="vues" data-vues="' + esc(l.id) + '"><div class="vues-head"><span class="vues-num">' + (+l.vues30 || 0) + '</span><span class="vues-lab">' + (+l.vues30 > 1 ? "ouvertures" : "ouverture") + " ces 30 derniers jours</span></div></div></article>";
   }
   function afficheBloc(l) {
-    return '<article class="es-box"><h2>' + esc(l.nom || l.id) + '</h2><p class="meta">QR code, affiche A5 à imprimer, version avec ou sans Wi-Fi.</p><p><a class="btn primary" href="console.html?compte&onglet=qr#' + esc(l.id) + '">' + I("telecharger", "ico-s") + "Télécharger le QR code et l'affiche</a></p></article>";
+    var url = window.cdhLivretUrl(l.id), qr = "";
+    try { qr = window.cdhQrSvg(url, { fg: "#182B40", margin: 1, size: 132 }); } catch (e) {}
+    return '<article class="es-box qrbox"><div class="qrbox-img" aria-hidden="true">' + qr + "</div><div><h2>" + esc(l.nom || l.id) + '</h2><p class="meta">Le QR code de votre livret et l\'affiche A5 à imprimer, avec ou sans le Wi-Fi. Il reste le même quand vous modifiez votre livret.</p>' +
+      '<p class="row"><a class="btn primary" href="console.html?compte&onglet=qr#' + esc(l.id) + '">' + I("telecharger", "ico-s") + "Télécharger le QR code et l'affiche</a>" +
+      '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button></p>" +
+      '<p class="meta"><b>Où le poser&nbsp;?</b> À l\'entrée, sur la table de la cuisine, près du Wi-Fi ou accroché aux clés.</p></div></article>';
   }
   function card(l) {
     var url = window.cdhLivretUrl(l.id), cov = safeImg(l.couverture);
@@ -209,6 +232,10 @@
       var total = s.reduce(function (a, x) { return a + (+x.n || 0); }, 0);
       box.querySelector(".vues-num").textContent = total;
       box.querySelector(".vues-lab").textContent = (total > 1 ? "ouvertures" : "ouverture") + " ces 30 derniers jours";
+      if (total) {
+        var rec = s.reduce(function (a, x) { return (+x.n || 0) > (+a.n || 0) ? x : a; }, s[0]);
+        box.querySelector(".vues-head").insertAdjacentHTML("afterend", '<div class="sum"><div><b>' + (Math.round(total / s.length * 10) / 10).toString().replace(".", ",") + "</b><span>par jour en moyenne</span></div><div><b>" + (+rec.n) + "</b><span>record (" + esc(JOUR(rec.jour)) + ")</span></div><div><b>" + s.filter(function (x) { return +x.n; }).length + "</b><span>jours avec des ouvertures</span></div></div>");
+      }
       if (!total) {
         box.insertAdjacentHTML("beforeend", '<p class="vues-empty">Les ouvertures s\'afficheront ici dès que vos voyageurs scanneront le QR code.</p>');
         return;
@@ -250,6 +277,71 @@
       box.insertAdjacentHTML("beforeend", '<p class="vues-empty">Statistiques indisponibles pour le moment.</p>');
     });
   }
+
+
+  /* ---------- boutique : porte-clés supplémentaires ---------- */
+  var SHOP = { ls: [], col: (T.couleurs && T.couleurs[0]) ? T.couleurs[0].hex : "#1F3A5F" };
+  function eur(n) { return (Math.round(n * 100) / 100).toString().replace(".", ",") + " €"; }
+  function boutique(ls) {
+    SHOP.ls = ls;
+    var unit = T.supports.porteCles.prix;
+    $("shop-unit").textContent = eur(unit) + " l'unité";
+    $("s-livret").innerHTML = ls.map(function (l) { return '<option value="' + esc(l.id) + '">' + esc(l.nom || l.id) + "</option>"; }).join("");
+    var pays = ["France"].concat((T.livraison && T.livraison.pays) || []);
+    $("s-pays").innerHTML = pays.map(function (p) { return "<option>" + esc(p) + "</option>"; }).join("");
+    $("s-cols").innerHTML = (T.couleurs || []).map(function (c, i) {
+      return '<label class="sw"><input type="radio" name="s-col" value="' + esc(c.hex) + '" data-nom="' + esc(c.nom) + '"' + (i === 0 ? " checked" : "") + '><span style="--c:' + esc(c.hex) + '"></span><em>' + esc(c.nom) + "</em></label>";
+    }).join("");
+    if (ls[0]) { $("s-nom").value = ls[0].nom || ""; SHOP.col = (T.couleurs[0] || {}).hex || SHOP.col; }
+    shopRefresh();
+  }
+  function shopQty() { var q = parseInt($("s-qte").value, 10); return isFinite(q) ? Math.min(50, Math.max(1, q)) : 1; }
+  function shopRefresh() {
+    var id = $("s-livret").value, l = SHOP.ls.filter(function (x) { return x.id === id; })[0] || SHOP.ls[0] || {};
+    var chk = document.querySelector('#s-cols input:checked'); SHOP.col = chk ? chk.value : SHOP.col;
+    var nom = $("s-nom").value.trim() || l.nom || "Votre logement", q = shopQty(), unit = T.supports.porteCles.prix;
+    var ship = $("s-pays").value && $("s-pays").value !== "France" ? (T.livraison.prix || 0) : 0;
+    $("s-total").textContent = eur(q * unit + ship);
+    $("s-detail").textContent = q + " × " + eur(unit) + (ship ? " + livraison " + eur(ship) : " · livraison comprise");
+    var fs = Math.max(4.4, Math.min(8.6, 66 / (nom.length * 0.72))), qr = "";
+    try { qr = window.cdhQrSvg(window.cdhLivretUrl(l.id || "x"), { fg: "#182B40", margin: 1, size: 54 }); } catch (e) {}
+    $("shop-prev").innerHTML = '<svg viewBox="0 0 120 200" role="img" aria-label="Aperçu du porte-clés">' +
+      '<circle cx="60" cy="24" r="17" fill="none" stroke="#8E918F" stroke-width="3"/>' +
+      '<path d="M48 36h24v14H48z" fill="#DCE4E8" stroke="#B7C2C8"/>' +
+      '<path d="M26 50h68l12 12v108l-12 12H26L14 170V62z" fill="#F2F6F8" stroke="#B7C2C8" stroke-width="1.5"/>' +
+      '<rect x="24" y="66" width="72" height="104" fill="#fff"/>' +
+      '<rect x="24" y="66" width="72" height="30" fill="' + esc(SHOP.col) + '"/>' +
+      '<text x="60" y="76" text-anchor="middle" fill="#fff" fill-opacity=".85" font-size="3.9" font-weight="700" letter-spacing="1" font-family="Schibsted Grotesk, sans-serif">BIENVENUE</text>' +
+      '<text x="60" y="88.5" text-anchor="middle" fill="#fff" font-size="' + fs + '" font-weight="700" letter-spacing=".6" font-family="Schibsted Grotesk, sans-serif">' + esc(nom.toUpperCase()) + "</text>" +
+      '<g transform="translate(33 100)">' + qr + "</g>" +
+      '<text x="60" y="162" text-anchor="middle" fill="#182B40" font-size="8" font-style="italic" font-family="Brygada 1918, Georgia, serif">livret d\'accueil</text></svg>';
+  }
+  ["s-livret", "s-qte", "s-nom", "s-pays"].forEach(function (id) { $(id).addEventListener("input", shopRefresh); $(id).addEventListener("change", shopRefresh); });
+  $("s-livret").addEventListener("change", function () { var l = SHOP.ls.filter(function (x) { return x.id === $("s-livret").value; })[0]; if (l) { $("s-nom").value = l.nom || ""; shopRefresh(); } });
+  $("s-cols").addEventListener("change", shopRefresh);
+  $("f-shop").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var out = $("s-msg"), btn = $("s-go"), need = ["s-dest", "s-adr", "s-cp", "s-ville"];
+    for (var i = 0; i < need.length; i++) if (!$(need[i]).value.trim()) { msg(out, "Complétez l'adresse de livraison."); $(need[i]).focus(); return; }
+    if (!$("s-nom").value.trim()) { msg(out, "Indiquez le nom à imprimer."); $("s-nom").focus(); return; }
+    if (!$("s-ok").checked) { msg(out, "Cochez la case pour que nous puissions traiter votre commande."); $("s-ok").focus(); return; }
+    var url = C.formulaireDevis; if (!url) { msg(out, "L'envoi n'est pas disponible pour le moment. Écrivez-nous à " + (C.email || "notre adresse") + "."); return; }
+    var chk = document.querySelector("#s-cols input:checked"), q = shopQty(), unit = T.supports.porteCles.prix, ship = $("s-pays").value !== "France" ? T.livraison.prix : 0;
+    var data = {
+      _subject: "Commande de porte-clés : " + $("s-nom").value.trim(),
+      email: EMAIL, livret: $("s-livret").value, quantite: q, couleur_bandeau: chk ? chk.dataset.nom + " " + chk.value : "", nom_imprime: $("s-nom").value.trim(),
+      destinataire: $("s-dest").value.trim(), telephone: $("s-tel").value.trim(), adresse: $("s-adr").value.trim(), code_postal: $("s-cp").value.trim(), ville: $("s-ville").value.trim(), pays: $("s-pays").value,
+      total: eur(q * unit + ship), _gotcha: $("s-pot").value
+    };
+    msg(out, ""); busy(btn, true, "Envoi…");
+    fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) }).then(function (r) {
+      busy(btn, false);
+      if (!r.ok) throw new Error("http");
+      msg(out, "Merci, votre commande est bien reçue. Nous vous répondons sous 24 h à " + EMAIL + " avec le lien de paiement. Aucun e-mail automatique n'est envoyé.", "ok");
+      $("f-shop").querySelectorAll("input[type=text], input[type=tel]").forEach(function (i) { if (i.id !== "s-nom") i.value = ""; });
+      $("s-ok").checked = false;
+    }, function () { busy(btn, false); msg(out, "L'envoi a échoué. Réessayez, ou écrivez-nous à " + (C.email || "notre adresse") + "."); }).catch(function () { busy(btn, false); msg(out, "L'envoi a échoué. Réessayez, ou écrivez-nous à " + (C.email || "notre adresse") + "."); });
+  });
 
   /* ---------- démarrage ---------- */
   if (!K || !K.actif) { show("inactif"); return; }
