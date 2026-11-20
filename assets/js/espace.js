@@ -171,7 +171,7 @@
         '<div class="quick"><a class="btn primary" href="console.html?compte#' + esc(d.id) + '">' + I("crayon", "ico-s") + "Modifier mon livret</a>" +
         '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + I("oeil", "ico-s") + "Voir</a>" +
         '<button class="btn" type="button" data-copy="' + esc(url) + '">' + I("copier", "ico-s") + "Copier le lien</button></div></div>" +
-        '<div class="hero-phone" aria-hidden="true"><div class="phone"><iframe title="Aperçu de votre livret" tabindex="-1" loading="lazy" ' + (window.innerWidth > 860 ? 'src="' + esc(url) + '"' : "") + "></iframe></div></div></div>";
+        '<div class="hero-phone" aria-hidden="true"><div class="phone"><div class="phone-screen"><iframe title="Aperçu de votre livret" tabindex="-1" loading="lazy" scrolling="no" ' + (window.innerWidth > 860 ? 'src="' + esc(url) + '"' : "") + "></iframe></div></div></div></div>";
     } else {
       hero = '<div class="hero"><div class="hero-txt"><p class="es-sur">Bonjour</p><h1>Bienvenue dans votre espace</h1><p class="lead">Aucun livret n\'est encore relié à ce compte. Écrivez-nous : nous l\'associons à votre compte.</p><div class="quick"><a class="btn primary" data-mail href="#">Nous écrire</a></div></div></div>';
     }
@@ -292,7 +292,7 @@
     $("s-cols").innerHTML = (T.couleurs || []).map(function (c, i) {
       return '<label class="sw"><input type="radio" name="s-col" value="' + esc(c.hex) + '" data-nom="' + esc(c.nom) + '"' + (i === 0 ? " checked" : "") + '><span style="--c:' + esc(c.hex) + '"></span><em>' + esc(c.nom) + "</em></label>";
     }).join("");
-    if (ls[0]) { $("s-nom").value = ls[0].nom || ""; SHOP.col = (T.couleurs[0] || {}).hex || SHOP.col; }
+    if (ls[0]) { $("s-nom").value = (ls[0].nom || "").slice(0, 40); SHOP.col = (T.couleurs[0] || {}).hex || SHOP.col; }
     shopRefresh();
   }
   function shopQty() { var q = parseInt($("s-qte").value, 10); return isFinite(q) ? Math.min(50, Math.max(1, q)) : 1; }
@@ -303,21 +303,40 @@
     var ship = $("s-pays").value && $("s-pays").value !== "France" ? (T.livraison.prix || 0) : 0;
     $("s-total").textContent = eur(q * unit + ship);
     $("s-detail").textContent = q + " × " + eur(unit) + (ship ? " + livraison " + eur(ship) : " · livraison comprise");
-    var fs = Math.max(4.4, Math.min(8.6, 66 / (nom.length * 0.72))), qr = "";
-    try { qr = window.cdhQrSvg(window.cdhLivretUrl(l.id || "x"), { fg: "#182B40", margin: 1, size: 54 }); } catch (e) {}
+    nom = nom.length > 44 ? nom.slice(0, 43).trim() + "…" : nom;
+    var up = nom.toUpperCase(), fs = 8.6, lines = [up];
+    function wrap(txt, max) {
+      var out = [], cur = "";
+      txt.split(/\s+/).forEach(function (w) {
+        while (w.length > max) { if (cur) { out.push(cur); cur = ""; } out.push(w.slice(0, max)); w = w.slice(max); }
+        if (!w) return;
+        if (!cur) cur = w; else if ((cur + " " + w).length <= max) cur += " " + w; else { out.push(cur); cur = w; }
+      });
+      if (cur) out.push(cur);
+      return out;
+    }
+    for (fs = 8.6; fs >= 4.8; fs -= 0.4) {
+      lines = wrap(up, Math.floor(64 / (fs * 0.74)));
+      if (lines.length <= (fs > 6.6 ? 1 : fs > 5.4 ? 2 : 3)) break;
+    }
+    lines = lines.slice(0, 3);
+    var lh = fs * 1.22, band = Math.max(30, 20 + lines.length * lh + 4), y0 = 66 + band + 5, qs = Math.max(38, Math.min(54, 152 - y0)), qr = "";
+    try { qr = window.cdhQrSvg(window.cdhLivretUrl(l.id || "x"), { fg: "#182B40", margin: 1, size: qs }); } catch (e) {}
+    var txt = lines.map(function (ln, i) {
+      return '<text x="60" y="' + (84 + fs * 0.35 + i * lh).toFixed(1) + '" text-anchor="middle" fill="#fff" font-size="' + fs.toFixed(1) + '" font-weight="700" letter-spacing=".4" font-family="Schibsted Grotesk, sans-serif">' + esc(ln) + "</text>";
+    }).join("");
     $("shop-prev").innerHTML = '<svg viewBox="0 0 120 200" role="img" aria-label="Aperçu du porte-clés">' +
       '<circle cx="60" cy="24" r="17" fill="none" stroke="#8E918F" stroke-width="3"/>' +
       '<path d="M48 36h24v14H48z" fill="#DCE4E8" stroke="#B7C2C8"/>' +
       '<path d="M26 50h68l12 12v108l-12 12H26L14 170V62z" fill="#F2F6F8" stroke="#B7C2C8" stroke-width="1.5"/>' +
       '<rect x="24" y="66" width="72" height="104" fill="#fff"/>' +
-      '<rect x="24" y="66" width="72" height="30" fill="' + esc(SHOP.col) + '"/>' +
-      '<text x="60" y="76" text-anchor="middle" fill="#fff" fill-opacity=".85" font-size="3.9" font-weight="700" letter-spacing="1" font-family="Schibsted Grotesk, sans-serif">BIENVENUE</text>' +
-      '<text x="60" y="88.5" text-anchor="middle" fill="#fff" font-size="' + fs + '" font-weight="700" letter-spacing=".6" font-family="Schibsted Grotesk, sans-serif">' + esc(nom.toUpperCase()) + "</text>" +
-      '<g transform="translate(33 100)">' + qr + "</g>" +
-      '<text x="60" y="162" text-anchor="middle" fill="#182B40" font-size="8" font-style="italic" font-family="Brygada 1918, Georgia, serif">livret d\'accueil</text></svg>';
+      '<rect x="24" y="66" width="72" height="' + band.toFixed(1) + '" fill="' + esc(SHOP.col) + '"/>' +
+      '<text x="60" y="76" text-anchor="middle" fill="#fff" fill-opacity=".85" font-size="3.9" font-weight="700" letter-spacing="1" font-family="Schibsted Grotesk, sans-serif">BIENVENUE</text>' + txt +
+      '<g transform="translate(' + (60 - qs / 2).toFixed(1) + " " + y0.toFixed(1) + ')">' + qr + "</g>" +
+      '<text x="60" y="164" text-anchor="middle" fill="#182B40" font-size="8" font-style="italic" font-family="Brygada 1918, Georgia, serif">livret d\'accueil</text></svg>';
   }
   ["s-livret", "s-qte", "s-nom", "s-pays"].forEach(function (id) { $(id).addEventListener("input", shopRefresh); $(id).addEventListener("change", shopRefresh); });
-  $("s-livret").addEventListener("change", function () { var l = SHOP.ls.filter(function (x) { return x.id === $("s-livret").value; })[0]; if (l) { $("s-nom").value = l.nom || ""; shopRefresh(); } });
+  $("s-livret").addEventListener("change", function () { var l = SHOP.ls.filter(function (x) { return x.id === $("s-livret").value; })[0]; if (l) { $("s-nom").value = (l.nom || "").slice(0, 40); shopRefresh(); } });
   $("s-cols").addEventListener("change", shopRefresh);
   $("f-shop").addEventListener("submit", function (e) {
     e.preventDefault();

@@ -171,8 +171,9 @@
 .hero .meta { margin: 0 0 14px; font-size: 14px; color: var(--ink-soft); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .hero .lead { margin-bottom: 20px; }
 .quick { display: flex; flex-wrap: wrap; gap: 10px; }
-.phone { width: 218px; height: 404px; border-radius: 30px; background: #1B2531; padding: 9px; box-shadow: 0 30px 50px -26px rgba(17, 30, 45, .6); position: relative; }
-.phone iframe { width: 100%; height: 100%; border: 0; border-radius: 22px; background: #fff; pointer-events: none; display: block; }
+.phone { width: 218px; height: 410px; border-radius: 30px; background: #1B2531; padding: 9px; box-shadow: 0 30px 50px -26px rgba(17, 30, 45, .6); position: relative; }
+.phone-screen { width: 200px; height: 392px; border-radius: 22px; overflow: hidden; background: #fff; position: relative; }
+.phone iframe { position: absolute; left: 0; top: 0; width: 390px; height: 765px; border: 0; background: #fff; pointer-events: none; transform: scale(.5128); transform-origin: 0 0; } /* page mobile 390 × 780, réduite */
 .phone::before { content: ""; position: absolute; z-index: 2; top: 13px; left: 50%; width: 58px; height: 6px; border-radius: 6px; background: #0B1118; transform: translateX(-50%); }
 @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } .hero-phone { display: none; } }
 
