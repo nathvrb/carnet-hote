@@ -2,7 +2,7 @@
    Grille tarifaire — utilisée par la page Offres ET le devis automatique.
    Changez un prix ici, il change partout.
    Modèle retenu le 27/10/2026, mis à jour le 03/11/2026 : création payée une fois
-   (Confort 89,99 € ou Premium 189,99 €, acompte de 50 %, solde après 14 jours d'essai),
+   (Confort 49 € ou Premium 99 €, prix de lancement fixés le 23/11/2026, acompte de 50 %, solde après 14 jours d'essai),
    puis forfait mensuel avec console incluse (Autonomie), Sérénité en option.
    Repères marché (oct. 2026) :
    - logiciels « à faire soi-même » : gratuit à ~12 €/mois (StyQR 3 €/mois,
@@ -13,9 +13,9 @@ window.CDH_TARIFS = {
   formules: {
     confort: {
       nom: "Confort",
-      prix: 89.99,
+      prix: 49,
       // Plusieurs logements, chaque livret différent : 2e, 3e, puis 4e et suivants
-      prixSuivants: [75, 65, 55],
+      prixSuivants: [40, 35, 30],
       populaire: true,
       accroche: "Le bon choix pour la plupart des logements.",
       delai: "3 à 5 jours ouvrés",
@@ -40,8 +40,8 @@ window.CDH_TARIFS = {
     },
     premium: {
       nom: "Premium",
-      prix: 189.99,
-      prixSuivants: [155, 135, 115],
+      prix: 99,
+      prixSuivants: [82, 70, 60],
       accroche: "Un livret entièrement à votre image, pour les hôtes exigeants et les établissements.",
       delai: "3 à 5 jours ouvrés, en priorité",
       langues: 6,

@@ -6,7 +6,7 @@
 <title>Carnet d'Hôte · Livrets d'accueil digitaux</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <meta name="description" content="Livrets d'accueil digitaux pour locations courte durée, maisons d'hôtes et hôtels : rédigés pour vous, accessibles par QR code, modifiables à tout moment.">
-<meta name="theme-color" content="#F4EFE6">
+<meta name="theme-color" content="#15304D">
 <link rel="canonical" href="https://carnetdhote.fr/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
@@ -18,6 +18,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Carnet d'Hôte","url":"https://carnetdhote.fr/","inLanguage":"fr","description":"Livrets d'accueil digitaux avec QR code pour locations courte durée, maisons d'hôtes et hôtels."}</script>
 <link rel="stylesheet" href="assets/css/fonts.css?v=56">
 <link rel="stylesheet" href="assets/css/site.css?v=62">
+<link rel="stylesheet" href="assets/css/vitrine.css?v=1">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -59,30 +60,54 @@
 <main id="haut">
 
   <!-- COUVERTURE -->
-  <section class="couv" aria-labelledby="t-hero">
-    <div class="wrap couv-grid">
-      <h1 class="couv-titre" id="t-hero">Le livret d'accueil qui s'ouvre d'un scan.</h1>
-      <div class="couv-texte">
-        <p class="couv-lead">Nous rédigeons le livret de votre location, de votre maison d'hôtes ou de votre hôtel&nbsp;: Wi-Fi, arrivée, modes d'emploi, adresses du quartier. Vos voyageurs scannent le QR code posé chez vous et trouvent la réponse sans vous écrire. Aucune application à installer, à partir de <span data-prix-min>89,99 €</span>.</p>
-        <div class="couv-actions">
-          <a class="btn" href="#devis">Calculer mon devis</a>
-          <a class="lien" href="#exemples">Parcourir les exemples</a>
-        </div>
+  <section class="vx-hero" id="vx-hero" aria-labelledby="t-hero">
+    <div class="wrap vx-hero-grid">
+      <div class="vx-hero-txt">
+        <p class="vx-kicker">Livrets d'accueil numériques</p>
+        <h1 class="vx-h1" id="t-hero">L'accueil que vos voyageurs <em>gardent dans la poche.</em></h1>
+        <p class="vx-lead">Nous rédigeons le livret de votre location, de votre maison d'hôtes ou de votre hôtel : Wi-Fi, arrivée, modes d'emploi, adresses du quartier. Vos voyageurs l'ouvrent d'un simple scan, sans application. À partir de <span data-prix-min>49 €</span>.</p>
+        <div class="vx-cta"><a class="btn peche" href="#devis">Calculer mon devis</a><a class="btn contour-clair" href="#livret">Découvrir le livret</a></div>
+        <ul class="vx-mini">
+          <li><strong>4 langues</strong>incluses dans le Confort</li>
+          <li><strong>3 à 5 jours</strong>ouvrés pour la mise en ligne</li>
+          <li><strong>14 jours</strong>d'essai avant le solde</li>
+        </ul>
       </div>
-      <div class="tampon">
-        <div class="tampon-qr" data-livret-qr="nid-des-tanneurs" data-label="QR code du livret d'exemple Le Nid des Tanneurs"></div>
-        <p>Scannez avec l'appareil photo de votre téléphone&nbsp;: le livret du Nid des Tanneurs s'ouvre, comme pour un voyageur.</p>
-      </div>
-      <div class="couv-epreuve">
-        <a class="skip-demo" href="#t-msgs">Passer l'aperçu du livret</a>
-        <div class="phone hero-phone">
-          <div class="screen">
-            <iframe id="hero-frame" name="cdh-vitrine" src="livret.html#nid-des-tanneurs" title="Aperçu d'un vrai livret d'accueil : Le Nid des Tanneurs"></iframe>
-          </div>
-        </div>
-        <a class="lien couv-ouvrir" id="hero-open" href="livret.html#nid-des-tanneurs" target="_blank" rel="noopener">Ouvrir le livret en plein écran</a>
-      </div>
+      <div class="vx-scene" id="vx-scene" aria-hidden="true"><div class="vx-stage">
+        <div class="vx-arch-line"></div>
+        <div class="vx-arch"><img src="assets/vitrine/arche.jpg" alt="" width="646" height="1065"></div>
+        <div class="vx-phone"><div class="vx-notch"></div><div class="vx-scr"><img src="assets/vitrine/livret-1.jpg" alt="" width="780" height="1510"></div></div>
+        <div class="vx-frag vx-f1"><img src="assets/vitrine/frag-wifi.jpg" alt="" width="708" height="360"></div>
+        <div class="vx-frag vx-f2"><img src="assets/vitrine/frag-contact.jpg" alt="" width="708" height="392"></div>
+        <div class="vx-frag vx-f3"><img src="assets/vitrine/frag-112.jpg" alt="" width="684" height="160"></div>
+      </div></div>
     </div>
+    <div class="vx-hero-fade"></div>
+  </section>
+
+  <!-- LE LIVRET : le téléphone défile avec la page -->
+  <section class="vx-story" id="livret" style="--n:7" aria-labelledby="t-story">
+    <div class="vx-pin"><div class="wrap vx-pin-grid">
+      <div class="vx-copy">
+        <p class="vx-kicker vx-kicker-fonce">Le livret</p>
+        <h2 class="vx-h2" id="t-story">Du premier scan au départ, <em>tout est là.</em></h2>
+        <div class="vx-stack" id="vx-stack">
+        <article class="vx-stp"><span class="vx-no">01</span><h3>Un accueil qui met à l'aise</h3><p>Dès l'ouverture : la photo du lieu, votre mot de bienvenue signé et ce qu'il faut savoir avant tout.</p></article>
+        <article class="vx-stp"><span class="vx-no">02</span><h3>Le Wi-Fi et vous joindre, en un geste</h3><p>Réseau et mot de passe à copier, heures d'arrivée et de départ, boutons pour vous appeler ou vous écrire.</p></article>
+        <article class="vx-stp"><span class="vx-no">03</span><h3>Arriver sans vous attendre</h3><p>Adresse et itinéraire, accès en transports ou en voiture, boîte à clés expliquée en photo, pas à pas.</p></article>
+        <article class="vx-stp"><span class="vx-no">04</span><h3>Le logement, notice comprise</h3><p>Lave-linge, cuisine, chauffage, règles de la maison. Et vos services en plus : départ tardif, petit-déjeuner, ménage.</p></article>
+        <article class="vx-stp"><span class="vx-no">05</span><h3>Les adresses du quartier</h3><p>Boulangerie, restaurants, pharmacie, transports : classés par catégorie, avec le trajet à pied et l'itinéraire.</p></article>
+        <article class="vx-stp"><span class="vx-no">06</span><h3>Des idées de sorties</h3><p>Vos coups de cœur et nos suggestions, pour que le séjour soit plus qu'une simple nuitée.</p></article>
+        <article class="vx-stp"><span class="vx-no">07</span><h3>Le départ, sans oubli</h3><p>Une check-list de départ à cocher et les numéros d'urgence toujours à portée de main.</p></article>
+        </div>
+        <ol class="vx-ticks" id="vx-ticks" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+        <a class="skip-demo" href="#t-msgs">Passer la démonstration du livret</a>
+      </div>
+      <div class="vx-device">
+        <div class="vx-dv-arch"></div>
+        <div class="vx-sphone" id="vx-sphone"><div class="vx-notch"></div><div class="vx-scr"><img class="vx-reel" id="vx-reel" src="assets/vitrine/reel.jpg" width="600" height="11396" alt="Défilement d'un livret d'accueil : accueil, Wi-Fi, arrivée, logement, adresses, sorties, départ et urgences" decoding="async"></div></div>
+      </div>
+    </div></div>
   </section>
 
   <!-- MESSAGES : une journée d'hôte -->
@@ -539,10 +564,10 @@
   </div>
 </footer>
 
-<div class="devis-bar" id="devis-bar"><div><b id="bar-total">89,99 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
+<div class="devis-bar" id="devis-bar"><div><b id="bar-total">49 €</b><small id="bar-sub">puis 7,90 €/mois</small></div><a href="#folio">Voir le détail</a></div>
 
 <script src="assets/js/config.js?v=56"></script>
-<script src="assets/js/tarifs.js?v=62"></script>
+<script src="assets/js/tarifs.js?v=63"></script>
 <script src="assets/js/icons.js?v=52"></script>
 <script src="data/livrets.js"></script>
 <script src="assets/js/store.js?v=52"></script>
@@ -550,5 +575,6 @@
 <script src="assets/js/qr.js?v=52"></script>
 <script src="assets/js/devis.js?v=62"></script>
 <script src="assets/js/site.js?v=62"></script>
+<script src="assets/js/vitrine.js?v=1"></script>
 </body>
 </html>

@@ -16,12 +16,12 @@
   --ink-soft: #615C54;     /* texte secondaire */
   --line: #D5CBBB;         /* filet */
   --line-strong: #B9AC98;  /* bord des champs */
-  --fob: #182B40;          /* bleu encre : boutons */
-  --fob-ink: #182B40;      /* bleu encre utilisé comme couleur de texte */
+  --fob: #15304D;          /* bleu encre : boutons */
+  --fob-ink: #15304D;      /* bleu encre utilisé comme couleur de texte */
   --on-fob: #F4EFE6;
-  --brass: #B5A18A;        /* taupe : filets */
-  --brass-ink: #6E5B46;    /* taupe lisible */
-  --bezel: #111E2D;
+  --brass: #DDB29D;        /* taupe : filets */
+  --brass-ink: #9A4A2A;    /* taupe lisible */
+  --bezel: #0F2238;
   --bezel-edge: rgba(255, 255, 255, .06); /* liseré du téléphone */
   --ok: #2F6B45;
   --ok-bg: #E3ECDF;
