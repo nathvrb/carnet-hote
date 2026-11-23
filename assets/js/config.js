@@ -35,9 +35,9 @@ window.CDH_CONFIG = {
   // Laissés vides, ces champs apparaissent en jaune « à compléter » sur les pages.
   editeur: "",       // Nom et prénom de l'exploitant (entrepreneur individuel)
   adresse: "",       // Adresse postale professionnelle (siège de l'entreprise)
-  mediateur: "",     // Médiateur de la consommation (obligatoire pour vendre à des particuliers)
+  mediateur: "CM2C (Centre de la Médiation de la Consommation de Conciliateurs de Justice), 49 rue de Ponthieu, 75008 Paris, www.cm2c.net",     // Médiateur de la consommation (obligatoire pour vendre à des particuliers)
   // Mentions du devis
-  siret: "SIRET en cours d'immatriculation",
+  siret: "SIRET 132 137 035 00011",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",
   validiteDevisJours: 30,
   conditions: "Acompte de 50 % à la commande, non remboursable une fois le travail commencé. Essai de 14 jours après la mise en ligne, puis solde de la création et forfait (sans engagement, résiliable avec 30 jours de préavis). PDF du livret remis à l'arrêt du forfait après au moins 3 mois d'abonnement."
