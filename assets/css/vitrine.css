@@ -199,26 +199,40 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="
 
 /* ---------- petits écrans ---------- */
 @media (max-width: 980px) {
-  .vx-hero-grid { grid-template-columns: 1fr; gap: 10px; }
-  .vx-scene { height: 540px; transform: scale(.86); transform-origin: 50% 0; margin: 20px 0 -50px; }
-  .vx-mini { gap: 18px 26px; }
+  .vx-hero { padding: 28px 0 96px; }
+  .vx-hero-grid { grid-template-columns: 1fr; gap: 18px; }
+  .vx-h1 { margin: 16px 0 16px; }
+  .vx-lead { margin-bottom: 26px; }
+  /* la scène est recomposée pour l'écran du téléphone (rien n'est réduit après coup) */
+  .vx-scene { width: min(100%, 420px); height: 470px; margin: 8px auto 0; }
+  .vx-arch { left: 0; top: 12px; width: 190px; height: 380px; border-radius: 95px 95px 14px 14px; }
+  .vx-arch-line { left: 16px; top: 2px; width: 190px; height: 380px; border-radius: 95px 95px 14px 14px; }
+  .vx-phone { left: auto; right: 6px; top: 66px; width: 202px; height: 404px; border-radius: 34px; padding: 8px; }
+  .vx-scr { border-radius: 27px; }
+  .vx-phone .vx-notch { top: 14px; width: 60px; height: 17px; margin-left: -30px; }
+  .vx-f1 { left: 8px; bottom: 18px; width: 164px; border-radius: 13px; }
+  .vx-f2 { right: 14px; top: 0; width: 170px; border-radius: 13px; }
+  .vx-f3 { display: none; }
   .vx-pin { top: 64px; height: calc(100vh - 64px); height: calc(100dvh - 64px); }
-  .vx-pin-grid { grid-template-columns: 1fr; grid-template-rows: 56% 44%; gap: 0; }
-  .vx-device { order: 1; height: auto; }
-  .vx-copy { order: 2; align-self: start; padding-top: 6px; }
-  .vx-dv-arch { width: 240px; height: 370px; margin: -185px 0 0 -114px; }
-  .vx-sphone { width: 196px; height: 402px; border-radius: 32px; padding: 7px; }
-  .vx-sphone .vx-scr { border-radius: 26px; }
-  .vx-sphone .vx-notch { top: 13px; width: 56px; height: 16px; margin-left: -28px; }
+  .vx-pin-grid { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; gap: 0; padding-bottom: 14px; }
+  .vx-device { order: 1; height: 100%; min-height: 0; padding: 12px 0 6px; }
+  .vx-copy { order: 2; align-self: end; }
   .vx-copy .vx-kicker, .vx-copy .vx-h2 { display: none; }
-  .vx-stack { height: 170px; }
-  .vx-ticks { margin-top: 14px; }
-  .vx-stp h3 { font-size: 1.55rem; }
-  .vx-stp p { font-size: 15.5px; }
+  .vx-dv-arch { top: 50%; height: 94%; width: auto; aspect-ratio: .66; margin: 0; transform: translate(-50%, -50%) translateZ(-60px); border-radius: 999px 999px 18px 18px; }
+  .vx-dv-arch::after { inset: 10px; border-radius: 999px 999px 10px 10px; }
+  .vx-sphone { height: 100%; max-height: 430px; width: auto; aspect-ratio: 196 / 402; border-radius: 30px; padding: 7px; }
+  .vx-sphone .vx-scr { border-radius: 24px; }
+  .vx-sphone .vx-notch { top: 12px; width: 52px; height: 15px; margin-left: -26px; }
+  .vx-stack { height: 150px; }
+  .vx-ticks { margin-top: 12px; }
+  .vx-stp h3 { font-size: 1.45rem; margin: 2px 0 8px; }
+  .vx-stp p { font-size: 15px; }
+  .vx-no { font-size: 1.1rem; }
   .plans { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
-  .vx-scene { transform: scale(.7); height: 450px; width: 130%; margin-left: -15%; }
+  .vx-cta .contour-clair, .vx-mini { display: none; }
+  .vx-cta .btn { width: 100%; }
   .plan { padding: 32px 24px 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
