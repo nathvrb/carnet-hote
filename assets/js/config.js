@@ -33,8 +33,8 @@ window.CDH_CONFIG = {
   supabaseCle: "sb_publishable_rxgiSoqSFq1DajBuY0aMvA_Q5TCQ8Z3",
   // Mentions légales (pages mentions-legales.html, cgv.html, confidentialite.html).
   // Laissés vides, ces champs apparaissent en jaune « à compléter » sur les pages.
-  editeur: "",       // Nom et prénom de l'exploitant (entrepreneur individuel)
-  adresse: "",       // Adresse postale professionnelle (siège de l'entreprise)
+  editeur: "Nathan Verbrugghe",       // Nom et prénom de l'exploitant (entrepreneur individuel)
+  adresse: "8 rue Bellevue, 68800 Thann",       // Adresse postale professionnelle (siège de l'entreprise)
   mediateur: "CM2C (Centre de la Médiation de la Consommation de Conciliateurs de Justice), 49 rue de Ponthieu, 75008 Paris, www.cm2c.net",     // Médiateur de la consommation (obligatoire pour vendre à des particuliers)
   // Mentions du devis
   siret: "SIRET 132 137 035 00011",
