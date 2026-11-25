@@ -95,10 +95,9 @@ body { background: var(--ivoire); }
 .vx-f3 { right: 2%; bottom: 3%; width: 190px; border-radius: 12px; transform: translateZ(150px); animation: vx-fl 6s ease-in-out -1s infinite; }
 @keyframes vx-fl { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
-/* ---------- le livret : le téléphone défile tout seul ---------- */
-.vx-story { position: relative; height: calc(100vh + var(--n) * 78vh); background: var(--ivoire); }
-.vx-pin { position: sticky; top: 72px; height: calc(100vh - 72px); height: calc(100dvh - 72px); display: flex; align-items: center; overflow: hidden; }
-.vx-pin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; height: 100%; width: 100%; }
+/* ---------- le livret : on fait défiler l'écran du téléphone, les textes suivent ---------- */
+.vx-story { position: relative; background: var(--ivoire); padding: 40px 0 64px; }
+.vx-pin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; width: 100%; }
 .vx-copy { position: relative; z-index: 2; }
 .vx-h2 { margin: 16px 0 34px; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 3.6vw, 3.2rem); line-height: 1.06; letter-spacing: -.02em; color: var(--bleu); max-width: 12em; }
 .vx-stack { position: relative; height: 190px; max-width: 480px; }
@@ -108,14 +107,21 @@ body { background: var(--ivoire); }
 .vx-stp h3 { margin: 6px 0 12px; font-family: var(--display); font-weight: 400; font-size: clamp(1.6rem, 2.4vw, 2.15rem); line-height: 1.1; letter-spacing: -.015em; color: var(--bleu); }
 .vx-stp p { margin: 0; color: var(--gris); font-size: 16.5px; max-width: 25em; }
 .vx-ticks { list-style: none; display: flex; gap: 8px; margin: 28px 0 0; padding: 0; }
-.vx-ticks li { width: 34px; height: 3px; border-radius: 3px; background: var(--filet); transition: background-color .4s, width .4s; }
+.vx-ticks li { width: 34px; height: 3px; border-radius: 3px; background: var(--filet); transition: background-color .4s, width .4s; cursor: pointer; position: relative; }
+.vx-ticks li::before { content: ""; position: absolute; inset: -12px -3px; }
 .vx-ticks li.on { background: var(--peche-fonce); width: 54px; }
-.vx-device { position: relative; height: 100%; display: grid; place-items: center; perspective: 1500px; }
+.vx-device { position: relative; height: 690px; display: grid; place-items: center; perspective: 1500px; }
 .vx-dv-arch { position: absolute; left: 50%; top: 50%; width: 400px; height: 610px; margin: -300px 0 0 -190px; border-radius: 200px 200px 20px 20px; background: var(--bleu); transform: translateZ(-60px); box-shadow: var(--ombre); }
 .vx-dv-arch::after { content: ""; position: absolute; inset: 14px; border-radius: 186px 186px 10px 10px; border: 1px solid rgba(242, 168, 135, .55); }
 .vx-sphone { position: relative; width: 292px; height: 600px; border-radius: 46px; padding: 10px; background: #0D1B2B; box-shadow: 0 1.5px 0 rgba(255, 255, 255, .14) inset, 0 50px 70px -20px rgba(15, 34, 56, .6), 0 16px 26px -10px rgba(15, 34, 56, .4); transform: rotateY(var(--sy, -10deg)) rotateX(2deg); transition: transform .2s linear; }
 .vx-sphone .vx-scr { border-radius: 37px; }
-.vx-scr > img.vx-reel { position: absolute; left: 0; top: 0; width: 100%; height: auto; object-fit: fill; will-change: transform; }
+.vx-scroll { position: absolute; inset: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; border-radius: inherit; outline-offset: -4px; }
+.vx-scroll::-webkit-scrollbar { display: none; }
+.vx-scroll > img.vx-reel { display: block; width: 100%; height: auto; }
+.vx-hint { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 4; display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 99px; background: rgba(251, 248, 242, .94); border: 1px solid var(--filet); color: var(--bleu-2); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 8px 20px -10px rgba(15, 34, 56, .35); transition: opacity .5s; pointer-events: none; }
+.vx-hint svg { width: 14px; height: 14px; animation: vx-bob 1.6s ease-in-out infinite; }
+.vx-hint.off { opacity: 0; }
+@keyframes vx-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
 .vx-sphone .vx-notch { top: 19px; width: 84px; height: 23px; margin-left: -42px; }
 
 /* ---------- sections : cartes en relief ---------- */
@@ -213,14 +219,14 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="
   .vx-f1 { left: 8px; bottom: 18px; width: 164px; border-radius: 13px; }
   .vx-f2 { right: 14px; top: 0; width: 170px; border-radius: 13px; }
   .vx-f3 { display: none; }
-  .vx-pin { top: 64px; height: calc(100vh - 64px); height: calc(100dvh - 64px); }
-  .vx-pin-grid { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; gap: 0; padding-bottom: 14px; }
-  .vx-device { order: 1; height: 100%; min-height: 0; padding: 12px 0 6px; }
-  .vx-copy { order: 2; align-self: end; }
+  .vx-story { padding: 24px 0 40px; }
+  .vx-pin-grid { grid-template-columns: 1fr; gap: 0; }
+  .vx-device { order: 1; height: 500px; }
+  .vx-copy { order: 2; margin-top: 10px; }
   .vx-copy .vx-kicker, .vx-copy .vx-h2 { display: none; }
-  .vx-dv-arch { top: 50%; height: 94%; width: auto; aspect-ratio: .66; margin: 0; transform: translate(-50%, -50%) translateZ(-60px); border-radius: 999px 999px 18px 18px; }
+  .vx-dv-arch { top: calc(50% - 6px); height: 440px; width: auto; aspect-ratio: .66; margin: 0; transform: translate(-50%, -50%) translateZ(-60px); border-radius: 999px 999px 18px 18px; }
   .vx-dv-arch::after { inset: 10px; border-radius: 999px 999px 10px 10px; }
-  .vx-sphone { height: 100%; max-height: 430px; width: auto; aspect-ratio: 196 / 402; border-radius: 30px; padding: 7px; }
+  .vx-sphone { height: 430px; width: auto; aspect-ratio: 196 / 402; border-radius: 30px; padding: 7px; }
   .vx-sphone .vx-scr { border-radius: 24px; }
   .vx-sphone .vx-notch { top: 12px; width: 52px; height: 15px; margin-left: -26px; }
   .vx-stack { height: 150px; }
@@ -238,4 +244,5 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="
 @media (prefers-reduced-motion: reduce) {
   .vx-phone, .vx-frag { animation: none; }
   .vx-stage, .vx-stp, .vx-sphone { transition: none; }
+  .vx-hint svg { animation: none; }
 }

@@ -1,4 +1,4 @@
-/* Vitrine : héros en 3D (suit la souris) et livret qui défile avec la page. */
+/* Vitrine : héros en 3D (suit la souris) et livret dont l'écran défile sous le doigt ou la molette. */
 (function () {
   "use strict";
   var OFFS = [[0.0, 0.12303], [0.12303, 0.25799], [0.25799, 0.45507], [0.45507, 0.64812], [0.64812, 0.74491], [0.74491, 0.83398], [0.83398, 1.0]];
@@ -24,40 +24,38 @@
     }
   }
 
-  /* ---------- le livret défile tout seul avec la page ---------- */
-  var story = document.getElementById("livret"), reel = document.getElementById("vx-reel"), ph = document.getElementById("vx-sphone");
-  if (!story || !reel || !ph) return;
-  var steps = [].slice.call(document.querySelectorAll("#vx-stack .vx-stp")), ticks = [].slice.call(document.querySelectorAll("#vx-ticks li"));
-  var N = OFFS.length, cur = 0, target = 0, active = -1, READ = .78, visible = true;
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function compute() {
-    var scr = reel.parentElement, dispH = reel.offsetHeight || 1, sf = scr.clientHeight / dispH;
-    var r = story.getBoundingClientRect(), total = Math.max(1, story.offsetHeight - window.innerHeight);
-    var p = Math.min(1, Math.max(0, -r.top / total));
-    var f = p * N, i = Math.min(N - 1, Math.floor(f)), u = f - i;
-    var A = OFFS[i][0], B = Math.max(A, Math.min(OFFS[i][1] - sf, 1 - sf)), top;
-    if (i === N - 1 || u < READ) top = lerp(A, B, Math.min(1, u / READ));
-    else top = lerp(B, OFFS[i + 1][0], (u - READ) / (1 - READ));
-    target = top * dispH;
-    var act = (u >= READ && i < N - 1 && u > .92) ? i + 1 : i;
-    if (act !== active) {
+  /* ---------- le livret : on fait défiler l'écran du téléphone, les textes suivent ---------- */
+  var sc2 = document.getElementById("vx-scroll"), reel = document.getElementById("vx-reel"), ph = document.getElementById("vx-sphone"), hint = document.getElementById("vx-hint");
+  if (sc2 && reel && ph) {
+    var steps = [].slice.call(document.querySelectorAll("#vx-stack .vx-stp")), ticks = [].slice.call(document.querySelectorAll("#vx-ticks li"));
+    var N = OFFS.length, active = -1, hinted = false;
+    function setActive(act) {
+      if (act === active) return;
       active = act;
       steps.forEach(function (s, k) { s.classList.toggle("on", k === act); });
       ticks.forEach(function (t, k) { t.classList.toggle("on", k === act); });
     }
-    ph.style.setProperty("--sy", lerp(-11, 7, p).toFixed(1) + "deg");
-  }
-  function frame() {
-    if (visible) {
-      cur += (target - cur) * (reduce ? 1 : .14);
-      reel.style.transform = "translate3d(0," + (-cur).toFixed(1) + "px,0)";
+    function compute() {
+      var dispH = reel.offsetHeight || 1, sh = sc2.clientHeight, max = Math.max(1, dispH - sh), top = sc2.scrollTop;
+      var line = (top + sh * .3) / dispH, act = N - 1;
+      for (var k = 0; k < N; k++) { if (line < OFFS[k][1]) { act = k; break; } }
+      if (top >= max - 6) act = N - 1;
+      setActive(act);
+      ph.style.setProperty("--sy", (-11 + 18 * Math.min(1, top / max)).toFixed(1) + "deg");
+      if (!hinted && top > 24) { hinted = true; if (hint) hint.classList.add("off"); }
     }
-    requestAnimationFrame(frame);
+    function goTo(k) {
+      var dispH = reel.offsetHeight || 1, max = dispH - sc2.clientHeight;
+      sc2.scrollTo({ top: Math.max(0, Math.min(max, OFFS[k][0] * dispH)), behavior: reduce ? "auto" : "smooth" });
+    }
+    sc2.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    ticks.forEach(function (t, k) { t.addEventListener("click", function () { goTo(k); }); });
+    if (reel.complete) compute(); else reel.addEventListener("load", compute);
+    compute();
+    /* l'indice disparaît aussi dès qu'on touche ou survole l'écran */
+    ["pointerdown", "wheel", "keydown"].forEach(function (ev) { sc2.addEventListener(ev, function () { hinted = true; if (hint) hint.classList.add("off"); }, { passive: true }); });
   }
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) compute(); }, { rootMargin: "200px 0px" }).observe(story);
-  window.addEventListener("scroll", compute, { passive: true }); window.addEventListener("resize", compute);
-  if (reel.complete) compute(); else reel.addEventListener("load", compute);
-  compute(); cur = target; frame();
 
   /* cartes d'exemples : léger relief au survol */
   if (!reduce) [].forEach.call(document.querySelectorAll(".vx-tilt"), function (c) {
