@@ -226,6 +226,8 @@
     });
     out.push("— Forfait " + q.forfait.nom + " : " + (s.facturation === "annuel" ? eur(q.annuel, true) + "/an (" + T.moisOffertsAnnuel + " mois offerts)" : eur(q.mensuel, true) + "/mois") + ", console de modification incluse");
     out.push("", "Création : " + eur(q.creation, true), "Acompte à la commande : " + eur(q.acompte, true), "Solde après " + T.essaiJours + " jours d'essai : " + eur(q.solde, true), "Total 1re année : " + eur(q.premiereAnnee, true), "Livraison : " + q.delai + "*", T.noteSupports);
+    var P = C.paiement || {};
+    if (P.acompteConfort) out.push("", "— Liens Stripe (si le montant de l'acompte correspond) : acompte Confort " + P.acompteConfort + " · acompte Premium " + P.acomptePremium + " · forfait Autonomie " + P.autonomie + " · forfait Sérénité " + P.serenite);
     return out.join("\n");
   }
 
@@ -417,6 +419,13 @@
     var fd0 = new FormData(rf);
     if (C.formulaireDevis) { fd0.delete("form-name"); fd0.delete("_gotcha"); if (document.querySelector("#request-form [name=_gotcha]").value) { btn.disabled = false; btn.textContent = "Envoyer ma demande"; return; } }
     var body = new URLSearchParams(fd0).toString();
+    /* Lien de paiement de l'acompte : seulement si le montant du devis est celui du lien fixe (1 livret, sans option) */
+    var payHtml = function () {
+      var P = C.paiement || {}, k = lastState && lastState.formule, url = k === "premium" ? P.acomptePremium : k === "confort" ? P.acompteConfort : "";
+      if (!url || !lastQuote || !T.formules[k] || Math.abs(lastQuote.acompte - T.formules[k].prix * T.acompte) > 0.005) return "";
+      return '<span class="suite">Vous pouvez aussi régler dès maintenant l\'acompte de ' + eur(lastQuote.acompte, true) + ' par carte bancaire (paiement sécurisé par Stripe). C\'est facultatif : nous confirmons votre commande sous 24 h dans tous les cas.</span>' +
+        '<a class="btn peche small" href="' + url + '" target="_blank" rel="noopener">Régler l\'acompte de ' + eur(lastQuote.acompte, true) + '</a>';
+    };
     var done = function (sent) {
       btn.disabled = false; btn.textContent = "Envoyer ma demande";
       status.hidden = false;
@@ -424,7 +433,7 @@
         status.className = "form-status ok";
         status.innerHTML = "<b>Demande envoyée.</b><span>Merci " + esc(nom.value.trim().split(" ")[0]) + " ! Nous vous répondons personnellement sous 24 h à " + esc(mv) + " (aucun e-mail automatique n'est envoyé).</span>" +
           '<span class="suite">En attendant, vous pouvez déjà décrire votre logement : le questionnaire prend environ 30 minutes et vos réponses se sauvegardent.</span>' +
-          '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>';
+          '<a class="btn sapin small" href="questionnaire.html">Remplir mon questionnaire maintenant</a>' + payHtml();
         /* Les informations déjà données sont reprises dans le questionnaire (stockées sur l'appareil, pas dans l'adresse) */
         try { var st = state(); localStorage.setItem("cdh:questionnaire:prefill", JSON.stringify({ nom: nom.value.trim(), email: mv, tel: document.getElementById("r-tel").value.trim(), logement: document.getElementById("r-lieu").value.trim(), formule: st.formule, type: st.type, couleur: st.couleur, couleurPerso: st.couleurPerso, nomMaquette: st.nomMaquette })); } catch (e) {}
       } else {

@@ -40,5 +40,19 @@ window.CDH_CONFIG = {
   siret: "SIRET 132 137 035 00011",
   mentionTVA: "TVA non applicable, art. 293 B du CGI",
   validiteDevisJours: 30,
+  // Paiement par carte (Stripe, liens de paiement créés dans le tableau de bord Stripe)
+  paiement: {
+    acompteConfort: "https://buy.stripe.com/dRmfZif9F4Ne4Rx7UGfAc00",   // 24,50 €
+    acomptePremium: "https://buy.stripe.com/5kQdRa2mTcfG0Bh2AmfAc01",   // 49,50 €
+    autonomie: "https://buy.stripe.com/28EeVe1iPenO0Bhej4fAc02",        // 7,90 €/mois, essai 14 j
+    serenite: "https://buy.stripe.com/9B6fZi0eLgvW97Nfn8fAc03",         // 19,90 €/mois, essai 14 j
+    portail: "https://billing.stripe.com/p/login/dRmfZif9F4Ne4Rx7UGfAc00" // gérer / résilier l'abonnement
+  },
   conditions: "Acompte de 50 % à la commande, non remboursable une fois le travail commencé. Essai de 14 jours après la mise en ligne, puis solde de la création et forfait (sans engagement, résiliable avec 30 jours de préavis). PDF du livret remis à l'arrêt du forfait après au moins 3 mois d'abonnement."
 };
+
+/* Liens « Gérer mon abonnement » : adresse du portail Stripe (config.js → paiement.portail) */
+document.addEventListener("DOMContentLoaded", function () {
+  var u = window.CDH_CONFIG && window.CDH_CONFIG.paiement && window.CDH_CONFIG.paiement.portail;
+  document.querySelectorAll("[data-portail]").forEach(function (a) { if (u) a.href = u; else a.hidden = true; });
+});
